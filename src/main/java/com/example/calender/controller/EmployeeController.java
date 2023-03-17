@@ -22,7 +22,8 @@ public class EmployeeController {
     public EmployeeController(EmployeeServiceImpl employeeServiceImpl){
         this.employeeServiceImpl = employeeServiceImpl;
     }
-    @GetMapping()
+
+    @GetMapping("/all")
     List<Employee> getAllEmployees( ){
       return employeeServiceImpl.getAllEmployees();
     }
@@ -36,7 +37,7 @@ public class EmployeeController {
         return new ResponseEntity<>(employeeServiceImpl.getEmployeesById(id), HttpStatus.OK);
     }
 
-    @GetMapping("q")
+    @GetMapping()
     ResponseEntity<Employee> getEmployeeByEmail(@RequestParam(name = "email",required = false) String email){
         return new ResponseEntity<>(employeeServiceImpl.getEmployeesByEmail(email), HttpStatus.OK);
     }
