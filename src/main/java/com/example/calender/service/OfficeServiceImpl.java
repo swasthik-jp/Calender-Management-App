@@ -35,7 +35,6 @@ public class OfficeServiceImpl implements OfficeService<Office>{
     @Override
     public Office updateOffice(Office office, long id) {
         Office existingOffice = officeDao.findById(id).orElseThrow(()-> new ResourceNotFoundException("Office","id",id));
-        existingOffice.setNoOfEmployees(office.getNoOfEmployees());
         existingOffice.setOfficeLocation(office.getOfficeLocation());
         officeDao.save(existingOffice);
         return existingOffice;

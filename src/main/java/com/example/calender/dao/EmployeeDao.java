@@ -10,7 +10,5 @@ public interface EmployeeDao extends JpaRepository<Employee,Long> {
 
     Optional<Employee> findByEmail(String email);
 
-    @Query()
-    void incrementNoOfEmployee();
 
 }

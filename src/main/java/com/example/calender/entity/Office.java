@@ -16,7 +16,6 @@ public class Office {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "OFFICE_ID")
     private long officeID;
-    private long noOfEmployees;
     @Column(name = "OFFICE_LOC")
     private String officeLocation;
 
