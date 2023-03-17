@@ -15,13 +15,24 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
     private String name;
     private String email;
     private String officeAddress;
     private String houseAddress;
     private String mob;
     private Date dob;
+
+    public Employee(long id, String name, String email, String officeAddress, String houseAddress, String mob, Date dob) {
+        super();
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.officeAddress = officeAddress;
+        this.houseAddress = houseAddress;
+        this.mob = mob;
+        this.dob = dob;
+    }
+    public Employee(){super();}
 
     public long getId() {
         return id;
