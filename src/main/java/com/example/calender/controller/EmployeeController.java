@@ -1,21 +1,26 @@
 package com.example.calender.controller;
 
+import com.example.calender.dto.dtoEmployee;
 import com.example.calender.entity.Employee;
 import com.example.calender.service.EmployeeService;
 import com.example.calender.service.EmployeeServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/employee")
 public class EmployeeController {
 
+    @Autowired
+    private ModelMapper modelMapper;
     @Autowired
     public EmployeeService employeeServiceImpl;
 
@@ -23,28 +28,26 @@ public class EmployeeController {
         this.employeeServiceImpl = employeeServiceImpl;
     }
 
-    @GetMapping("/all")
-    List<Employee> getAllEmployees( ){
-      return employeeServiceImpl.getAllEmployees();
-    }
-
-//    @GetMapping("{id}")
-//    ResponseEntity<Employee> getEmployee(@PathVariable("id") long  id){
-//      return new ResponseEntity<>(employeeServiceImpl.getEmployeesById(id), HttpStatus.OK);
-//    }
-    @GetMapping("{id}")
-    ResponseEntity<Employee> getEmployee(@PathVariable Long id){
-        return new ResponseEntity<>(employeeServiceImpl.getEmployeesById(id), HttpStatus.OK);
-    }
-
     @GetMapping()
-    ResponseEntity<Employee> getEmployeeByEmail(@RequestParam(name = "email",required = false) String email){
-        return new ResponseEntity<>(employeeServiceImpl.getEmployeesByEmail(email), HttpStatus.OK);
+    List<dtoEmployee> getAllEmployees( ){
+      return employeeServiceImpl.getAllEmployees().stream()
+              .map(employee -> modelMapper.map(employee, dtoEmployee.class))
+              .collect(Collectors.toList());
+    }
+
+    @GetMapping("{id}")
+    ResponseEntity<dtoEmployee> getEmployee(@PathVariable Long id){
+        return new ResponseEntity<>(modelMapper.map(employeeServiceImpl.getEmployeesById(id), dtoEmployee.class), HttpStatus.OK);
+    }
+
+    @GetMapping("q")
+    ResponseEntity<dtoEmployee> getEmployeeByEmail(@RequestParam(name = "email",required = false) String email){
+        return new ResponseEntity<>(modelMapper.map(employeeServiceImpl.getEmployeesByEmail(email), dtoEmployee.class), HttpStatus.OK);
     }
 
     @PostMapping()
-    ResponseEntity<Employee> insertEmployee(@RequestBody Employee employee){
-        return new ResponseEntity<>(employeeServiceImpl.saveEmployee(employee),HttpStatus.CREATED);
+    ResponseEntity<dtoEmployee> insertEmployee(@RequestBody Employee employee){
+        return new ResponseEntity<>(modelMapper.map(employeeServiceImpl.saveEmployee(employee),dtoEmployee.class),HttpStatus.CREATED);
     }
 
     @DeleteMapping("{id}")
@@ -54,8 +57,9 @@ public class EmployeeController {
     }
 
     @PutMapping("{id}")
-    ResponseEntity<Employee> updateEmployee(@RequestBody Employee employee,@PathVariable("id") long  id){
-        return new ResponseEntity<>(employeeServiceImpl.updateEmployee(employee,id),HttpStatus.OK);
+    ResponseEntity<dtoEmployee> updateEmployee(@RequestBody dtoEmployee dtoemployee,@PathVariable("id") long  id){
+        Employee employee = modelMapper.map(dtoemployee, Employee.class);
+        return new ResponseEntity<>(modelMapper.map(employeeServiceImpl.updateEmployee(employee,id), dtoEmployee.class),HttpStatus.OK);
     }
 
 
