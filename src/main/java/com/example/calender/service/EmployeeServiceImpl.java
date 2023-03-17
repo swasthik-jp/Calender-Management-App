@@ -45,7 +45,8 @@ public class EmployeeServiceImpl implements EmployeeService{
          Employee existingEmployee= employeeDao.findById(id).orElseThrow(()-> new ResourceNotFoundException("employee","id",id));
 
             existingEmployee.setName(employee.getName());
-            existingEmployee.setOfficeAddress(employee.getOfficeAddress());
+            //existingEmployee.setOfficeAddress(employee.getOfficeAddress());
+            existingEmployee.setOffice(employee.getOffice());
             existingEmployee.setHouseAddress(employee.getHouseAddress());
             existingEmployee.setDob(employee.getDob());
             existingEmployee.setMob(employee.getMob());
