@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class dtoMeetingRoom {
-    private long id;
+    private Long id;
     private String name;
     private long capacity;
     private boolean isOperational;

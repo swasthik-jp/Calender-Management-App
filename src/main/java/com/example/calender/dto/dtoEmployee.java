@@ -15,7 +15,7 @@ import java.util.Date;
 @Data
 public class dtoEmployee {
 
-    private long id;
+    private Long id;
     private String name;
     private String email;
     private String houseAddress;

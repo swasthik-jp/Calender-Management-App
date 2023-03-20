@@ -25,7 +25,7 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "EMP_ID")
-    private long id;
+    private Long id;
 
     @JsonProperty("Name")
     private String name;

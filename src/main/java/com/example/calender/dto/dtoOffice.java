@@ -9,6 +9,6 @@ import javax.persistence.Column;
 @Data
 public class dtoOffice {
 
-    private long officeID;
+    private Long officeID;
     private String officeLocation;
 }

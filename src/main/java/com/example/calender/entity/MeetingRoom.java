@@ -17,7 +17,7 @@ public class MeetingRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MeetingRoom_ID")
-    private long id;
+    private Long id;
 
     @JsonProperty("Name")
     private String name;
