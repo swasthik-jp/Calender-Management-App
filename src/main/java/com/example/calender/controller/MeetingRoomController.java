@@ -1,35 +1,41 @@
 package com.example.calender.controller;
 
+import com.example.calender.dto.dtoMeetingRoom;
 import com.example.calender.entity.MeetingRoom;
 import com.example.calender.service.MeetingRoomService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/meetingroom")
 public class MeetingRoomController {
 
     @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
     private MeetingRoomService meetingRoomService;
 
     @GetMapping()
-    List<MeetingRoom> getAllMeetingRooms( ){
-        return meetingRoomService.getAllMeetingRooms();
+    List<dtoMeetingRoom> getAllMeetingRooms( ){
+        return meetingRoomService.getAllMeetingRooms().stream().map(meetingRoom -> modelMapper.map(meetingRoom,dtoMeetingRoom.class)).collect(Collectors.toList());
     }
 
 
     @GetMapping("{id}")
-    ResponseEntity<MeetingRoom> getMeetingRoom(@PathVariable Long id){
-        return new ResponseEntity<>(meetingRoomService.getMeetingRoomById(id), HttpStatus.OK);
+    ResponseEntity<dtoMeetingRoom> getMeetingRoom(@PathVariable Long id){
+        return new ResponseEntity<>(modelMapper.map(meetingRoomService.getMeetingRoomById(id),dtoMeetingRoom.class), HttpStatus.OK);
     }
 
     @PostMapping()
-    ResponseEntity<MeetingRoom> insertMeetingRoom(@RequestBody MeetingRoom meetingRoom){
-        return new ResponseEntity<>(meetingRoomService.saveMeetingRoom(meetingRoom),HttpStatus.CREATED);
+    ResponseEntity<dtoMeetingRoom> insertMeetingRoom(@RequestBody MeetingRoom meetingRoom){
+        return new ResponseEntity<>(modelMapper.map(meetingRoomService.saveMeetingRoom(meetingRoom), dtoMeetingRoom.class),HttpStatus.CREATED);
     }
 
     @DeleteMapping("{id}")
@@ -40,8 +46,8 @@ public class MeetingRoomController {
 
 
     @PutMapping("{id}")
-    ResponseEntity<MeetingRoom> updateMeetingRoom(@RequestBody MeetingRoom meetingRoom,@PathVariable("id") long  id){
-        return new ResponseEntity<>(meetingRoomService.updateMeetingRoom(meetingRoom,id),HttpStatus.OK);
+    ResponseEntity<dtoMeetingRoom> updateMeetingRoom(@RequestBody MeetingRoom meetingRoom,@PathVariable("id") long  id){
+        return new ResponseEntity<>(modelMapper.map(meetingRoomService.updateMeetingRoom(meetingRoom,id), dtoMeetingRoom.class),HttpStatus.OK);
     }
 
 }
