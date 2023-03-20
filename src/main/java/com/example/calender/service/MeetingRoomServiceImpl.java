@@ -3,6 +3,7 @@ package com.example.calender.service;
 import com.example.calender.dao.MeetingRoomDao;
 import com.example.calender.entity.Employee;
 import com.example.calender.entity.MeetingRoom;
+import com.example.calender.exception.ResourceAlreadyExistsException;
 import com.example.calender.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,10 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
 
     @Override
     public MeetingRoom saveMeetingRoom(MeetingRoom meetingRoom) {
-        return meetingRoomDao.save(meetingRoom);
+        if(!(meetingRoom.getId()!=null && meetingRoomDao.existsById(meetingRoom.getId()))){
+            return   meetingRoomDao.save(meetingRoom);
+        }
+        throw  new ResourceAlreadyExistsException("meetingRoom","id",meetingRoom.getId());
     }
 
     @Override

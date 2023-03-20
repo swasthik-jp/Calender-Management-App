@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @AllArgsConstructor
@@ -17,18 +16,14 @@ public class MeetingRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MeetingRoom_ID")
-    private long id;
+    private Long id;
 
-    @JsonProperty("Name")
     private String name;
 
-    @JsonProperty("Capacity")
     private long capacity;
 
-    @JsonProperty("IsOperational")
     private boolean isOperational;
 
-    @JsonProperty("Office")
     @ManyToOne
     @JoinColumn(name = "OFFICE_ID",nullable = false)
     private Office office;
