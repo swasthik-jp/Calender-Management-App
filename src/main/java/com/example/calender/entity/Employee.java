@@ -48,7 +48,7 @@ public class Employee {
     private Date dob;
     @JsonProperty("Office")
     @ManyToOne()
-    @JoinColumn(name = "fkOFFICE_ID",nullable = false)
+    @JoinColumn(name = "OFFICE_ID",nullable = false)
     private Office office;
 
 
