@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @AllArgsConstructor
@@ -17,7 +16,7 @@ public class MeetingRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MeetingRoom_ID")
-    private long id;
+    private Long id;
 
     @JsonProperty("Name")
     private String name;
