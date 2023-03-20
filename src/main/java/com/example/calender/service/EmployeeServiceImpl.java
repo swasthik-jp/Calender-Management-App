@@ -1,6 +1,5 @@
 package com.example.calender.service;
 
-<<<<<<< HEAD
 import com.example.calender.dao.EmployeeDao;
 import com.example.calender.entity.Employee;
 import com.example.calender.exception.ResourceNotFoundException;
@@ -11,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class EmployeeService {
+public class EmployeeServiceImpl implements EmployeeService{
 
     @Autowired
     EmployeeDao employeeDao;
@@ -32,12 +31,22 @@ public class EmployeeService {
         throw new ResourceNotFoundException("employee","id",id);
     }
 
+    public Employee getEmployeesByEmail(String email)
+    {
+        Optional<Employee> optionalEmployee= employeeDao.findByEmail(email);
+        if(optionalEmployee.isPresent()){
+            return optionalEmployee.get();
+        }
+        throw new ResourceNotFoundException("employee","Email",email);
+    }
+
     public Employee updateEmployee(Employee employee, long id){
 
          Employee existingEmployee= employeeDao.findById(id).orElseThrow(()-> new ResourceNotFoundException("employee","id",id));
 
             existingEmployee.setName(employee.getName());
-            existingEmployee.setOfficeAddress(employee.getOfficeAddress());
+            //existingEmployee.setOfficeAddress(employee.getOfficeAddress());
+            existingEmployee.setOffice(employee.getOffice());
             existingEmployee.setHouseAddress(employee.getHouseAddress());
             existingEmployee.setDob(employee.getDob());
             existingEmployee.setMob(employee.getMob());
@@ -52,19 +61,5 @@ public class EmployeeService {
         employeeDao.deleteById(id);
     }
 
-=======
-import com.example.calender.entity.Employee;
-
-import java.util.List;
-
-public interface EmployeeService {
-
-    public Employee saveEmployee(Employee employee);
-    public List<Employee> getAllEmployees();
-    public Employee getEmployeesById(long id);
-    public Employee getEmployeesByEmail(String email);
-    public Employee updateEmployee(Employee employee, long id);
-    public void deleteEmployee(long id);
->>>>>>> nv_dto
 
 }
