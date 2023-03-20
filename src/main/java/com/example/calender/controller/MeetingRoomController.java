@@ -24,7 +24,9 @@ public class MeetingRoomController {
 
     @GetMapping()
     List<dtoMeetingRoom> getAllMeetingRooms( ){
-        return meetingRoomService.getAllMeetingRooms().stream().map(meetingRoom -> modelMapper.map(meetingRoom,dtoMeetingRoom.class)).collect(Collectors.toList());
+        return meetingRoomService.getAllMeetingRooms().stream()
+                .map(meetingRoom -> modelMapper.map(meetingRoom,dtoMeetingRoom.class))
+                .collect(Collectors.toList());
     }
 
 
@@ -34,7 +36,8 @@ public class MeetingRoomController {
     }
 
     @PostMapping()
-    ResponseEntity<dtoMeetingRoom> insertMeetingRoom(@RequestBody MeetingRoom meetingRoom){
+    ResponseEntity<dtoMeetingRoom> insertMeetingRoom(@RequestBody dtoMeetingRoom dtoMeetingRoom){
+        MeetingRoom meetingRoom = modelMapper.map(dtoMeetingRoom, MeetingRoom.class);
         return new ResponseEntity<>(modelMapper.map(meetingRoomService.saveMeetingRoom(meetingRoom), dtoMeetingRoom.class),HttpStatus.CREATED);
     }
 
@@ -46,7 +49,8 @@ public class MeetingRoomController {
 
 
     @PutMapping("{id}")
-    ResponseEntity<dtoMeetingRoom> updateMeetingRoom(@RequestBody MeetingRoom meetingRoom,@PathVariable("id") long  id){
+    ResponseEntity<dtoMeetingRoom> updateMeetingRoom(@RequestBody dtoMeetingRoom dtoMeetingRoom,@PathVariable("id") long  id){
+        MeetingRoom meetingRoom = modelMapper.map(dtoMeetingRoom, MeetingRoom.class);
         return new ResponseEntity<>(modelMapper.map(meetingRoomService.updateMeetingRoom(meetingRoom,id), dtoMeetingRoom.class),HttpStatus.OK);
     }
 

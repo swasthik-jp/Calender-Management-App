@@ -5,10 +5,7 @@ import com.example.calender.dto.dtoEmployee;
 import com.example.calender.entity.Employee;
 import com.example.calender.service.EmployeeService;
 import com.example.calender.service.EmployeeServiceImpl;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,10 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import java.util.logging.Level;
 import java.util.stream.Collectors;
-
 
 @RestController
 @Slf4j()
@@ -41,7 +35,7 @@ public class EmployeeController {
         log.debug("Received Request to display all Employees");
         return employeeServiceImpl.getAllEmployees().stream()
               .map(employee -> modelMapper.map(employee, dtoEmployee.class))
-              .collect(Collectors.toList());
+              .toList();
     }
 
     @GetMapping("{id}")
@@ -55,7 +49,8 @@ public class EmployeeController {
     }
 
     @PostMapping()
-    ResponseEntity<dtoEmployee> insertEmployee(@RequestBody Employee employee){
+    ResponseEntity<dtoEmployee> insertEmployee(@RequestBody dtoEmployee dtoEmployee){
+        Employee employee = modelMapper.map(dtoEmployee, Employee.class);
         return new ResponseEntity<>(modelMapper.map(employeeServiceImpl.saveEmployee(employee),dtoEmployee.class),HttpStatus.CREATED);
 
     }
