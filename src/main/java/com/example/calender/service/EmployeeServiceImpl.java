@@ -2,7 +2,6 @@ package com.example.calender.service;
 
 import com.example.calender.dao.EmployeeDao;
 import com.example.calender.entity.Employee;
-import com.example.calender.exception.ResourceAlreadyExistsException;
 import com.example.calender.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,10 +16,7 @@ public class EmployeeServiceImpl implements EmployeeService{
     EmployeeDao employeeDao;
 
     public Employee saveEmployee(Employee employee){
-      if(!(employee.getId()!=null && employeeDao.existsById(employee.getId()))){
-          return   employeeDao.save(employee);
-      }
-      throw  new ResourceAlreadyExistsException("employee","id",employee.getId());
+      return   employeeDao.save(employee);
     }
 
     public List<Employee> getAllEmployees(){
