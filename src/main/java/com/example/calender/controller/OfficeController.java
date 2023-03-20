@@ -33,7 +33,8 @@ public class OfficeController {
             .collect(Collectors.toList());}
 
     @PostMapping()
-    ResponseEntity<dtoOffice> addNewOffice(@RequestBody Office office){
+    ResponseEntity<dtoOffice> addNewOffice(@RequestBody dtoOffice dtooffice){
+        Office office = modelMapper.map(dtooffice, Office.class);
         return new ResponseEntity<>(modelMapper.map(officeServiceImpl.addNewOffice(office), dtoOffice.class),HttpStatus.CREATED);
     }
     @GetMapping("{id}")

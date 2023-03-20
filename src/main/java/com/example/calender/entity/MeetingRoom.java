@@ -20,6 +20,7 @@ public class MeetingRoom {
     private long capacity;
     private boolean isOperational;
     @ManyToOne
+    @JoinColumn(name = "fkOFFICE_ID",nullable = false)
     private Office office;
 
 }
