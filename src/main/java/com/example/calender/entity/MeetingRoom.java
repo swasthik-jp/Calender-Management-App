@@ -18,16 +18,12 @@ public class MeetingRoom {
     @Column(name = "MeetingRoom_ID")
     private Long id;
 
-    @JsonProperty("Name")
     private String name;
 
-    @JsonProperty("Capacity")
     private long capacity;
 
-    @JsonProperty("IsOperational")
     private boolean isOperational;
 
-    @JsonProperty("Office")
     @ManyToOne
     @JoinColumn(name = "OFFICE_ID",nullable = false)
     private Office office;

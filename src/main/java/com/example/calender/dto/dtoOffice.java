@@ -9,6 +9,7 @@ import lombok.Data;
 public class dtoOffice {
 
     private Long officeID;
+
     @JsonProperty("officeLocation")
     @JsonAlias({"Location","loc"})
     private String officeLocation;

@@ -2,6 +2,7 @@ package com.example.calender.service;
 
 import com.example.calender.dao.OfficeDao;
 import com.example.calender.entity.Office;
+import com.example.calender.exception.ResourceAlreadyExistsException;
 import com.example.calender.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,12 @@ public class OfficeServiceImpl implements OfficeService<Office>{
         else throw new ResourceNotFoundException("Office","id",id);
     }
     @Override
-    public Office addNewOffice(Office office) { return officeDao.save(office);}
+    public Office addNewOffice(Office office) {
+        if(!(office.getOfficeID()!=null && officeDao.existsById(office.getOfficeID()))){
+            return officeDao.save(office);
+        }
+        throw  new ResourceAlreadyExistsException("office","officeID",office.getOfficeID());
+    }
 
     @Override
     public void deleteOffice(long id) {

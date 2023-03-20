@@ -18,9 +18,8 @@ public class Office {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "OFFICE_ID")
     private Long officeID;
+
     @Column(name = "OFFICE_LOC")
-    @JsonProperty("officeLocation")
-    @JsonAlias({"Location","loc"})
     private String officeLocation;
 
 }
