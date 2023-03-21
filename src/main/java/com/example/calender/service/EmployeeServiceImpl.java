@@ -16,7 +16,7 @@ public class EmployeeServiceImpl implements EmployeeService{
     @Autowired
     EmployeeDao employeeDao;
 
-    public Employee saveEmployee(Employee employee){
+    public Employee saveEmployee(Employee employee) throws ResourceAlreadyExistsException {
       if(!(employee.getId()!=null && employeeDao.existsById(employee.getId()))){
           return   employeeDao.save(employee);
       }
@@ -27,7 +27,7 @@ public class EmployeeServiceImpl implements EmployeeService{
         return employeeDao.findAll();
     }
 
-    public Employee getEmployeesById(long id){
+    public Employee getEmployeesById(long id) throws ResourceNotFoundException {
         Optional<Employee> optionalEmployee= employeeDao.findById(id);
         if(optionalEmployee.isPresent()){
             return optionalEmployee.get();
@@ -35,7 +35,7 @@ public class EmployeeServiceImpl implements EmployeeService{
         throw new ResourceNotFoundException("employee","id",id);
     }
 
-    public Employee getEmployeesByEmail(String email)
+    public Employee getEmployeesByEmail(String email) throws ResourceNotFoundException
     {
         Optional<Employee> optionalEmployee= employeeDao.findByEmail(email);
         if(optionalEmployee.isPresent()){
@@ -44,7 +44,7 @@ public class EmployeeServiceImpl implements EmployeeService{
         throw new ResourceNotFoundException("employee","Email",email);
     }
 
-    public Employee updateEmployee(Employee employee, long id){
+    public Employee updateEmployee(Employee employee, long id) throws  ResourceNotFoundException{
 
          Employee existingEmployee= employeeDao.findById(id).orElseThrow(()-> new ResourceNotFoundException("employee","id",id));
 
@@ -60,7 +60,7 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     }
 
-    public void deleteEmployee(long id){
+    public void deleteEmployee(long id) throws ResourceNotFoundException{
         employeeDao.findById(id).orElseThrow(()-> new ResourceNotFoundException("employee","id",id));
         employeeDao.deleteById(id);
     }

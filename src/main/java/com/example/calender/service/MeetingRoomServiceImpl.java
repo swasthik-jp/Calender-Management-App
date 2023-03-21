@@ -18,7 +18,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
     private MeetingRoomDao meetingRoomDao;
 
     @Override
-    public MeetingRoom saveMeetingRoom(MeetingRoom meetingRoom) {
+    public MeetingRoom saveMeetingRoom(MeetingRoom meetingRoom) throws ResourceAlreadyExistsException {
         if(!(meetingRoom.getId()!=null && meetingRoomDao.existsById(meetingRoom.getId()))){
             return   meetingRoomDao.save(meetingRoom);
         }
@@ -31,7 +31,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
     }
 
     @Override
-    public MeetingRoom getMeetingRoomById(long id) {
+    public MeetingRoom getMeetingRoomById(long id) throws ResourceNotFoundException {
         Optional<MeetingRoom> optionalMeetingRoom= meetingRoomDao.findById(id);
         if(optionalMeetingRoom.isPresent()){
             return optionalMeetingRoom.get();
@@ -40,8 +40,10 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
     }
 
     @Override
-    public MeetingRoom updateMeetingRoom(MeetingRoom meetingRoom, long id) {
-        MeetingRoom existingMeetingRoom= meetingRoomDao.findById(id).orElseThrow(()-> new ResourceNotFoundException("MeetingRoom","id",id));
+    public MeetingRoom updateMeetingRoom(MeetingRoom meetingRoom, long id) throws ResourceNotFoundException{
+        MeetingRoom existingMeetingRoom= null;
+        existingMeetingRoom = meetingRoomDao.findById(id).orElseThrow(()-> new ResourceNotFoundException("MeetingRoom","id",id));
+
 
         existingMeetingRoom.setName(meetingRoom.getName());
         existingMeetingRoom.setOffice(meetingRoom.getOffice());
@@ -53,7 +55,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
     }
 
     @Override
-    public void deleteMeetingRoom(long id) {
+    public void deleteMeetingRoom(long id) throws ResourceNotFoundException {
         meetingRoomDao.findById(id).orElseThrow(()-> new ResourceNotFoundException("MeetingRoom","id",id));
         meetingRoomDao.deleteById(id);
     }

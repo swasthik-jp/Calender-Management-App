@@ -18,14 +18,14 @@ public class OfficeServiceImpl implements OfficeService<Office>{
     @Override
     public List<Office> getAllBranches() {return officeDao.findAll();}
     @Override
-    public Office getOfficeById(long id) {
+    public Office getOfficeById(long id) throws ResourceNotFoundException {
         Optional<Office> optionalOffice = officeDao.findById(id);
         if(optionalOffice.isPresent())
             return optionalOffice.get();
-        else throw new ResourceNotFoundException("Office","id",id);
+       throw new ResourceNotFoundException("Office","id",id);
     }
     @Override
-    public Office addNewOffice(Office office) {
+    public Office addNewOffice(Office office) throws ResourceAlreadyExistsException {
         if(!(office.getOfficeID()!=null && officeDao.existsById(office.getOfficeID()))){
             return officeDao.save(office);
         }
@@ -33,14 +33,15 @@ public class OfficeServiceImpl implements OfficeService<Office>{
     }
 
     @Override
-    public void deleteOffice(long id) {
+    public void deleteOffice(long id) throws ResourceNotFoundException{
         officeDao.findById(id).orElseThrow(()-> new ResourceNotFoundException("Office","id",id));
         officeDao.deleteById(id);
     }
 
     @Override
-    public Office updateOffice(Office office, long id) {
-        Office existingOffice = officeDao.findById(id).orElseThrow(()-> new ResourceNotFoundException("Office","id",id));
+    public Office updateOffice(Office office, long id) throws ResourceNotFoundException {
+        Office existingOffice = null;
+        existingOffice = officeDao.findById(id).orElseThrow(()-> new ResourceNotFoundException("Office","id",id));
         existingOffice.setOfficeLocation(office.getOfficeLocation());
         officeDao.save(existingOffice);
         return existingOffice;

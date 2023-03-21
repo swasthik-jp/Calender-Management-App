@@ -2,16 +2,18 @@ package com.example.calender.service;
 
 
 import com.example.calender.entity.Employee;
+import com.example.calender.exception.ResourceAlreadyExistsException;
+import com.example.calender.exception.ResourceNotFoundException;
 
 import java.util.List;
 
 public interface EmployeeService {
 
-    public Employee saveEmployee(Employee employee);
+    public Employee saveEmployee(Employee employee) throws ResourceAlreadyExistsException;
     public List<Employee> getAllEmployees();
-    public Employee getEmployeesById(long id);
-    public Employee getEmployeesByEmail(String email);
-    public Employee updateEmployee(Employee employee, long id);
-    public void deleteEmployee(long id);
+    public Employee getEmployeesById(long id) throws ResourceNotFoundException;
+    public Employee getEmployeesByEmail(String email) throws ResourceNotFoundException;
+    public Employee updateEmployee(Employee employee, long id) throws ResourceNotFoundException;
+    public void deleteEmployee(long id) throws ResourceNotFoundException;
 
 }

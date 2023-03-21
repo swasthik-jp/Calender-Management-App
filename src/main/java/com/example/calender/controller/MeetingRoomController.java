@@ -3,6 +3,7 @@ package com.example.calender.controller;
 import com.example.calender.dto.dtoMeetingRoom;
 import com.example.calender.entity.MeetingRoom;
 import com.example.calender.service.MeetingRoomService;
+import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,21 +27,24 @@ public class MeetingRoomController {
     List<dtoMeetingRoom> getAllMeetingRooms( ){
         return meetingRoomService.getAllMeetingRooms().stream()
                 .map(meetingRoom -> modelMapper.map(meetingRoom,dtoMeetingRoom.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
+    @SneakyThrows
     @GetMapping("{id}")
     ResponseEntity<dtoMeetingRoom> getMeetingRoom(@PathVariable Long id){
         return new ResponseEntity<>(modelMapper.map(meetingRoomService.getMeetingRoomById(id),dtoMeetingRoom.class), HttpStatus.OK);
     }
 
+    @SneakyThrows
     @PostMapping()
     ResponseEntity<dtoMeetingRoom> insertMeetingRoom(@RequestBody dtoMeetingRoom dtoMeetingRoom){
         MeetingRoom meetingRoom = modelMapper.map(dtoMeetingRoom, MeetingRoom.class);
         return new ResponseEntity<>(modelMapper.map(meetingRoomService.saveMeetingRoom(meetingRoom), dtoMeetingRoom.class),HttpStatus.CREATED);
     }
 
+    @SneakyThrows
     @DeleteMapping("{id}")
     ResponseEntity<String> deleteMeetingRoom(@PathVariable("id") long  id){
         meetingRoomService.deleteMeetingRoom(id);
@@ -48,6 +52,7 @@ public class MeetingRoomController {
     }
 
 
+    @SneakyThrows
     @PutMapping("{id}")
     ResponseEntity<dtoMeetingRoom> updateMeetingRoom(@RequestBody dtoMeetingRoom dtoMeetingRoom,@PathVariable("id") long  id){
         MeetingRoom meetingRoom = modelMapper.map(dtoMeetingRoom, MeetingRoom.class);

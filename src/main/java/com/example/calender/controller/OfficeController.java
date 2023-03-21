@@ -5,6 +5,7 @@ import com.example.calender.entity.Employee;
 import com.example.calender.entity.Office;
 import com.example.calender.service.OfficeService;
 import com.example.calender.service.OfficeServiceImpl;
+import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,21 +33,25 @@ public class OfficeController {
             .map(office -> modelMapper.map(office, dtoOffice.class))
             .collect(Collectors.toList());}
 
+    @SneakyThrows
     @PostMapping()
     ResponseEntity<dtoOffice> addNewOffice(@RequestBody dtoOffice dtooffice){
         Office office = modelMapper.map(dtooffice, Office.class);
         return new ResponseEntity<>(modelMapper.map(officeServiceImpl.addNewOffice(office), dtoOffice.class),HttpStatus.CREATED);
     }
+    @SneakyThrows
     @GetMapping("{id}")
     ResponseEntity<dtoOffice> getEmployee(@PathVariable Long id){
         return new ResponseEntity<>(modelMapper.map(officeServiceImpl.getOfficeById(id), dtoOffice.class), HttpStatus.OK);
     }
 
+    @SneakyThrows
     @DeleteMapping("{id}")
     ResponseEntity<String> deleteOffice(@PathVariable("id") long  id){
         officeServiceImpl.deleteOffice(id);
         return new ResponseEntity<>("SUCCESS: Office Building Destroyed", HttpStatus.OK);
     }
+    @SneakyThrows
     @PutMapping("{id}")
     ResponseEntity<dtoOffice> updateEmployee(@RequestBody dtoOffice dtoOffice,@PathVariable("id") long  id){
         Office office = modelMapper.map(dtoOffice, Office.class);
