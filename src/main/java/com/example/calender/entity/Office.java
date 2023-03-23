@@ -2,6 +2,7 @@ package com.example.calender.entity;
 
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -16,6 +17,7 @@ import javax.persistence.*;
 @SQLDelete(sql = "UPDATE office SET is_active = false WHERE id=?")
 @Data
 @Table(name = "office")
+@Builder
 public class Office {
 
     @Id

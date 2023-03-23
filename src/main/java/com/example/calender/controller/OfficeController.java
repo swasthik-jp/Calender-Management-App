@@ -2,6 +2,7 @@ package com.example.calender.controller;
 
 import com.example.calender.dto.OfficeDto;
 import com.example.calender.entity.Office;
+import com.example.calender.mapper.Mapper;
 import com.example.calender.service.OfficeService;
 import com.example.calender.service.OfficeServiceImpl;
 import lombok.SneakyThrows;
@@ -16,32 +17,26 @@ import java.util.stream.Collectors;
 
 @RestController
 public class OfficeController {
-
     @Autowired
-    private ModelMapper modelMapper;
+    Mapper<Office, OfficeDto> officeMapper;
     @Autowired
     public OfficeService<Office> officeServiceImpl;
 
-    public OfficeController(OfficeServiceImpl officeServiceImpl) {
-        this.officeServiceImpl = officeServiceImpl;
-    }
-
     @GetMapping("/offices")
     List<OfficeDto> getAllBranches(){return officeServiceImpl.getAllBranches().stream()
-            .map(office -> modelMapper.map(office, OfficeDto.class))
+            .map(office -> officeMapper.toDto(office))
             .collect(Collectors.toList());}
 
     @SneakyThrows
     @PostMapping("/office")
     ResponseEntity<OfficeDto> addNewOffice(@RequestBody OfficeDto dtoOffice){
-        dtoOffice.setId(null);
-        Office office = modelMapper.map(dtoOffice, Office.class);
-        return new ResponseEntity<>(modelMapper.map(officeServiceImpl.addNewOffice(office), OfficeDto.class),HttpStatus.CREATED);
+        Office office = officeMapper.toEntity(dtoOffice);
+        return new ResponseEntity<>(officeMapper.toDto(officeServiceImpl.addNewOffice(office)),HttpStatus.CREATED);
     }
     @SneakyThrows
     @GetMapping("/office/{id}")
     ResponseEntity<OfficeDto> getEmployee(@PathVariable Long id){
-        return new ResponseEntity<>(modelMapper.map(officeServiceImpl.getOfficeById(id), OfficeDto.class), HttpStatus.OK);
+        return new ResponseEntity<>(officeMapper.toDto(officeServiceImpl.getOfficeById(id)), HttpStatus.OK);
     }
 
     @SneakyThrows
@@ -54,8 +49,8 @@ public class OfficeController {
     @PutMapping("/office/{id}")
     ResponseEntity<OfficeDto> updateEmployee(@RequestBody OfficeDto dtoOffice, @PathVariable long  id){
         dtoOffice.setId(null);
-        Office office = modelMapper.map(dtoOffice, Office.class);
-        return new ResponseEntity<>(modelMapper.map(officeServiceImpl.updateOffice(office,id), OfficeDto.class),HttpStatus.OK);
+        Office office = officeMapper.toEntity(dtoOffice);
+        return new ResponseEntity<>(officeMapper.toDto(officeServiceImpl.updateOffice(office,id)),HttpStatus.OK);
     }
 
 }

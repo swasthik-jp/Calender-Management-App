@@ -9,15 +9,11 @@ import lombok.Data;
 public class MeetingRoomDto {
     private Long id;
 
-    @JsonProperty("name")
     private String name;
 
-    @JsonProperty("capacity")
     private long capacity;
 
-    @JsonProperty("isOperational")
     private boolean isOperational;
 
-    @JsonProperty("office")
     private OfficeDto office;
 }
