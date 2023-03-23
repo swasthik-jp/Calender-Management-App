@@ -17,6 +17,7 @@ public class OfficeMapper implements Mapper<Office, OfficeDto> {
     @Override
     public Office toEntity(OfficeDto dto) {
         return Office.builder()
+                .id(dto.getId())
                 .location(dto.getLocation())
                 .build();
     }

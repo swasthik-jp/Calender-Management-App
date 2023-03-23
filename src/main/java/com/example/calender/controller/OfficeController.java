@@ -30,6 +30,7 @@ public class OfficeController {
     @SneakyThrows
     @PostMapping("/office")
     ResponseEntity<OfficeDto> addNewOffice(@RequestBody OfficeDto dtoOffice){
+        dtoOffice.setId(null);
         Office office = officeMapper.toEntity(dtoOffice);
         return new ResponseEntity<>(officeMapper.toDto(officeServiceImpl.addNewOffice(office)),HttpStatus.CREATED);
     }

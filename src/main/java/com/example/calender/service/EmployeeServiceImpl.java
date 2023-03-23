@@ -4,23 +4,22 @@ import com.example.calender.repository.EmployeeRepository;
 import com.example.calender.entity.Employee;
 import com.example.calender.exception.ResourceAlreadyExistsException;
 import com.example.calender.exception.ResourceNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class EmployeeServiceImpl implements EmployeeService{
 
     @Autowired
     EmployeeRepository employeeRepository;
 
-    public Employee saveEmployee(Employee employee) throws ResourceAlreadyExistsException {
-      //if(!(employee.getId()!=null && employeeRepository.existsById(employee.getId()))){
-          return   employeeRepository.save(employee);
-      //}
-      //throw  new ResourceAlreadyExistsException("employee","id",employee.getId());
+    public Employee saveEmployee(Employee employee) {
+          return employeeRepository.save(employee);
     }
 
     public List<Employee> getAllEmployees(){
@@ -35,13 +34,15 @@ public class EmployeeServiceImpl implements EmployeeService{
         throw new ResourceNotFoundException("employee","id",id);
     }
 
-    public Employee getEmployeeByEmail(String email) throws ResourceNotFoundException
-    {
+    public Employee getEmployeeByEmail(String email) {
         Optional<Employee> optionalEmployee= employeeRepository.findByEmail(email);
+
         if(optionalEmployee.isPresent()){
+            log.debug(optionalEmployee.get().toString());
             return optionalEmployee.get();
         }
-        throw new ResourceNotFoundException("employee","Email",email);
+        else
+            return null;
     }
 
     public Employee updateEmployee(Employee employee, long id) throws  ResourceNotFoundException{
