@@ -1,6 +1,7 @@
 package com.example.calender.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -18,6 +19,7 @@ import java.util.Date;
 @Where(clause = "is_active=true")
 @Data
 @Table(name = "employee")
+@Builder
 public class Employee {
 
     @Id
@@ -39,7 +41,6 @@ public class Employee {
 
     @ManyToOne()
     @JoinColumn(name = "office_id",nullable = false)
-    @Where(clause = "is_active=true")
     private Office office;
 
     @Column(name = "is_active")

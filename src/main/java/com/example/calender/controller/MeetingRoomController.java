@@ -2,9 +2,9 @@ package com.example.calender.controller;
 
 import com.example.calender.dto.MeetingRoomDto;
 import com.example.calender.entity.MeetingRoom;
+import com.example.calender.mapper.Mapper;
 import com.example.calender.service.MeetingRoomService;
 import lombok.SneakyThrows;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ import java.util.List;
 public class MeetingRoomController {
 
     @Autowired
-    private ModelMapper modelMapper;
+    private Mapper<MeetingRoom, MeetingRoomDto> meetingRoomDtoMapper;
 
     @Autowired
     private MeetingRoomService meetingRoomService;
@@ -25,7 +25,7 @@ public class MeetingRoomController {
     @GetMapping("/meetingrooms")
     List<MeetingRoomDto> getAllMeetingRooms( ){
         return meetingRoomService.getAllMeetingRooms().stream()
-                .map(meetingRoom -> modelMapper.map(meetingRoom, MeetingRoomDto.class))
+                .map(meetingRoom -> meetingRoomDtoMapper.toDto(meetingRoom))
                 .toList();
     }
 
@@ -33,15 +33,14 @@ public class MeetingRoomController {
     @SneakyThrows
     @GetMapping("/meetingroom/{id}")
     ResponseEntity<MeetingRoomDto> getMeetingRoom(@PathVariable Long id){
-        return new ResponseEntity<>(modelMapper.map(meetingRoomService.getMeetingRoomById(id), MeetingRoomDto.class), HttpStatus.OK);
+        return new ResponseEntity<>(meetingRoomDtoMapper.toDto(meetingRoomService.getMeetingRoomById(id)), HttpStatus.OK);
     }
 
     @SneakyThrows
     @PostMapping("/meetingroom")
     ResponseEntity<MeetingRoomDto> insertMeetingRoom(@RequestBody MeetingRoomDto dtoMeetingRoom){
-        dtoMeetingRoom.setId(null);
-        MeetingRoom meetingRoom = modelMapper.map(dtoMeetingRoom, MeetingRoom.class);
-        return new ResponseEntity<>(modelMapper.map(meetingRoomService.saveMeetingRoom(meetingRoom), MeetingRoomDto.class),HttpStatus.CREATED);
+        MeetingRoom meetingRoom = meetingRoomDtoMapper.toEntity(dtoMeetingRoom);
+        return new ResponseEntity<>(meetingRoomDtoMapper.toDto(meetingRoomService.saveMeetingRoom(meetingRoom)),HttpStatus.CREATED);
     }
 
     @SneakyThrows
@@ -55,9 +54,8 @@ public class MeetingRoomController {
     @SneakyThrows
     @PutMapping("/meetingroom/{id}")
     ResponseEntity<MeetingRoomDto> updateMeetingRoom(@RequestBody MeetingRoomDto dtoMeetingRoom, @PathVariable("id") long  id){
-        dtoMeetingRoom.setId(null);
-        MeetingRoom meetingRoom = modelMapper.map(dtoMeetingRoom, MeetingRoom.class);
-        return new ResponseEntity<>(modelMapper.map(meetingRoomService.updateMeetingRoom(meetingRoom,id), MeetingRoomDto.class),HttpStatus.OK);
+        MeetingRoom meetingRoom = meetingRoomDtoMapper.toEntity(dtoMeetingRoom);
+        return new ResponseEntity<>(meetingRoomDtoMapper.toDto(meetingRoomService.updateMeetingRoom(meetingRoom,id)),HttpStatus.OK);
     }
 
 }

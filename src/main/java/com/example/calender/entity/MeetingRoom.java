@@ -2,6 +2,7 @@ package com.example.calender.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -16,6 +17,7 @@ import javax.persistence.*;
 @Where(clause = "is_active=true")
 @Data
 @Table(name = "meeting_room")
+@Builder
 public class MeetingRoom {
 
     @Id

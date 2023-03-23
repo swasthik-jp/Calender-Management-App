@@ -15,6 +15,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @SQLDelete(sql = "UPDATE office SET is_active = false WHERE id=?")
+@Where(clause = "is_active=true")
 @Data
 @Table(name = "office")
 @Builder
@@ -23,7 +24,6 @@ public class Office {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @ReadOnlyProperty
     private Long id;
 
     @Column(name = "location")

@@ -4,9 +4,7 @@ import com.example.calender.dto.OfficeDto;
 import com.example.calender.entity.Office;
 import com.example.calender.mapper.Mapper;
 import com.example.calender.service.OfficeService;
-import com.example.calender.service.OfficeServiceImpl;
 import lombok.SneakyThrows;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,14 +16,16 @@ import java.util.stream.Collectors;
 @RestController
 public class OfficeController {
     @Autowired
-    Mapper<Office, OfficeDto> officeMapper;
+    private Mapper<Office, OfficeDto> officeMapper;
     @Autowired
-    public OfficeService<Office> officeServiceImpl;
+    private OfficeService<Office> officeServiceImpl;
 
     @GetMapping("/offices")
-    List<OfficeDto> getAllBranches(){return officeServiceImpl.getAllBranches().stream()
+    List<OfficeDto> getAllBranches(){
+        return officeServiceImpl.getAllBranches().stream()
             .map(office -> officeMapper.toDto(office))
-            .collect(Collectors.toList());}
+            .collect(Collectors.toList());
+    }
 
     @SneakyThrows
     @PostMapping("/office")
