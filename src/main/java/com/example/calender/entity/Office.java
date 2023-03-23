@@ -22,10 +22,10 @@ public class Office {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     @ReadOnlyProperty
-    private Long officeID;
+    private Long id;
 
     @Column(name = "location")
-    private String officeLocation;
+    private String location;
 
     @Column(name = "is_active")
     private boolean isActive = Boolean.TRUE;

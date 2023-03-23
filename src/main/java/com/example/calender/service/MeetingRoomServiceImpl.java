@@ -18,10 +18,10 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
 
     @Override
     public MeetingRoom saveMeetingRoom(MeetingRoom meetingRoom) throws ResourceAlreadyExistsException {
-        if(!(meetingRoom.getId()!=null && meetingRoomRepository.existsById(meetingRoom.getId()))){
+        //if(!(meetingRoom.getId()!=null && meetingRoomRepository.existsById(meetingRoom.getId()))){
             return   meetingRoomRepository.save(meetingRoom);
-        }
-        throw  new ResourceAlreadyExistsException("meetingRoom","id",meetingRoom.getId());
+        //}
+        //throw  new ResourceAlreadyExistsException("meetingRoom","id",meetingRoom.getId());
     }
 
     @Override

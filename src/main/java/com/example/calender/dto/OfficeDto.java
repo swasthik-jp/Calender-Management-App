@@ -8,11 +8,9 @@ import org.springframework.data.annotation.ReadOnlyProperty;
 @Data
 public class OfficeDto {
 
-    @JsonProperty("officeId")
-    @JsonAlias("office_id")
-    private Long officeID;
+    @JsonProperty("Id")
+    private Long id;
 
-    @JsonProperty("officeLocation")
-    @JsonAlias("office_location")
-    private String officeLocation;
+    @JsonProperty("location")
+    private String location;
 }

@@ -17,10 +17,10 @@ public class EmployeeServiceImpl implements EmployeeService{
     EmployeeRepository employeeRepository;
 
     public Employee saveEmployee(Employee employee) throws ResourceAlreadyExistsException {
-      if(!(employee.getId()!=null && employeeRepository.existsById(employee.getId()))){
+      //if(!(employee.getId()!=null && employeeRepository.existsById(employee.getId()))){
           return   employeeRepository.save(employee);
-      }
-      throw  new ResourceAlreadyExistsException("employee","id",employee.getId());
+      //}
+      //throw  new ResourceAlreadyExistsException("employee","id",employee.getId());
     }
 
     public List<Employee> getAllEmployees(){
@@ -49,7 +49,6 @@ public class EmployeeServiceImpl implements EmployeeService{
          Employee existingEmployee= employeeRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("employee","id",id));
 
             existingEmployee.setName(employee.getName());
-            //existingEmployee.setOfficeAddress(employee.getOfficeAddress());
             existingEmployee.setOffice(employee.getOffice());
             existingEmployee.setHouseAddress(employee.getHouseAddress());
             existingEmployee.setDob(employee.getDob());

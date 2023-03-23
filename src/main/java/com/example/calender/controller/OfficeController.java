@@ -33,8 +33,9 @@ public class OfficeController {
 
     @SneakyThrows
     @PostMapping("/office")
-    ResponseEntity<OfficeDto> addNewOffice(@RequestBody OfficeDto dtooffice){
-        Office office = modelMapper.map(dtooffice, Office.class);
+    ResponseEntity<OfficeDto> addNewOffice(@RequestBody OfficeDto dtoOffice){
+        dtoOffice.setId(null);
+        Office office = modelMapper.map(dtoOffice, Office.class);
         return new ResponseEntity<>(modelMapper.map(officeServiceImpl.addNewOffice(office), OfficeDto.class),HttpStatus.CREATED);
     }
     @SneakyThrows
@@ -52,6 +53,7 @@ public class OfficeController {
     @SneakyThrows
     @PutMapping("/office/{id}")
     ResponseEntity<OfficeDto> updateEmployee(@RequestBody OfficeDto dtoOffice, @PathVariable long  id){
+        dtoOffice.setId(null);
         Office office = modelMapper.map(dtoOffice, Office.class);
         return new ResponseEntity<>(modelMapper.map(officeServiceImpl.updateOffice(office,id), OfficeDto.class),HttpStatus.OK);
     }

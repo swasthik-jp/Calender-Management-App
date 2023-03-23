@@ -42,7 +42,7 @@ public class OfficeServiceImpl implements OfficeService<Office>{
     public Office updateOffice(Office office, long id) throws ResourceNotFoundException {
         Office existingOffice = null;
         existingOffice = officeRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Office","id",id));
-        existingOffice.setOfficeLocation(office.getOfficeLocation());
+        existingOffice.setLocation(office.getLocation());
         officeRepository.save(existingOffice);
         return existingOffice;
     }
