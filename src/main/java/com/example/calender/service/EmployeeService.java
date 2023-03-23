@@ -11,8 +11,8 @@ public interface EmployeeService {
 
     public Employee saveEmployee(Employee employee) throws ResourceAlreadyExistsException;
     public List<Employee> getAllEmployees();
-    public Employee getEmployeesById(long id) throws ResourceNotFoundException;
-    public Employee getEmployeesByEmail(String email) throws ResourceNotFoundException;
+    public Employee getEmployeeById(long id) throws ResourceNotFoundException;
+    public Employee getEmployeeByEmail(String email) throws ResourceNotFoundException;
     public Employee updateEmployee(Employee employee, long id) throws ResourceNotFoundException;
     public void deleteEmployee(long id) throws ResourceNotFoundException;
 

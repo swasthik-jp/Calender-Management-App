@@ -1,7 +1,6 @@
 package com.example.calender.service;
 
-import com.example.calender.dao.MeetingRoomDao;
-import com.example.calender.entity.Employee;
+import com.example.calender.repository.MeetingRoomRepository;
 import com.example.calender.entity.MeetingRoom;
 import com.example.calender.exception.ResourceAlreadyExistsException;
 import com.example.calender.exception.ResourceNotFoundException;
@@ -15,24 +14,24 @@ import java.util.Optional;
 public class MeetingRoomServiceImpl implements MeetingRoomService{
 
     @Autowired
-    private MeetingRoomDao meetingRoomDao;
+    private MeetingRoomRepository meetingRoomRepository;
 
     @Override
     public MeetingRoom saveMeetingRoom(MeetingRoom meetingRoom) throws ResourceAlreadyExistsException {
-        if(!(meetingRoom.getId()!=null && meetingRoomDao.existsById(meetingRoom.getId()))){
-            return   meetingRoomDao.save(meetingRoom);
+        if(!(meetingRoom.getId()!=null && meetingRoomRepository.existsById(meetingRoom.getId()))){
+            return   meetingRoomRepository.save(meetingRoom);
         }
         throw  new ResourceAlreadyExistsException("meetingRoom","id",meetingRoom.getId());
     }
 
     @Override
     public List<MeetingRoom> getAllMeetingRooms() {
-        return meetingRoomDao.findAll();
+        return meetingRoomRepository.findAll();
     }
 
     @Override
     public MeetingRoom getMeetingRoomById(long id) throws ResourceNotFoundException {
-        Optional<MeetingRoom> optionalMeetingRoom= meetingRoomDao.findById(id);
+        Optional<MeetingRoom> optionalMeetingRoom= meetingRoomRepository.findById(id);
         if(optionalMeetingRoom.isPresent()){
             return optionalMeetingRoom.get();
         }
@@ -42,7 +41,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
     @Override
     public MeetingRoom updateMeetingRoom(MeetingRoom meetingRoom, long id) throws ResourceNotFoundException{
         MeetingRoom existingMeetingRoom= null;
-        existingMeetingRoom = meetingRoomDao.findById(id).orElseThrow(()-> new ResourceNotFoundException("MeetingRoom","id",id));
+        existingMeetingRoom = meetingRoomRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("MeetingRoom","id",id));
 
 
         existingMeetingRoom.setName(meetingRoom.getName());
@@ -50,13 +49,13 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
         existingMeetingRoom.setCapacity(meetingRoom.getCapacity());
         existingMeetingRoom.setOperational(meetingRoom.isOperational());
 
-         meetingRoomDao.save(existingMeetingRoom);
+         meetingRoomRepository.save(existingMeetingRoom);
         return existingMeetingRoom;
     }
 
     @Override
     public void deleteMeetingRoom(long id) throws ResourceNotFoundException {
-        meetingRoomDao.findById(id).orElseThrow(()-> new ResourceNotFoundException("MeetingRoom","id",id));
-        meetingRoomDao.deleteById(id);
+        meetingRoomRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("MeetingRoom","id",id));
+        meetingRoomRepository.deleteById(id);
     }
 }

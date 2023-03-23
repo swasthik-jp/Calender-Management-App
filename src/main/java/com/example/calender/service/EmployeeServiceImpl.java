@@ -1,6 +1,6 @@
 package com.example.calender.service;
 
-import com.example.calender.dao.EmployeeDao;
+import com.example.calender.repository.EmployeeRepository;
 import com.example.calender.entity.Employee;
 import com.example.calender.exception.ResourceAlreadyExistsException;
 import com.example.calender.exception.ResourceNotFoundException;
@@ -14,30 +14,30 @@ import java.util.Optional;
 public class EmployeeServiceImpl implements EmployeeService{
 
     @Autowired
-    EmployeeDao employeeDao;
+    EmployeeRepository employeeRepository;
 
     public Employee saveEmployee(Employee employee) throws ResourceAlreadyExistsException {
-      if(!(employee.getId()!=null && employeeDao.existsById(employee.getId()))){
-          return   employeeDao.save(employee);
+      if(!(employee.getId()!=null && employeeRepository.existsById(employee.getId()))){
+          return   employeeRepository.save(employee);
       }
       throw  new ResourceAlreadyExistsException("employee","id",employee.getId());
     }
 
     public List<Employee> getAllEmployees(){
-        return employeeDao.findAll();
+        return employeeRepository.findAll();
     }
 
-    public Employee getEmployeesById(long id) throws ResourceNotFoundException {
-        Optional<Employee> optionalEmployee= employeeDao.findById(id);
+    public Employee getEmployeeById(long id) throws ResourceNotFoundException {
+        Optional<Employee> optionalEmployee= employeeRepository.findById(id);
         if(optionalEmployee.isPresent()){
             return optionalEmployee.get();
         }
         throw new ResourceNotFoundException("employee","id",id);
     }
 
-    public Employee getEmployeesByEmail(String email) throws ResourceNotFoundException
+    public Employee getEmployeeByEmail(String email) throws ResourceNotFoundException
     {
-        Optional<Employee> optionalEmployee= employeeDao.findByEmail(email);
+        Optional<Employee> optionalEmployee= employeeRepository.findByEmail(email);
         if(optionalEmployee.isPresent()){
             return optionalEmployee.get();
         }
@@ -46,7 +46,7 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     public Employee updateEmployee(Employee employee, long id) throws  ResourceNotFoundException{
 
-         Employee existingEmployee= employeeDao.findById(id).orElseThrow(()-> new ResourceNotFoundException("employee","id",id));
+         Employee existingEmployee= employeeRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("employee","id",id));
 
             existingEmployee.setName(employee.getName());
             //existingEmployee.setOfficeAddress(employee.getOfficeAddress());
@@ -55,14 +55,14 @@ public class EmployeeServiceImpl implements EmployeeService{
             existingEmployee.setDob(employee.getDob());
             existingEmployee.setMob(employee.getMob());
             existingEmployee.setEmail(employee.getEmail());
-            employeeDao.save(existingEmployee);
+            employeeRepository.save(existingEmployee);
             return existingEmployee;
 
     }
 
     public void deleteEmployee(long id) throws ResourceNotFoundException{
-        employeeDao.findById(id).orElseThrow(()-> new ResourceNotFoundException("employee","id",id));
-        employeeDao.deleteById(id);
+        employeeRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("employee","id",id));
+        employeeRepository.deleteById(id);
     }
 
 

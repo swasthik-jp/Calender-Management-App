@@ -6,18 +6,18 @@ import lombok.Data;
 
 
 @Data
-public class dtoMeetingRoom {
+public class MeetingRoomDto {
     private Long id;
 
-    @JsonProperty("Name")
+    @JsonProperty("name")
     private String name;
 
-    @JsonProperty("Capacity")
+    @JsonProperty("capacity")
     private long capacity;
 
-    @JsonProperty("IsOperational")
+    @JsonProperty("isOperational")
     private boolean isOperational;
 
-    @JsonProperty("Office")
-    private Office office;
+    @JsonProperty("office")
+    private OfficeDto office;
 }

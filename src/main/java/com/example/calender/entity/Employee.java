@@ -3,6 +3,8 @@ package com.example.calender.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
@@ -12,18 +14,23 @@ import java.util.Date;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE employee SET is_active = false WHERE id=?")
+@Where(clause = "is_active=true")
 @Data
+@Table(name = "employee")
 public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "EMP_ID")
+    @Column(name = "emp_id")
     private Long id;
 
     private String name;
 
+    @Column(unique = true)
     private String email;
 
+    @Column(name = "house_address")
     private String houseAddress;
 
     private String mob;
@@ -31,8 +38,11 @@ public class Employee {
     private Date dob;
 
     @ManyToOne()
-    @JoinColumn(name = "OFFICE_ID",nullable = false)
+    @JoinColumn(name = "office_id",nullable = false)
+    @Where(clause = "is_active=true")
     private Office office;
 
+    @Column(name = "is_active")
+    private boolean isDeleted = Boolean.TRUE;
 
 }

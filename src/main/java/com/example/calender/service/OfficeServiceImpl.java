@@ -1,6 +1,6 @@
 package com.example.calender.service;
 
-import com.example.calender.dao.OfficeDao;
+import com.example.calender.repository.OfficeRepository;
 import com.example.calender.entity.Office;
 import com.example.calender.exception.ResourceAlreadyExistsException;
 import com.example.calender.exception.ResourceNotFoundException;
@@ -14,36 +14,36 @@ import java.util.Optional;
 public class OfficeServiceImpl implements OfficeService<Office>{
 
     @Autowired
-    OfficeDao officeDao;
+    OfficeRepository officeRepository;
     @Override
-    public List<Office> getAllBranches() {return officeDao.findAll();}
+    public List<Office> getAllBranches() {return officeRepository.findAll();}
     @Override
     public Office getOfficeById(long id) throws ResourceNotFoundException {
-        Optional<Office> optionalOffice = officeDao.findById(id);
+        Optional<Office> optionalOffice = officeRepository.findById(id);
         if(optionalOffice.isPresent())
             return optionalOffice.get();
        throw new ResourceNotFoundException("Office","id",id);
     }
     @Override
     public Office addNewOffice(Office office) throws ResourceAlreadyExistsException {
-        if(!(office.getOfficeID()!=null && officeDao.existsById(office.getOfficeID()))){
-            return officeDao.save(office);
-        }
-        throw  new ResourceAlreadyExistsException("office","officeID",office.getOfficeID());
+        //if(!(office.getOfficeID()!=null && officeRepository.existsById(office.getOfficeID()))){
+            return officeRepository.save(office);
+        //}
+        //throw  new ResourceAlreadyExistsException("office","officeID",office.getOfficeID());
     }
 
     @Override
     public void deleteOffice(long id) throws ResourceNotFoundException{
-        officeDao.findById(id).orElseThrow(()-> new ResourceNotFoundException("Office","id",id));
-        officeDao.deleteById(id);
+        officeRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Office","id",id));
+        officeRepository.deleteById(id);
     }
 
     @Override
     public Office updateOffice(Office office, long id) throws ResourceNotFoundException {
         Office existingOffice = null;
-        existingOffice = officeDao.findById(id).orElseThrow(()-> new ResourceNotFoundException("Office","id",id));
+        existingOffice = officeRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Office","id",id));
         existingOffice.setOfficeLocation(office.getOfficeLocation());
-        officeDao.save(existingOffice);
+        officeRepository.save(existingOffice);
         return existingOffice;
     }
 }

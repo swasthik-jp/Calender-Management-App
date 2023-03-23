@@ -11,31 +11,28 @@ import javax.persistence.TemporalType;
 import java.util.Date;
 
 @Data
-public class dtoEmployee {
-
-
+public class EmployeeDto {
 
     private Long id;
 
-    @JsonProperty("Name")
+    @JsonProperty("name")
     private String name;
 
-    @JsonProperty("Email")
-    @JsonAlias("emailId")
+    @JsonProperty("email")
+    @JsonAlias("email_id")
     private String email;
 
-    @JsonProperty("Address")
-    @JsonAlias("homeAddress")
+    @JsonProperty("address")
+    @JsonAlias("home_address")
     private String houseAddress;
 
-    @JsonProperty("Ph")
-    @JsonAlias({"Phone","Mobile"})
+    @JsonProperty("ph")
+    @JsonAlias({"phone","mobile"})
     private String mob;
     @Temporal(TemporalType.DATE)
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     @JsonProperty("dob")
-    @JsonAlias("BirthDate")
     private Date dob;
-    @JsonProperty("Office")
-    private Office office;
+    @JsonProperty("office")
+    private OfficeDto office;
 }
