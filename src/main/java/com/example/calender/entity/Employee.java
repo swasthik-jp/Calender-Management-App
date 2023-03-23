@@ -44,6 +44,6 @@ public class Employee {
     private Office office;
 
     @Column(name = "is_active")
-    private boolean isDeleted = Boolean.TRUE;
+    private Boolean isActive = Boolean.TRUE;
 
 }

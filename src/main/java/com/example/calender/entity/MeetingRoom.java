@@ -36,6 +36,6 @@ public class MeetingRoom {
     private Office office;
 
     @Column(name = "is_active")
-    private boolean isActive = Boolean.TRUE;
+    private Boolean isActive = Boolean.TRUE;
 
 }

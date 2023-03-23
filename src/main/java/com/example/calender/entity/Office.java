@@ -30,6 +30,6 @@ public class Office {
     private String location;
 
     @Column(name = "is_active")
-    private boolean isActive = Boolean.TRUE;
+    private Boolean isActive = Boolean.TRUE;
 
 }
