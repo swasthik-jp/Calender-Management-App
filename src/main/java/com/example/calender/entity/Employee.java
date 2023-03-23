@@ -15,8 +15,8 @@ import java.util.Date;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@SQLDelete(sql = "UPDATE employee SET is_active = false WHERE id=?")
-@Where(clause = "is_active=true")
+@SQLDelete(sql = "UPDATE employee SET is_deleted = true WHERE id=?")
+@Where(clause = "is_deleted=false")
 @Data
 @Table(name = "employee")
 @Builder
@@ -43,7 +43,6 @@ public class Employee {
     @JoinColumn(name = "office_id",nullable = false)
     private Office office;
 
-    @Column(name = "is_active")
-    private Boolean isActive = Boolean.TRUE;
-
+    @Column(name = "is_deleted")
+    private boolean isDeleted = Boolean.FALSE;
 }

@@ -14,8 +14,8 @@ import javax.persistence.*;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@SQLDelete(sql = "UPDATE office SET is_active = false WHERE id=?")
-@Where(clause = "is_active=true")
+@SQLDelete(sql = "UPDATE office SET is_deleted = true WHERE id=?")
+@Where(clause = "is_deleted=false")
 @Data
 @Table(name = "office")
 @Builder
@@ -29,7 +29,7 @@ public class Office {
     @Column(name = "location")
     private String location;
 
-    @Column(name = "is_active")
-    private Boolean isActive = Boolean.TRUE;
+    @Column(name = "is_deleted")
+    private boolean isDeleted = Boolean.FALSE;
 
 }

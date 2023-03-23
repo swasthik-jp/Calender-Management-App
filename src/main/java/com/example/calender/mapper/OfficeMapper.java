@@ -18,7 +18,6 @@ public class OfficeMapper implements Mapper<Office, OfficeDto> {
     public Office toEntity(OfficeDto dto) {
         return Office.builder()
                 .location(dto.getLocation())
-                .isActive(true)
                 .build();
     }
 }
