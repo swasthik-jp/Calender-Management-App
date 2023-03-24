@@ -17,10 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -70,6 +69,7 @@ public class EmployeeController {
     ResponseEntity<EmployeeDto> insertEmployee(@RequestBody EmployeeDto dtoEmployee) {
         if (dtoEmployee.getEmail() != null && employeeService.getEmployeeByEmail(dtoEmployee.getEmail()) != null)
             throw new ResourceAlreadyExistsException("employee", "email", dtoEmployee.getEmail());
+
         try { //check if the office exists or soft deleted
             restTemplate.getForObject(ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString()+"/office/" + dtoEmployee.getOffice().getId(), OfficeDto.class);
         }catch (HttpClientErrorException e){ // return BAD REQUEST if office is soft deleted
@@ -94,6 +94,5 @@ public class EmployeeController {
         return new ResponseEntity<>(employeeDtoMapper.toDto(employeeService.updateEmployee(employee, id)), HttpStatus.OK);
 
     }
-
 
 }
