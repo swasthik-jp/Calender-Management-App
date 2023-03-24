@@ -24,13 +24,12 @@ public class OfficeController {
     List<OfficeDto> getAllBranches(){
         return officeServiceImpl.getAllBranches().stream()
             .map(office -> officeMapper.toDto(office))
-            .collect(Collectors.toList());
+            .toList();
     }
 
     @SneakyThrows
     @PostMapping("/office")
     ResponseEntity<OfficeDto> addNewOffice(@RequestBody OfficeDto dtoOffice){
-        dtoOffice.setId(null);
         Office office = officeMapper.toEntity(dtoOffice);
         return new ResponseEntity<>(officeMapper.toDto(officeServiceImpl.addNewOffice(office)),HttpStatus.CREATED);
     }
@@ -43,8 +42,10 @@ public class OfficeController {
     @SneakyThrows
     @DeleteMapping("/office/{id}")
     ResponseEntity<String> deleteOffice(@PathVariable Long  id){
-        officeServiceImpl.deleteOffice(id);
-        return new ResponseEntity<>("SUCCESS: Office Building Destroyed", HttpStatus.OK);
+        if(officeServiceImpl.deleteOffice(id))
+            return new ResponseEntity<>("SUCCESS: Office Building Destroyed", HttpStatus.OK);
+        else
+            return new ResponseEntity<>("FAILURE: Employee are still present", HttpStatus.BAD_REQUEST);
     }
     @SneakyThrows
     @PutMapping("/office/{id}")

@@ -18,10 +18,10 @@ public class ResourceNotFoundException extends Exception {
 
     public ResourceNotFoundException(String resourceName, String fieldName, Object fieldValue) {
         super(String.format("%s is not found with %s: '%s' ", resourceName, fieldName, fieldValue));
-        log.error("Thrown CustomException\t" + super.getMessage());
+        log.error("thrown resource not found exception\t" + super.getMessage());
         this.resourceName = resourceName;
         this.fieldName = fieldName;
         this.fieldValue = fieldValue;
-
     }
+
 }
