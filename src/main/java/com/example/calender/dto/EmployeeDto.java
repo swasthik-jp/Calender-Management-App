@@ -9,6 +9,8 @@ import lombok.Data;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 @Data
@@ -19,6 +21,8 @@ public class EmployeeDto {
 
     private String name;
 
+    @NotNull
+    @Pattern(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     @JsonAlias("email_id")
     private String email;
 

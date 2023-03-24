@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -18,8 +17,13 @@ public class EmployeeServiceImpl implements EmployeeService{
     @Autowired
     EmployeeRepository employeeRepository;
 
-    public Employee saveEmployee(Employee employee) {
-          return employeeRepository.save(employee);
+    public Employee saveEmployee(Employee employee) throws ResourceAlreadyExistsException {
+        try {
+            return employeeRepository.save(employee);
+        }
+        catch (Exception ex) {
+            throw new ResourceAlreadyExistsException("Employee", "email", employee.getEmail());
+        }
     }
 
     public List<Employee> getAllEmployees(){
@@ -27,27 +31,19 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     public Employee getEmployeeById(long id) throws ResourceNotFoundException {
-        Optional<Employee> optionalEmployee= employeeRepository.findById(id);
-        if(optionalEmployee.isPresent()){
-            return optionalEmployee.get();
-        }
-        throw new ResourceNotFoundException("employee","id",id);
+        return employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", id));
     }
 
-    public Employee getEmployeeByEmail(String email) {
-        Optional<Employee> optionalEmployee= employeeRepository.findByEmail(email);
-
-        if(optionalEmployee.isPresent()){
-            log.debug(optionalEmployee.get().toString());
-            return optionalEmployee.get();
-        }
-        else
-            return null;
+    public Employee getEmployeeByEmail(String email) throws ResourceNotFoundException {
+        return employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee", "email", email));
     }
 
     public Employee updateEmployee(Employee employee, long id) throws  ResourceNotFoundException{
 
-         Employee existingEmployee= employeeRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("employee","id",id));
+         Employee existingEmployee= employeeRepository.findById(id)
+                 .orElseThrow(()-> new ResourceNotFoundException("employee","id",id));
 
             existingEmployee.setName(employee.getName());
             existingEmployee.setOffice(employee.getOffice());
@@ -61,7 +57,8 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     public void deleteEmployee(long id) throws ResourceNotFoundException{
-        employeeRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("employee","id",id));
+        employeeRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("employee","id",id));
         employeeRepository.deleteById(id);
     }
 

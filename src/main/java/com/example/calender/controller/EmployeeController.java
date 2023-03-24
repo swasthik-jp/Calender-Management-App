@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -25,16 +27,16 @@ public class EmployeeController {
     @Autowired
     private Mapper<Employee, EmployeeDto> employeeDtoMapper;
     @Autowired
-    private EmployeeService employeeServiceImpl;
+    private EmployeeService employeeService;
 
-    public EmployeeController(EmployeeServiceImpl employeeServiceImpl) {
-        this.employeeServiceImpl = employeeServiceImpl;
+    public EmployeeController(EmployeeServiceImpl employeeService) {
+        this.employeeService = employeeService;
     }
 
     @GetMapping("/employees")
     List<EmployeeDto> getAllEmployees() {
         log.debug("received request to display all employees");
-        return employeeServiceImpl.getAllEmployees().stream()
+        return employeeService.getAllEmployees().stream()
                 .map(employee -> employeeDtoMapper.toDto(employee))
                 .toList();
     }
@@ -43,42 +45,39 @@ public class EmployeeController {
     @Deprecated
     @SneakyThrows
     ResponseEntity<EmployeeDto> getEmployee(@PathVariable Long id) {
-        return new ResponseEntity<>(employeeDtoMapper.toDto(employeeServiceImpl.getEmployeeById(id)), HttpStatus.OK);
+        return new ResponseEntity<>(employeeDtoMapper.toDto(employeeService.getEmployeeById(id)), HttpStatus.OK);
     }
 
     @SneakyThrows
     @GetMapping("/employee")
     ResponseEntity<EmployeeDto> getEmployeeByIdOrEmail(@RequestParam(name = "email", required = false) String email, @RequestParam(name = "id", required = false) Long id) {
         if (email != null)
-            return new ResponseEntity<>(employeeDtoMapper.toDto(employeeServiceImpl.getEmployeeByEmail(email)), HttpStatus.OK);
+            return new ResponseEntity<>(employeeDtoMapper.toDto(employeeService.getEmployeeByEmail(email)), HttpStatus.OK);
         else if (id != null) {
-            return new ResponseEntity<>(employeeDtoMapper.toDto(employeeServiceImpl.getEmployeeById(id)), HttpStatus.OK);
+            return new ResponseEntity<>(employeeDtoMapper.toDto(employeeService.getEmployeeById(id)), HttpStatus.OK);
         } else
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @SneakyThrows
     @PostMapping("/employee")
-    ResponseEntity<EmployeeDto> insertEmployee(@RequestBody EmployeeDto dtoEmployee) {
-        if (dtoEmployee.getEmail() != null && employeeServiceImpl.getEmployeeByEmail(dtoEmployee.getEmail()) != null)
-            throw new ResourceAlreadyExistsException("employee", "email", dtoEmployee.getEmail());
+    ResponseEntity<EmployeeDto> insertEmployee(@Valid @RequestBody EmployeeDto dtoEmployee) {
         Employee employee = employeeDtoMapper.toEntity(dtoEmployee);
-        return new ResponseEntity<>(employeeDtoMapper.toDto(employeeServiceImpl.saveEmployee(employee)), HttpStatus.CREATED);
-
+        return new ResponseEntity<>(employeeDtoMapper.toDto(employeeService.saveEmployee(employee)), HttpStatus.CREATED);
     }
 
     @SneakyThrows
     @DeleteMapping("/employee/{id}")
     ResponseEntity<String> deleteEmployee(@PathVariable("id") long id) {
-        employeeServiceImpl.deleteEmployee(id);
+        employeeService.deleteEmployee(id);
         return new ResponseEntity<>("SUCCESS: Employee deleted successfully", HttpStatus.OK);
     }
 
     @PutMapping("/employee/{id}")
     @SneakyThrows
-    ResponseEntity<EmployeeDto> updateEmployee(@RequestBody EmployeeDto dtoEmployee, @PathVariable("id") long id) {
+    ResponseEntity<EmployeeDto> updateEmployee(@Valid @RequestBody EmployeeDto dtoEmployee, @PathVariable("id") long id) {
         Employee employee = employeeDtoMapper.toEntity(dtoEmployee);
-        return new ResponseEntity<>(employeeDtoMapper.toDto(employeeServiceImpl.updateEmployee(employee, id)), HttpStatus.OK);
+        return new ResponseEntity<>(employeeDtoMapper.toDto(employeeService.updateEmployee(employee, id)), HttpStatus.OK);
 
     }
 

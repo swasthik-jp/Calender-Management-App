@@ -18,11 +18,11 @@ public class OfficeController {
     @Autowired
     private Mapper<Office, OfficeDto> officeMapper;
     @Autowired
-    private OfficeService<Office> officeServiceImpl;
+    private OfficeService<Office> officeService;
 
     @GetMapping("/offices")
     List<OfficeDto> getAllBranches(){
-        return officeServiceImpl.getAllBranches().stream()
+        return officeService.getAllBranches().stream()
             .map(office -> officeMapper.toDto(office))
             .collect(Collectors.toList());
     }
@@ -32,18 +32,18 @@ public class OfficeController {
     ResponseEntity<OfficeDto> addNewOffice(@RequestBody OfficeDto dtoOffice){
         dtoOffice.setId(null);
         Office office = officeMapper.toEntity(dtoOffice);
-        return new ResponseEntity<>(officeMapper.toDto(officeServiceImpl.addNewOffice(office)),HttpStatus.CREATED);
+        return new ResponseEntity<>(officeMapper.toDto(officeService.addNewOffice(office)),HttpStatus.CREATED);
     }
     @SneakyThrows
     @GetMapping("/office/{id}")
     ResponseEntity<OfficeDto> getEmployee(@PathVariable Long id){
-        return new ResponseEntity<>(officeMapper.toDto(officeServiceImpl.getOfficeById(id)), HttpStatus.OK);
+        return new ResponseEntity<>(officeMapper.toDto(officeService.getOfficeById(id)), HttpStatus.OK);
     }
 
     @SneakyThrows
     @DeleteMapping("/office/{id}")
     ResponseEntity<String> deleteOffice(@PathVariable Long  id){
-        officeServiceImpl.deleteOffice(id);
+        officeService.deleteOffice(id);
         return new ResponseEntity<>("SUCCESS: Office Building Destroyed", HttpStatus.OK);
     }
     @SneakyThrows
@@ -51,7 +51,7 @@ public class OfficeController {
     ResponseEntity<OfficeDto> updateEmployee(@RequestBody OfficeDto dtoOffice, @PathVariable long  id){
         dtoOffice.setId(null);
         Office office = officeMapper.toEntity(dtoOffice);
-        return new ResponseEntity<>(officeMapper.toDto(officeServiceImpl.updateOffice(office,id)),HttpStatus.OK);
+        return new ResponseEntity<>(officeMapper.toDto(officeService.updateOffice(office,id)),HttpStatus.OK);
     }
 
 }

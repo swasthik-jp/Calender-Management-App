@@ -25,23 +25,21 @@ public class OfficeServiceImpl implements OfficeService<Office>{
        throw new ResourceNotFoundException("Office","id",id);
     }
     @Override
-    public Office addNewOffice(Office office) throws ResourceAlreadyExistsException {
-        //if(!(office.getOfficeID()!=null && officeRepository.existsById(office.getOfficeID()))){
+    public Office addNewOffice(Office office) {
             return officeRepository.save(office);
-        //}
-        //throw  new ResourceAlreadyExistsException("office","officeID",office.getOfficeID());
     }
 
     @Override
-    public void deleteOffice(long id) throws ResourceNotFoundException{
-        officeRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Office","id",id));
+    public void deleteOffice(long id) throws ResourceNotFoundException {
+        officeRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Office","id",id));
         officeRepository.deleteById(id);
     }
 
     @Override
     public Office updateOffice(Office office, long id) throws ResourceNotFoundException {
-        Office existingOffice = null;
-        existingOffice = officeRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Office","id",id));
+        Office existingOffice = officeRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Office","id",id));
         existingOffice.setLocation(office.getLocation());
         officeRepository.save(existingOffice);
         return existingOffice;
