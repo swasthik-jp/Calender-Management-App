@@ -10,6 +10,6 @@ import java.util.Optional;
 
 public interface MeetingRoomRepository extends JpaRepository<MeetingRoom,Long> {
 
-    @Query(value = "SELECT id FROM meeting_room WHERE office_id=?",nativeQuery = true)
+    @Query(value = "SELECT id FROM meeting_room WHERE is_deleted = false AND office_id=?",nativeQuery = true)
     Optional<List<Long>> findAllByOfficeId(Long officeId);
 }
