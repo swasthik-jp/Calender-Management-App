@@ -36,7 +36,7 @@ public class OfficeController {
     }
     @SneakyThrows
     @GetMapping("/office/{id}")
-    ResponseEntity<OfficeDto> getEmployee(@PathVariable Long id){
+    ResponseEntity<OfficeDto> getOffice(@PathVariable Long id){
         return new ResponseEntity<>(officeMapper.toDto(officeServiceImpl.getOfficeById(id)), HttpStatus.OK);
     }
 
