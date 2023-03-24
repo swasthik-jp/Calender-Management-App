@@ -4,12 +4,14 @@ import com.example.calender.repository.MeetingRoomRepository;
 import com.example.calender.entity.MeetingRoom;
 import com.example.calender.exception.ResourceAlreadyExistsException;
 import com.example.calender.exception.ResourceNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class MeetingRoomServiceImpl implements MeetingRoomService{
 
@@ -57,5 +59,15 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
     public void deleteMeetingRoom(long id) throws ResourceNotFoundException {
         meetingRoomRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("MeetingRoom","id",id));
         meetingRoomRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Long> getMeetingRoomsByOfficeId(long officeId) throws ResourceNotFoundException {
+        Optional<List<Long>> roomsInOffice = meetingRoomRepository.findAllByOfficeId(officeId);
+        if(roomsInOffice.isPresent()) {
+            log.debug("office with office id " + officeId + " have " + roomsInOffice.get().size() + " meeting rooms");
+            return roomsInOffice.get();
+        }
+        else throw new ResourceNotFoundException("meeting_room","office_id",officeId);
     }
 }

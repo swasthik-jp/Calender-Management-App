@@ -2,19 +2,23 @@ package com.example.calender.service;
 
 import com.example.calender.repository.OfficeRepository;
 import com.example.calender.entity.Office;
-import com.example.calender.exception.ResourceAlreadyExistsException;
 import com.example.calender.exception.ResourceNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+@Slf4j
 @Service
 public class OfficeServiceImpl implements OfficeService<Office>{
 
     @Autowired
     OfficeRepository officeRepository;
+    @Autowired
+    EmployeeService employeeService;
+    @Autowired
+    MeetingRoomService meetingRoomService;
     @Override
     public List<Office> getAllBranches() {return officeRepository.findAll();}
     @Override
@@ -30,10 +34,17 @@ public class OfficeServiceImpl implements OfficeService<Office>{
     }
 
     @Override
-    public void deleteOffice(long id) throws ResourceNotFoundException {
+    public boolean deleteOffice(long id) throws ResourceNotFoundException{
         officeRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException("Office","id",id));
-        officeRepository.deleteById(id);
+        if(employeeService.checkEmptyOffice(id)) {
+            officeRepository.deleteById(id);
+            List<Long> roomsInOffice = meetingRoomService.getMeetingRoomsByOfficeId(id);
+            for (Long aRoomId : roomsInOffice) meetingRoomService.deleteMeetingRoom(aRoomId);
+            return true;
+        }
+        else return false;
+
     }
 
     @Override

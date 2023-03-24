@@ -63,4 +63,15 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
 
+    public boolean checkEmptyOffice(Long fkOfficeId) throws ResourceNotFoundException {
+        Optional<List<Employee>> officeWorkforce = employeeRepository.findAllByOfficeId(fkOfficeId);
+        if(officeWorkforce.isPresent())
+        {
+            log.debug("OfficeID: "+ fkOfficeId + " has "+officeWorkforce.get().size() + " employees");
+            return officeWorkforce.get().isEmpty();
+        }
+        else throw new ResourceNotFoundException("employee","officeId",fkOfficeId);
+    }
+
+
 }

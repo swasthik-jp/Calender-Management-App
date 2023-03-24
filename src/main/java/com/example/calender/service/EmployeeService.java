@@ -16,4 +16,6 @@ public interface EmployeeService {
     public Employee updateEmployee(Employee employee, long id) throws ResourceNotFoundException;
     public void deleteEmployee(long id) throws ResourceNotFoundException;
 
+    public boolean checkEmptyOffice(Long fkOfficeId) throws ResourceNotFoundException;
+
 }

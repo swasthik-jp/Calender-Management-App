@@ -9,6 +9,6 @@ public interface OfficeService<T> {
     public List<T> getAllBranches();
     public T getOfficeById(long id) throws ResourceNotFoundException;
     public T addNewOffice(T office) throws ResourceAlreadyExistsException;
-    public void deleteOffice(long id) throws ResourceNotFoundException;
+    public boolean deleteOffice(long id) throws ResourceNotFoundException;
     public T updateOffice(T office, long id) throws ResourceNotFoundException;
 }

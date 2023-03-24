@@ -43,8 +43,10 @@ public class OfficeController {
     @SneakyThrows
     @DeleteMapping("/office/{id}")
     ResponseEntity<String> deleteOffice(@PathVariable Long  id){
-        officeService.deleteOffice(id);
-        return new ResponseEntity<>("SUCCESS: Office Building Destroyed", HttpStatus.OK);
+        if(officeService.deleteOffice(id))
+            return new ResponseEntity<>("SUCCESS: Office Building Destroyed", HttpStatus.OK);
+        else
+            return new ResponseEntity<>("FAILURE: Employee are still present", HttpStatus.BAD_REQUEST);
     }
     @SneakyThrows
     @PutMapping("/office/{id}")

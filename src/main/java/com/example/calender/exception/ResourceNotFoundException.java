@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Slf4j
 @Setter
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
+
 public class ResourceNotFoundException extends Exception {
 
     private String resourceName;
@@ -15,7 +16,7 @@ public class ResourceNotFoundException extends Exception {
 
     public ResourceNotFoundException(String resourceName, String fieldName, Object fieldValue) {
         super(String.format("%s is not found with %s: '%s' ", resourceName, fieldName, fieldValue));
-        log.error("thrown CustomException\t" + super.getMessage());
+        log.error("thrown resource not found exception\t" + super.getMessage());
         this.resourceName = resourceName;
         this.fieldName = fieldName;
         this.fieldValue = fieldValue;

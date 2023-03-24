@@ -13,4 +13,6 @@ public interface MeetingRoomService {
     MeetingRoom getMeetingRoomById(long id) throws ResourceNotFoundException;
     MeetingRoom updateMeetingRoom(MeetingRoom meetingRoom,long id) throws ResourceNotFoundException;
     void deleteMeetingRoom(long id) throws ResourceNotFoundException;
+
+    List<Long> getMeetingRoomsByOfficeId(long id) throws ResourceNotFoundException;
 }
