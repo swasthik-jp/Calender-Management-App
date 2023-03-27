@@ -1,14 +1,15 @@
 package com.example.calender.service;
+import com.example.calender.entity.Office;
 import com.example.calender.exception.ResourceAlreadyExistsException;
 import com.example.calender.exception.ResourceNotFoundException;
 
 import java.util.List;
 
-public interface OfficeService<T> {
+public interface OfficeService {
 
-    public List<T> getAllBranches();
-    public T getOfficeById(long id) throws ResourceNotFoundException;
-    public T addNewOffice(T office) throws ResourceAlreadyExistsException;
+    public List<Office> getAllBranches();
+    public Office getOfficeById(long id) throws ResourceNotFoundException;
+    public Office addNewOffice(Office office) throws ResourceAlreadyExistsException;
     public boolean deleteOffice(long id) throws ResourceNotFoundException;
-    public T updateOffice(T office, long id) throws ResourceNotFoundException;
+    public Office updateOffice(Office office, long id) throws ResourceNotFoundException;
 }

@@ -11,13 +11,12 @@ import com.example.calender.service.EmployeeServiceImpl;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -32,7 +31,7 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @Autowired
-    private  RestTemplate restTemplate;
+    private RestTemplate restTemplate;
 
     public EmployeeController(EmployeeServiceImpl employeeService) {
         this.employeeService = employeeService;
@@ -66,13 +65,10 @@ public class EmployeeController {
 
     @SneakyThrows
     @PostMapping("/employee")
-    ResponseEntity<EmployeeDto> insertEmployee(@RequestBody EmployeeDto dtoEmployee) {
-        if (dtoEmployee.getEmail() != null && employeeService.getEmployeeByEmail(dtoEmployee.getEmail()) != null)
-            throw new ResourceAlreadyExistsException("employee", "email", dtoEmployee.getEmail());
-
+    ResponseEntity<EmployeeDto> insertEmployee(@Valid @RequestBody EmployeeDto dtoEmployee) {
         try { //check if the office exists or soft deleted
-            restTemplate.getForObject(ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString()+"/office/" + dtoEmployee.getOffice().getId(), OfficeDto.class);
-        }catch (HttpClientErrorException e){ // return BAD REQUEST if office is soft deleted
+            restTemplate.getForObject(ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/office/" + dtoEmployee.getOffice().getId(), OfficeDto.class);
+        } catch (HttpClientErrorException e) { // return BAD REQUEST if office is soft deleted
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Employee employee = employeeDtoMapper.toEntity(dtoEmployee);

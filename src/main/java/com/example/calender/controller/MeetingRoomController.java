@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-
 public class MeetingRoomController {
 
     @Autowired
@@ -23,7 +22,7 @@ public class MeetingRoomController {
     private MeetingRoomService meetingRoomService;
 
     @GetMapping("/meetingrooms")
-    List<MeetingRoomDto> getAllMeetingRooms( ){
+    List<MeetingRoomDto> getAllMeetingRooms() {
         return meetingRoomService.getAllMeetingRooms().stream()
                 .map(meetingRoom -> meetingRoomDtoMapper.toDto(meetingRoom))
                 .toList();
@@ -32,20 +31,20 @@ public class MeetingRoomController {
 
     @SneakyThrows
     @GetMapping("/meetingroom/{id}")
-    ResponseEntity<MeetingRoomDto> getMeetingRoom(@PathVariable Long id){
+    ResponseEntity<MeetingRoomDto> getMeetingRoom(@PathVariable Long id) {
         return new ResponseEntity<>(meetingRoomDtoMapper.toDto(meetingRoomService.getMeetingRoomById(id)), HttpStatus.OK);
     }
 
     @SneakyThrows
     @PostMapping("/meetingroom")
-    ResponseEntity<MeetingRoomDto> insertMeetingRoom(@RequestBody MeetingRoomDto dtoMeetingRoom){
+    ResponseEntity<MeetingRoomDto> insertMeetingRoom(@RequestBody MeetingRoomDto dtoMeetingRoom) {
         MeetingRoom meetingRoom = meetingRoomDtoMapper.toEntity(dtoMeetingRoom);
-        return new ResponseEntity<>(meetingRoomDtoMapper.toDto(meetingRoomService.saveMeetingRoom(meetingRoom)),HttpStatus.CREATED);
+        return new ResponseEntity<>(meetingRoomDtoMapper.toDto(meetingRoomService.saveMeetingRoom(meetingRoom)), HttpStatus.CREATED);
     }
 
     @SneakyThrows
     @DeleteMapping("/meetingroom/{id}")
-    ResponseEntity<String> deleteMeetingRoom(@PathVariable("id") long  id){
+    ResponseEntity<String> deleteMeetingRoom(@PathVariable("id") long id) {
         meetingRoomService.deleteMeetingRoom(id);
         return new ResponseEntity<>("SUCCESS: Employee deleted successfully", HttpStatus.OK);
     }
@@ -53,9 +52,9 @@ public class MeetingRoomController {
 
     @SneakyThrows
     @PutMapping("/meetingroom/{id}")
-    ResponseEntity<MeetingRoomDto> updateMeetingRoom(@RequestBody MeetingRoomDto dtoMeetingRoom, @PathVariable("id") long  id){
+    ResponseEntity<MeetingRoomDto> updateMeetingRoom(@RequestBody MeetingRoomDto dtoMeetingRoom, @PathVariable("id") long id) {
         MeetingRoom meetingRoom = meetingRoomDtoMapper.toEntity(dtoMeetingRoom);
-        return new ResponseEntity<>(meetingRoomDtoMapper.toDto(meetingRoomService.updateMeetingRoom(meetingRoom,id)),HttpStatus.OK);
+        return new ResponseEntity<>(meetingRoomDtoMapper.toDto(meetingRoomService.updateMeetingRoom(meetingRoom, id)), HttpStatus.OK);
     }
 
 }

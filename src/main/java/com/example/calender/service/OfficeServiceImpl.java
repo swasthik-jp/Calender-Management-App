@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 @Slf4j
 @Service
-public class OfficeServiceImpl implements OfficeService<Office>{
+public class OfficeServiceImpl implements OfficeService{
 
     @Autowired
     OfficeRepository officeRepository;
