@@ -26,11 +26,6 @@ public class MeetingMapper implements Mapper<Meeting, MeetingDto> {
                 .description(model.getDescription())
                 .startTimeStamp(model.getStartTimeStamp())
                 .endTimeStamp(model.getEndTimeStamp())
-                .attendees(
-                    model.getAttendees().stream()
-                            .map(employee -> employeeDtoMapper.toDto(employee))
-                            .collect(Collectors.toSet())
-                )
                 .allocatedRoom(meetingRoomDtoMapper.toDto(model.getAllocatedRoom()))
                 .build();
     }
@@ -43,11 +38,6 @@ public class MeetingMapper implements Mapper<Meeting, MeetingDto> {
                 .description(dto.getDescription())
                 .startTimeStamp(dto.getStartTimeStamp())
                 .endTimeStamp(dto.getEndTimeStamp())
-                .attendees(
-                        dto.getAttendees().stream()
-                                .map(employeeDto -> employeeDtoMapper.toEntity(employeeDto))
-                                .collect(Collectors.toSet())
-                )
                 .allocatedRoom(meetingRoomDtoMapper.toEntity(dto.getAllocatedRoom()))
                 .build();
     }

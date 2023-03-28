@@ -33,8 +33,6 @@ public class Meeting {
     @Column(name = "end")
     private Date endTimeStamp;
 
-    @OneToMany(mappedBy = "meeting")
-    private Set<Employee> attendees;
 
     @OneToOne
     @JoinColumn(name = "allocated_room")
