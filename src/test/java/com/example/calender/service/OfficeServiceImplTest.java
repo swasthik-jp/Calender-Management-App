@@ -33,26 +33,26 @@ public class OfficeServiceImplTest {
     @Test
     public void when_getOfficeByIdIsCalled_thenExpectOfficeObject() throws ResourceNotFoundException {
         Office tempOffice = Office.builder()
-                .id(Long.valueOf(10))
+                .id(10L)
                 .build();
         when(officeRepository.findById(anyLong())).thenReturn(Optional.of(tempOffice));
         long officeId = officeService.getOfficeById(10).getId();
         Assert.assertEquals(10, officeId);
     }
 
-    @org.junit.Test(expected = ResourceNotFoundException.class)
+    @Test(expected = ResourceNotFoundException.class)
     public void when_getOfficeByIdIsCalled_thenExpectResourceNotFoundException() throws ResourceNotFoundException {
         when(officeRepository.findById(anyLong())).thenReturn(Optional.empty());
         officeService.getOfficeById(10);
     }
 
-    @org.junit.Test(expected = ResourceNotFoundException.class)
+    @Test(expected = ResourceNotFoundException.class)
     public void when_deleteOfficeByIdIsCalled_thenExpectResourceNotFoundException() throws ResourceNotFoundException {
         when(officeRepository.findById(10L)).thenReturn(Optional.empty());
         officeService.deleteOffice(10);
     }
 
-    @org.junit.Test
+    @Test
     public void when_deleteOfficeByIdIsCalled_thenExpectOfficeToBeDeleted() throws ResourceNotFoundException {
         when(officeRepository.findById(10L)).thenReturn(Optional.of(new Office()));
         when(employeeService.checkEmptyOffice(10L)).thenReturn(true);
@@ -60,14 +60,14 @@ public class OfficeServiceImplTest {
         Assert.assertTrue(officeService.deleteOffice(10));
     }
 
-    @org.junit.Test
+    @Test
     public void when_deleteOfficeByIdIsCalled_thenExpectOfficeNotToBeDeleted() throws ResourceNotFoundException {
         when(officeRepository.findById(10L)).thenReturn(Optional.of(new Office()));
         when(employeeService.checkEmptyOffice(10L)).thenReturn(false);
         Assert.assertFalse(officeService.deleteOffice(10));
     }
 
-    @org.junit.Test
+    @Test
     public void when_updateOfficeByIdIsCalled_thenExpectOfficeToBeUpdated() throws ResourceNotFoundException {
         Office tempOffice = Office.builder()
                 .id(10L)
@@ -76,7 +76,7 @@ public class OfficeServiceImplTest {
         when(officeRepository.findById(10L)).thenReturn(Optional.of(new Office()));
         Assert.assertEquals("Bangalore", officeService.updateOffice(tempOffice, 10L).getLocation());
     }
-    @org.junit.Test(expected = ResourceNotFoundException.class)
+    @Test(expected = ResourceNotFoundException.class)
     public void when_updateOfficeByIdIsCalled_thenExpectResourceNotFoundException() throws ResourceNotFoundException {
 
         when(officeRepository.findById(10L)).thenReturn(Optional.empty());

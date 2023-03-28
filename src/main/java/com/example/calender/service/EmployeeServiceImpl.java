@@ -55,8 +55,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     }
 
-    public void deleteEmployee(long id) throws ResourceNotFoundException {
-        employeeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("employee", "id", id));
+    @Override
+    public void deleteEmployeeByEmail(String email) throws ResourceNotFoundException {
+        Employee foundEmployee = employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("employee", "email", email));
+        employeeRepository.deleteById(foundEmployee.getId());
+    }
+
+    public void deleteEmployeeById(long id) throws ResourceNotFoundException {
+        employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("employee", "id", id));
         employeeRepository.deleteById(id);
     }
 

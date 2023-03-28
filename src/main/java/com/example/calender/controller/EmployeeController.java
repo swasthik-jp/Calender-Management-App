@@ -76,10 +76,18 @@ public class EmployeeController {
     }
 
     @SneakyThrows
-    @DeleteMapping("/employee/{id}")
-    ResponseEntity<String> deleteEmployee(@PathVariable("id") long id) {
-        employeeService.deleteEmployee(id);
-        return new ResponseEntity<>("SUCCESS: Employee deleted successfully", HttpStatus.OK);
+    @DeleteMapping("/employee")
+    ResponseEntity<String> deleteEmployee(@RequestParam(name = "id", required = false) Long id,
+                                              @RequestParam(name = "email", required = false) String email) {
+        if(id != null) {
+            employeeService.deleteEmployeeById(id);
+            return new ResponseEntity<>("SUCCESS: Employee deleted successfully", HttpStatus.OK);
+        }
+        if(email != null){
+            employeeService.deleteEmployeeByEmail(email);
+            return new ResponseEntity<>("SUCCESS: Employee deleted successfully", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Could Not Delete", HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/employee/{id}")

@@ -104,9 +104,14 @@ public class EmployeeServiceImplTest {
     }
 
     @Test(expected = ResourceNotFoundException.class)
-    public void when_deleteEmployeeIsCalled_thenExpectResourceNotFoundException() throws ResourceNotFoundException {
+    public void when_deleteEmployeeByIdIsCalled_thenExpectResourceNotFoundException() throws ResourceNotFoundException {
         when(employeeRepository.findById(anyLong())).thenReturn(Optional.empty());
-        employeeService.deleteEmployee(10L);
+        employeeService.deleteEmployeeById(10L);
+    }
+    @Test(expected = ResourceNotFoundException.class)
+    public void when_deleteEmployeeByEmailIsCalled_thenExpectResourceNotFoundException() throws ResourceNotFoundException {
+        when(employeeRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+        employeeService.deleteEmployeeByEmail("email@email.com");
     }
 
     @Test
