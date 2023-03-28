@@ -1,55 +1,28 @@
 package com.example.calender.service;
 
-import com.example.calender.dao.EmployeeDao;
+
 import com.example.calender.entity.Employee;
+import com.example.calender.exception.ResourceAlreadyExistsException;
 import com.example.calender.exception.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
-@Service
-public class EmployeeService {
+public interface EmployeeService {
 
-    @Autowired
-    EmployeeDao employeeDao;
+    Employee saveEmployee(Employee employee) throws ResourceAlreadyExistsException;
 
-    public Employee saveEmployee(Employee employee){
-      return   employeeDao.save(employee);
-    }
+    List<Employee> getAllEmployees();
 
-    public List<Employee> getAllEmployees(){
-        return employeeDao.findAll();
-    }
+    Employee getEmployeeById(long id) throws ResourceNotFoundException;
 
-    public Employee getEmployeesById(long id){
-        Optional<Employee> optionalEmployee= employeeDao.findById(id);
-        if(optionalEmployee.isPresent()){
-            return optionalEmployee.get();
-        }
-        throw new ResourceNotFoundException("employee","id",id);
-    }
+    Employee getEmployeeByEmail(String email) throws ResourceNotFoundException;
 
-    public Employee updateEmployee(Employee employee, long id){
+    Employee updateEmployee(Employee employee, long id) throws ResourceNotFoundException;
 
-         Employee existingEmployee= employeeDao.findById(id).orElseThrow(()-> new ResourceNotFoundException("employee","id",id));
+    void deleteEmployeeById(long id) throws ResourceNotFoundException;
 
-            existingEmployee.setName(employee.getName());
-            existingEmployee.setOfficeAddress(employee.getOfficeAddress());
-            existingEmployee.setHouseAddress(employee.getHouseAddress());
-            existingEmployee.setDob(employee.getDob());
-            existingEmployee.setMob(employee.getMob());
-            existingEmployee.setEmail(employee.getEmail());
-            employeeDao.save(existingEmployee);
-            return existingEmployee;
+    void deleteEmployeeByEmail(String email) throws ResourceNotFoundException;
 
-    }
-
-    public void deleteEmployee(long id){
-        employeeDao.findById(id).orElseThrow(()-> new ResourceNotFoundException("employee","id",id));
-        employeeDao.deleteById(id);
-    }
-
+    boolean checkEmptyOffice(Long fkOfficeId) throws ResourceNotFoundException;
 
 }
