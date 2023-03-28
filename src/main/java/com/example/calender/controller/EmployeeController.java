@@ -4,7 +4,6 @@ package com.example.calender.controller;
 import com.example.calender.dto.EmployeeDto;
 import com.example.calender.dto.OfficeDto;
 import com.example.calender.entity.Employee;
-import com.example.calender.exception.ResourceAlreadyExistsException;
 import com.example.calender.mapper.Mapper;
 import com.example.calender.service.EmployeeService;
 import com.example.calender.service.EmployeeServiceImpl;
@@ -78,12 +77,12 @@ public class EmployeeController {
     @SneakyThrows
     @DeleteMapping("/employee")
     ResponseEntity<String> deleteEmployee(@RequestParam(name = "id", required = false) Long id,
-                                              @RequestParam(name = "email", required = false) String email) {
-        if(id != null) {
+                                          @RequestParam(name = "email", required = false) String email) {
+        if (id != null) {
             employeeService.deleteEmployeeById(id);
             return new ResponseEntity<>("SUCCESS: Employee deleted successfully", HttpStatus.OK);
         }
-        if(email != null){
+        if (email != null) {
             employeeService.deleteEmployeeByEmail(email);
             return new ResponseEntity<>("SUCCESS: Employee deleted successfully", HttpStatus.OK);
         }

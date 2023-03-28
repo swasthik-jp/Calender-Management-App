@@ -12,6 +12,7 @@ public class MeetingRoomMapper implements Mapper<MeetingRoom, MeetingRoomDto> {
 
     @Autowired
     private Mapper<Office, OfficeDto> officeDtoMapper;
+
     @Override
     public MeetingRoomDto toDto(MeetingRoom model) {
         return MeetingRoomDto.builder()

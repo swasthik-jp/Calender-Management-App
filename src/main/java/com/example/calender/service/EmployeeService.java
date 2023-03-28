@@ -9,15 +9,20 @@ import java.util.List;
 
 public interface EmployeeService {
 
-    public Employee saveEmployee(Employee employee) throws ResourceAlreadyExistsException;
-    public List<Employee> getAllEmployees();
-    public Employee getEmployeeById(long id) throws ResourceNotFoundException;
-    public Employee getEmployeeByEmail(String email) throws ResourceNotFoundException;
-    public Employee updateEmployee(Employee employee, long id) throws ResourceNotFoundException;
-    public void deleteEmployeeById(long id) throws ResourceNotFoundException;
+    Employee saveEmployee(Employee employee) throws ResourceAlreadyExistsException;
 
-    public void deleteEmployeeByEmail(String email) throws ResourceNotFoundException;
+    List<Employee> getAllEmployees();
 
-    public boolean checkEmptyOffice(Long fkOfficeId) throws ResourceNotFoundException;
+    Employee getEmployeeById(long id) throws ResourceNotFoundException;
+
+    Employee getEmployeeByEmail(String email) throws ResourceNotFoundException;
+
+    Employee updateEmployee(Employee employee, long id) throws ResourceNotFoundException;
+
+    void deleteEmployeeById(long id) throws ResourceNotFoundException;
+
+    void deleteEmployeeByEmail(String email) throws ResourceNotFoundException;
+
+    boolean checkEmptyOffice(Long fkOfficeId) throws ResourceNotFoundException;
 
 }

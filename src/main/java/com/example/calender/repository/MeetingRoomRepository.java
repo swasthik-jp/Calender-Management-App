@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface MeetingRoomRepository extends JpaRepository<MeetingRoom,Long> {
+public interface MeetingRoomRepository extends JpaRepository<MeetingRoom, Long> {
 
-    @Query(value = "SELECT id FROM meeting_room WHERE is_deleted = false AND office_id=?",nativeQuery = true)
+    @Query(value = "SELECT id FROM meeting_room WHERE is_deleted = false AND office_id=?", nativeQuery = true)
     Optional<List<Long>> findAllByOfficeId(Long officeId);
 }

@@ -86,7 +86,7 @@ public class EmployeeServiceImplTest {
                 .id(10L)
                 .email("email@email.com")
                 .build();
-        when(employeeRepository.findById(anyLong())).thenReturn(Optional.ofNullable(new Employee()));
+        when(employeeRepository.findById(anyLong())).thenReturn(Optional.of(new Employee()));
         when(employeeRepository.save(any())).thenReturn(testEmp);
 
         Assert.assertEquals("email@email.com", employeeService.updateEmployee(testEmp, 10L).getEmail());
@@ -108,6 +108,7 @@ public class EmployeeServiceImplTest {
         when(employeeRepository.findById(anyLong())).thenReturn(Optional.empty());
         employeeService.deleteEmployeeById(10L);
     }
+
     @Test(expected = ResourceNotFoundException.class)
     public void when_deleteEmployeeByEmailIsCalled_thenExpectResourceNotFoundException() throws ResourceNotFoundException {
         when(employeeRepository.findByEmail(anyString())).thenReturn(Optional.empty());
@@ -119,11 +120,13 @@ public class EmployeeServiceImplTest {
         when(employeeRepository.findAllByOfficeId(anyLong())).thenReturn(Optional.of(new ArrayList<>()));
         Assert.assertTrue(employeeService.checkEmptyOffice(10L));
     }
+
     @Test
     public void when_checkEmptyOfficeIsCalled_thenExpectFalseIfNotEmpty() throws ResourceNotFoundException {
         when(employeeRepository.findAllByOfficeId(anyLong())).thenReturn(Optional.of(List.of(new Employee())));
         Assert.assertFalse(employeeService.checkEmptyOffice(10L));
     }
+
     @Test(expected = ResourceNotFoundException.class)
     public void when_checkEmptyOfficeIsCalled_thenExpectResourceNotFoundException() throws ResourceNotFoundException {
         when(employeeRepository.findAllByOfficeId(anyLong())).thenReturn(Optional.empty());

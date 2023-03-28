@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class OfficeController {
@@ -25,7 +24,7 @@ public class OfficeController {
     List<OfficeDto> getAllBranches() {
         return officeService.getAllBranches().stream()
                 .map(office -> officeMapper.toDto(office))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @SneakyThrows
@@ -47,8 +46,7 @@ public class OfficeController {
     ResponseEntity<String> deleteOffice(@PathVariable Long id) {
         if (officeService.deleteOffice(id))
             return new ResponseEntity<>("SUCCESS: Office Building Destroyed", HttpStatus.OK);
-        else
-            return new ResponseEntity<>("FAILURE: Employee are still present", HttpStatus.BAD_REQUEST);
+        else return new ResponseEntity<>("FAILURE: Employee are still present", HttpStatus.BAD_REQUEST);
     }
 
     @SneakyThrows

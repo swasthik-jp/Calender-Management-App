@@ -76,6 +76,7 @@ public class OfficeServiceImplTest {
         when(officeRepository.findById(10L)).thenReturn(Optional.of(new Office()));
         Assert.assertEquals("Bangalore", officeService.updateOffice(tempOffice, 10L).getLocation());
     }
+
     @Test(expected = ResourceNotFoundException.class)
     public void when_updateOfficeByIdIsCalled_thenExpectResourceNotFoundException() throws ResourceNotFoundException {
 

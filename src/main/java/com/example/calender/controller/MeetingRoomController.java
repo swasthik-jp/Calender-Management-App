@@ -23,9 +23,7 @@ public class MeetingRoomController {
 
     @GetMapping("/meetingrooms")
     List<MeetingRoomDto> getAllMeetingRooms() {
-        return meetingRoomService.getAllMeetingRooms().stream()
-                .map(meetingRoom -> meetingRoomDtoMapper.toDto(meetingRoom))
-                .toList();
+        return meetingRoomService.getAllMeetingRooms().stream().map(meetingRoom -> meetingRoomDtoMapper.toDto(meetingRoom)).toList();
     }
 
 

@@ -1,9 +1,9 @@
 package com.example.calender.service;
 
-import com.example.calender.repository.MeetingRoomRepository;
 import com.example.calender.entity.MeetingRoom;
 import com.example.calender.exception.ResourceAlreadyExistsException;
 import com.example.calender.exception.ResourceNotFoundException;
+import com.example.calender.repository.MeetingRoomRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,14 +15,14 @@ import java.util.Optional;
 @Slf4j
 @Service
 @Transactional
-public class MeetingRoomServiceImpl implements MeetingRoomService{
+public class MeetingRoomServiceImpl implements MeetingRoomService {
 
     @Autowired
     private MeetingRoomRepository meetingRoomRepository;
 
     @Override
-    public MeetingRoom saveMeetingRoom(MeetingRoom meetingRoom) throws ResourceAlreadyExistsException {
-            return meetingRoomRepository.save(meetingRoom);
+    public MeetingRoom saveMeetingRoom(MeetingRoom meetingRoom) {
+        return meetingRoomRepository.save(meetingRoom);
     }
 
     @Override
@@ -32,17 +32,17 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
 
     @Override
     public MeetingRoom getMeetingRoomById(long id) throws ResourceNotFoundException {
-        Optional<MeetingRoom> optionalMeetingRoom= meetingRoomRepository.findById(id);
-        if(optionalMeetingRoom.isPresent()){
+        Optional<MeetingRoom> optionalMeetingRoom = meetingRoomRepository.findById(id);
+        if (optionalMeetingRoom.isPresent()) {
             return optionalMeetingRoom.get();
         }
-        throw new ResourceNotFoundException("meetingRoom","id",id);
+        throw new ResourceNotFoundException("meetingRoom", "id", id);
     }
 
     @Override
-    public MeetingRoom updateMeetingRoom(MeetingRoom meetingRoom, long id) throws ResourceNotFoundException{
-        MeetingRoom existingMeetingRoom= null;
-        existingMeetingRoom = meetingRoomRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("MeetingRoom","id",id));
+    public MeetingRoom updateMeetingRoom(MeetingRoom meetingRoom, long id) throws ResourceNotFoundException {
+        MeetingRoom existingMeetingRoom;
+        existingMeetingRoom = meetingRoomRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("MeetingRoom", "id", id));
 
 
         existingMeetingRoom.setName(meetingRoom.getName());
@@ -50,23 +50,22 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
         existingMeetingRoom.setCapacity(meetingRoom.getCapacity());
         existingMeetingRoom.setOperational(meetingRoom.isOperational());
 
-         meetingRoomRepository.save(existingMeetingRoom);
+        meetingRoomRepository.save(existingMeetingRoom);
         return existingMeetingRoom;
     }
 
     @Override
     public void deleteMeetingRoom(long id) throws ResourceNotFoundException {
-        meetingRoomRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("MeetingRoom","id",id));
+        meetingRoomRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("MeetingRoom", "id", id));
         meetingRoomRepository.deleteById(id);
     }
 
     @Override
     public List<Long> getMeetingRoomsByOfficeId(long officeId) throws ResourceNotFoundException {
         Optional<List<Long>> roomsInOffice = meetingRoomRepository.findAllByOfficeId(officeId);
-        if(roomsInOffice.isPresent()) {
+        if (roomsInOffice.isPresent()) {
             log.debug("office with office id " + officeId + " have " + roomsInOffice.get().size() + " meeting rooms");
             return roomsInOffice.get();
-        }
-        else throw new ResourceNotFoundException("meeting_room","office_id",officeId);
+        } else throw new ResourceNotFoundException("meeting_room", "office_id", officeId);
     }
 }
