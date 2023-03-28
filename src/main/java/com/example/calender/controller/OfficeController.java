@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,7 @@ public class OfficeController {
 
     @SneakyThrows
     @PostMapping("/office")
-    ResponseEntity<OfficeDto> addNewOffice(@RequestBody OfficeDto dtoOffice) {
+    ResponseEntity<OfficeDto> addNewOffice(@Valid @RequestBody OfficeDto dtoOffice) {
         dtoOffice.setId(null);
         Office office = officeMapper.toEntity(dtoOffice);
         return new ResponseEntity<>(officeMapper.toDto(officeService.addNewOffice(office)), HttpStatus.CREATED);
@@ -52,7 +53,7 @@ public class OfficeController {
 
     @SneakyThrows
     @PutMapping("/office/{id}")
-    ResponseEntity<OfficeDto> updateEmployee(@RequestBody OfficeDto dtoOffice, @PathVariable long id) {
+    ResponseEntity<OfficeDto> updateEmployee(@Valid @RequestBody OfficeDto dtoOffice, @PathVariable long id) {
         dtoOffice.setId(null);
         Office office = officeMapper.toEntity(dtoOffice);
         return new ResponseEntity<>(officeMapper.toDto(officeService.updateOffice(office, id)), HttpStatus.OK);

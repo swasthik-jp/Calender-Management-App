@@ -73,7 +73,6 @@ public class EmployeeController {
         }
         Employee employee = employeeDtoMapper.toEntity(dtoEmployee);
         return new ResponseEntity<>(employeeDtoMapper.toDto(employeeService.saveEmployee(employee)), HttpStatus.CREATED);
-
     }
 
     @SneakyThrows

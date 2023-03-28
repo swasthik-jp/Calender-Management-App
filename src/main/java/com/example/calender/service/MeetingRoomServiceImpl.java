@@ -8,11 +8,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 @Slf4j
 @Service
+@Transactional
 public class MeetingRoomServiceImpl implements MeetingRoomService{
 
     @Autowired
@@ -20,10 +22,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
 
     @Override
     public MeetingRoom saveMeetingRoom(MeetingRoom meetingRoom) throws ResourceAlreadyExistsException {
-        //if(!(meetingRoom.getId()!=null && meetingRoomRepository.existsById(meetingRoom.getId()))){
-            return   meetingRoomRepository.save(meetingRoom);
-        //}
-        //throw  new ResourceAlreadyExistsException("meetingRoom","id",meetingRoom.getId());
+            return meetingRoomRepository.save(meetingRoom);
     }
 
     @Override
