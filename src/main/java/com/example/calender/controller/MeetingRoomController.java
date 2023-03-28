@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -37,7 +38,7 @@ public class MeetingRoomController {
 
     @SneakyThrows
     @PostMapping("/meetingroom")
-    ResponseEntity<MeetingRoomDto> insertMeetingRoom(@RequestBody MeetingRoomDto dtoMeetingRoom) {
+    ResponseEntity<MeetingRoomDto> insertMeetingRoom(@Valid @RequestBody MeetingRoomDto dtoMeetingRoom) {
         MeetingRoom meetingRoom = meetingRoomDtoMapper.toEntity(dtoMeetingRoom);
         return new ResponseEntity<>(meetingRoomDtoMapper.toDto(meetingRoomService.saveMeetingRoom(meetingRoom)), HttpStatus.CREATED);
     }
@@ -52,7 +53,7 @@ public class MeetingRoomController {
 
     @SneakyThrows
     @PutMapping("/meetingroom/{id}")
-    ResponseEntity<MeetingRoomDto> updateMeetingRoom(@RequestBody MeetingRoomDto dtoMeetingRoom, @PathVariable("id") long id) {
+    ResponseEntity<MeetingRoomDto> updateMeetingRoom(@Valid @RequestBody MeetingRoomDto dtoMeetingRoom, @PathVariable("id") long id) {
         MeetingRoom meetingRoom = meetingRoomDtoMapper.toEntity(dtoMeetingRoom);
         return new ResponseEntity<>(meetingRoomDtoMapper.toDto(meetingRoomService.updateMeetingRoom(meetingRoom, id)), HttpStatus.OK);
     }

@@ -46,7 +46,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/employee/{id}")
-    @Deprecated
+    @Deprecated(since = "0.0.14",forRemoval = false)
     @SneakyThrows
     ResponseEntity<EmployeeDto> getEmployee(@PathVariable Long id) {
         return new ResponseEntity<>(employeeDtoMapper.toDto(employeeService.getEmployeeById(id)), HttpStatus.OK);

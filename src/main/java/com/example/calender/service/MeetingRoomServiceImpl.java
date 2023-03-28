@@ -19,13 +19,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
     private MeetingRoomRepository meetingRoomRepository;
 
     @Override
-    public MeetingRoom saveMeetingRoom(MeetingRoom meetingRoom) throws ResourceAlreadyExistsException {
-        //if(!(meetingRoom.getId()!=null && meetingRoomRepository.existsById(meetingRoom.getId()))){
-            return   meetingRoomRepository.save(meetingRoom);
-        //}
-        //throw  new ResourceAlreadyExistsException("meetingRoom","id",meetingRoom.getId());
-    }
-
+    public MeetingRoom saveMeetingRoom(MeetingRoom meetingRoom) {   return   meetingRoomRepository.save(meetingRoom);}
     @Override
     public List<MeetingRoom> getAllMeetingRooms() {
         return meetingRoomRepository.findAll();
@@ -45,14 +39,11 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
         MeetingRoom existingMeetingRoom= null;
         existingMeetingRoom = meetingRoomRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("MeetingRoom","id",id));
 
-
         existingMeetingRoom.setName(meetingRoom.getName());
         existingMeetingRoom.setOffice(meetingRoom.getOffice());
         existingMeetingRoom.setCapacity(meetingRoom.getCapacity());
         existingMeetingRoom.setOperational(meetingRoom.isOperational());
-
-         meetingRoomRepository.save(existingMeetingRoom);
-        return existingMeetingRoom;
+        return meetingRoomRepository.save(existingMeetingRoom);
     }
 
     @Override
