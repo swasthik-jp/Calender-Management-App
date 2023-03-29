@@ -10,8 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
@@ -25,12 +25,12 @@ public class OfficeController {
     List<OfficeDto> getAllBranches() {
         return officeService.getAllBranches().stream()
                 .map(office -> officeMapper.toDto(office))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @SneakyThrows
     @PostMapping("/office")
-    ResponseEntity<OfficeDto> addNewOffice(@RequestBody OfficeDto dtoOffice) {
+    ResponseEntity<OfficeDto> addNewOffice(@Valid @RequestBody OfficeDto dtoOffice) {
         dtoOffice.setId(null);
         Office office = officeMapper.toEntity(dtoOffice);
         return new ResponseEntity<>(officeMapper.toDto(officeService.addNewOffice(office)), HttpStatus.CREATED);
@@ -47,13 +47,12 @@ public class OfficeController {
     ResponseEntity<String> deleteOffice(@PathVariable Long id) {
         if (officeService.deleteOffice(id))
             return new ResponseEntity<>("SUCCESS: Office Building Destroyed", HttpStatus.OK);
-        else
-            return new ResponseEntity<>("FAILURE: Employee are still present", HttpStatus.BAD_REQUEST);
+        else return new ResponseEntity<>("FAILURE: Employee are still present", HttpStatus.BAD_REQUEST);
     }
 
     @SneakyThrows
     @PutMapping("/office/{id}")
-    ResponseEntity<OfficeDto> updateEmployee(@RequestBody OfficeDto dtoOffice, @PathVariable long id) {
+    ResponseEntity<OfficeDto> updateEmployee(@Valid @RequestBody OfficeDto dtoOffice, @PathVariable long id) {
         dtoOffice.setId(null);
         Office office = officeMapper.toEntity(dtoOffice);
         return new ResponseEntity<>(officeMapper.toDto(officeService.updateOffice(office, id)), HttpStatus.OK);

@@ -1,6 +1,5 @@
 package com.example.calender.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,7 +31,7 @@ public class MeetingRoom {
     private boolean isOperational;
 
     @ManyToOne
-    @JoinColumn(name = "office_id",nullable = false)
+    @JoinColumn(name = "office_id", nullable = false)
     private Office office;
 
     @Column(name = "is_deleted")

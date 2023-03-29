@@ -8,7 +8,6 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-
 import java.util.Date;
 
 
@@ -38,8 +37,8 @@ public class Employee {
 
     private Date dob;
 
-    @ManyToOne()
-    @JoinColumn(name = "office_id",nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "office_id", nullable = false)
     private Office office;
 
     @Column(name = "is_deleted")

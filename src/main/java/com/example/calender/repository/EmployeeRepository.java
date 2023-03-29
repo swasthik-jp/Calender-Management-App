@@ -9,12 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employee,Long> {
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     Optional<Employee> findByEmail(String email);
 
-    @Query(value = "SELECT * FROM employee WHERE is_deleted = false AND office_id=?",nativeQuery = true)
+    @Query(value = "SELECT * FROM employee WHERE is_deleted = false AND office_id=?", nativeQuery = true)
     Optional<List<Employee>> findAllByOfficeId(Long officeId);
-
 
 }
