@@ -2,6 +2,7 @@ package com.example.calender.service;
 
 import com.example.calender.repository.MeetingRoomRepository;
 import com.example.calender.entity.MeetingRoom;
+import com.example.calender.exception.ResourceAlreadyExistsException;
 import com.example.calender.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @Transactional
-public class MeetingRoomServiceImpl implements MeetingRoomService {
+public class MeetingRoomServiceImpl implements MeetingRoomService{
 
     @Autowired
     private MeetingRoomRepository meetingRoomRepository;
@@ -43,14 +44,11 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
         MeetingRoom existingMeetingRoom= null;
         existingMeetingRoom = meetingRoomRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("MeetingRoom","id",id));
 
-
         existingMeetingRoom.setName(meetingRoom.getName());
         existingMeetingRoom.setOffice(meetingRoom.getOffice());
         existingMeetingRoom.setCapacity(meetingRoom.getCapacity());
         existingMeetingRoom.setOperational(meetingRoom.isOperational());
-
-         meetingRoomRepository.save(existingMeetingRoom);
-        return existingMeetingRoom;
+        return meetingRoomRepository.save(existingMeetingRoom);
     }
 
     @Override

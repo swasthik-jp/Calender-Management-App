@@ -1,21 +1,22 @@
 package com.example.calender.service;
 
+import com.example.calender.repository.EmployeeRepository;
 import com.example.calender.entity.Employee;
 import com.example.calender.exception.ResourceAlreadyExistsException;
 import com.example.calender.exception.ResourceNotFoundException;
-import com.example.calender.repository.EmployeeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 @Slf4j
 @Service
 @Transactional
-public class EmployeeServiceImpl implements EmployeeService {
+public class EmployeeServiceImpl implements EmployeeService{
+
     @Autowired
     EmployeeRepository employeeRepository;
 
@@ -73,7 +74,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (officeWorkforce.isPresent()) {
             log.debug("OfficeID: " + fkOfficeId + " has " + officeWorkforce.get().size() + " employees");
             return officeWorkforce.get().isEmpty();
-        } else throw new ResourceNotFoundException("employee", "officeId", fkOfficeId);
+        }
+        else throw new ResourceNotFoundException("employee","officeId",fkOfficeId);
     }
 
 

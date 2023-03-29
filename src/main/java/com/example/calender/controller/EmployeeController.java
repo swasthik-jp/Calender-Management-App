@@ -21,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @Slf4j
 public class EmployeeController {
