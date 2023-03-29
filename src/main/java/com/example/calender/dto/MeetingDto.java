@@ -1,5 +1,6 @@
 package com.example.calender.dto;
 
+import com.example.calender.constants.MeetingStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
@@ -27,7 +28,7 @@ public class MeetingDto {
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm")
     private Date endTimeStamp;
 
-    Set<EmployeeDto> attendees;
-
     MeetingRoomDto allocatedRoom;
+    Set<AttendeesDto> attendees;
+    private MeetingStatus status = MeetingStatus.PENDING;
 }

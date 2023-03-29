@@ -15,6 +15,8 @@ public interface MeetingService {
 
     public MeetingStatus changeMeetingStatus(Long id,MeetingStatus newStatus);
 
+    public Meeting getMeetingDetails(Long id);
+
 
 
 

@@ -19,7 +19,7 @@ import java.util.Set;
 public class Meeting {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @OneToOne
     @JoinColumn(name = "host")
@@ -28,15 +28,23 @@ public class Meeting {
     private String agenda;
     private String description;
 
-    @Column(name = "start")
+    @Column(name = "start",nullable = false)
     private Date startTimeStamp;
-    @Column(name = "end")
+    @Column(name = "end",nullable = false)
     private Date endTimeStamp;
 
 
-    @OneToOne
-    @JoinColumn(name = "allocated_room")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "allocated_room_id")
     private MeetingRoom allocatedRoom;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "meeting_attendees",
+            joinColumns = @JoinColumn(name = "meeting_id"),
+            inverseJoinColumns = @JoinColumn(name = "attendees_id")
+    )
+    private Set<Attendee> attendees;
 
     private MeetingStatus status = MeetingStatus.PENDING;
 

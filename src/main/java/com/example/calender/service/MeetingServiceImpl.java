@@ -21,4 +21,9 @@ public class MeetingServiceImpl implements MeetingService {
     public MeetingStatus changeMeetingStatus(Long id, MeetingStatus newStatus) {
         return null;
     }
+
+    @Override
+    public Meeting getMeetingDetails(Long id) {
+        return null;
+    }
 }
