@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
@@ -28,6 +29,15 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
         body.put("message", "Resource already exists");
 
         return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+    }
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<Object> handleSQLIntegrityException(SQLIntegrityConstraintViolationException ex,
+                                                                       WebRequest request) {
+
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put(TIME_STAMP, LocalDateTime.now());
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
