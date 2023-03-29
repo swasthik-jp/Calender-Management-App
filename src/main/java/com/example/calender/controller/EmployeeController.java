@@ -4,6 +4,7 @@ package com.example.calender.controller;
 import com.example.calender.dto.EmployeeDto;
 import com.example.calender.dto.OfficeDto;
 import com.example.calender.entity.Employee;
+import com.example.calender.exception.ResourceNotFoundException;
 import com.example.calender.mapper.Mapper;
 import com.example.calender.service.EmployeeService;
 import com.example.calender.service.EmployeeServiceImpl;
@@ -68,7 +69,7 @@ public class EmployeeController {
         try { //check if the office exists or soft deleted
             restTemplate.getForObject(ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/office/" + dtoEmployee.getOffice().getId(), OfficeDto.class);
         } catch (HttpClientErrorException e) { // return BAD REQUEST if office is soft deleted
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new ResourceNotFoundException("Office", "id", dtoEmployee.getOffice().getId());
         }
         Employee employee = employeeDtoMapper.toEntity(dtoEmployee);
         return new ResponseEntity<>(employeeDtoMapper.toDto(employeeService.saveEmployee(employee)), HttpStatus.CREATED);
@@ -92,6 +93,11 @@ public class EmployeeController {
     @PutMapping("/employee/{id}")
     @SneakyThrows
     ResponseEntity<EmployeeDto> updateEmployee(@Valid @RequestBody EmployeeDto dtoEmployee, @PathVariable("id") long id) {
+        try { //check if the office exists or soft deleted
+            restTemplate.getForObject(ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/office/" + dtoEmployee.getOffice().getId(), OfficeDto.class);
+        } catch (HttpClientErrorException e) { // return BAD REQUEST if office is soft deleted
+            throw new ResourceNotFoundException("Office", "id", dtoEmployee.getOffice().getId());
+        }
         Employee employee = employeeDtoMapper.toEntity(dtoEmployee);
         return new ResponseEntity<>(employeeDtoMapper.toDto(employeeService.updateEmployee(employee, id)), HttpStatus.OK);
 
