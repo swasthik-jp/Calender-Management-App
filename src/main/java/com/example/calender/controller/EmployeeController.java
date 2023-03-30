@@ -40,7 +40,6 @@ public class EmployeeController {
 
     @GetMapping("/employees")
     List<EmployeeDto> getAllEmployees() {
-        log.debug("received request to display all employees");
         return employeeService.getAllEmployees().stream()
                 .map(employee -> employeeDtoMapper.toDto(employee))
                 .toList();

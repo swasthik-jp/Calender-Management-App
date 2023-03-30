@@ -60,7 +60,7 @@ public class MeetingRoomController {
     @DeleteMapping("/meetingroom/{id}")
     ResponseEntity<String> deleteMeetingRoom(@PathVariable("id") long id) {
         meetingRoomService.deleteMeetingRoom(id);
-        return new ResponseEntity<>("SUCCESS: Employee deleted successfully", HttpStatus.OK);
+        return new ResponseEntity<>("Room Destroyed Successfully", HttpStatus.OK);
     }
 
 
