@@ -1,5 +1,6 @@
 package com.example.calender.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @ControllerAdvice
 public class ControllerAdviser extends ResponseEntityExceptionHandler {
     private static final String TIME_STAMP = "timestamp";
@@ -36,6 +38,7 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
 
 
         Map<String, Object> body = new LinkedHashMap<>();
+        log.error(ex.getMessage());
         body.put(TIME_STAMP, LocalDateTime.now());
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }

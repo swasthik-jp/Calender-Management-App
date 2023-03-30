@@ -47,7 +47,8 @@ public class MeetingRoomController {
     @PostMapping("/meetingroom")
     ResponseEntity<MeetingRoomDto> insertMeetingRoom(@Valid @RequestBody MeetingRoomDto dtoMeetingRoom) {
         try { //check if the office exists or soft deleted
-            restTemplate.getForObject(ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/office/" + dtoMeetingRoom.getOffice().getId(), OfficeDto.class);
+            restTemplate.getForObject(
+                    ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/office/" + dtoMeetingRoom.getOffice().getId(), OfficeDto.class);
         } catch (HttpClientErrorException e) { // return BAD REQUEST if office is soft deleted
             throw new ResourceNotFoundException("Office", "id", dtoMeetingRoom.getOffice().getId());
         }
