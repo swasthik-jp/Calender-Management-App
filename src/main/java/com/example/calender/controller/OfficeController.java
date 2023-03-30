@@ -46,8 +46,8 @@ public class OfficeController {
     @DeleteMapping("/office/{id}")
     ResponseEntity<String> deleteOffice(@PathVariable Long id) {
         if (officeService.deleteOffice(id))
-            return new ResponseEntity<>("SUCCESS: Office Building Destroyed", HttpStatus.OK);
-        else return new ResponseEntity<>("FAILURE: Employee are still present", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Office Building Destroyed", HttpStatus.OK);
+        else return new ResponseEntity<>("Employee are still present", HttpStatus.BAD_REQUEST);
     }
 
     @SneakyThrows

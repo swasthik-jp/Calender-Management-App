@@ -5,7 +5,6 @@ function loadTable() {
     xhttp.send();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            console.log(this.responseText);
             var trHTML = '';
             const objects = JSON.parse(this.responseText);
             for (let object of objects) {
@@ -40,14 +39,17 @@ function officeCreate() {
 
     const location = document.getElementById("location").value;
 
+
     const xhttp = new XMLHttpRequest();
     xhttp.open("POST", "http://localhost:8080/office");
     xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xhttp.send(JSON.stringify({
         "location": location
     }));
+
     xhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
+        console.log(this.status);
+        if (this.readyState == 4 && this.status == 201) {
             const objects = JSON.parse(this.responseText);
             Swal.fire({
                 icon: 'success',
@@ -172,8 +174,8 @@ function officeDelete(id) {
     xhttp.open("DELETE", "http://localhost:8080/office/" + id);
     xhttp.send();
     xhttp.onreadystatechange = function () {
+        const objects = this.responseText;
         if (this.readyState == 4 && this.status == 200 ) {
-            const objects = this.responseText;
             Swal.fire(
             'Deleted!',
             objects,
@@ -184,7 +186,7 @@ function officeDelete(id) {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: 'Something went wrong!',
+                text: objects,
                 footer: '<a href="">Why do I have this issue?</a>'
             })
         }
