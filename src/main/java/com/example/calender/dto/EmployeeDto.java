@@ -20,8 +20,8 @@ public class EmployeeDto {
 
     private String name;
 
-    @NotNull
-    @Pattern(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
+    @NotNull(message = "Email can't be null")
+    @Pattern(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$",message = "Email id is invalid")
     @JsonAlias("email_id")
     private String email;
 
