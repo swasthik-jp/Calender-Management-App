@@ -11,11 +11,11 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class MeetingRoomDto {
     private Long id;
-    @NotNull
-    @NotBlank
+    @NotNull(message = "Name should be provided")
+    @NotBlank(message = "Can't be blank")
     private String name;
 
-    @NotNull
+    @NotNull(message = "Capacity of meeting room not provided")
     private long capacity;
 
     private boolean isOperational = Boolean.FALSE;

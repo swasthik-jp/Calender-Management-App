@@ -17,7 +17,7 @@ public class MeetingDto {
 
     private Long id;
 
-    private Employee host;
+    private EmployeeDto host;
     private String agenda;
     private String description;
 

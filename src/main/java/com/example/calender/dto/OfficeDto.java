@@ -17,8 +17,8 @@ public class OfficeDto {
 
     private Long id;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "Office Location must be provided")
+    @NotBlank(message = "Location Can't be Empty")
     @JsonProperty("location")
     private String location;
 }

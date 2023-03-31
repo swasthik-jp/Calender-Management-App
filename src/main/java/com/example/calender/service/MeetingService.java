@@ -11,7 +11,7 @@ public interface MeetingService {
 
     public Set<Long> canSchedule(Set<Long> attendees, Date start, Date end);
 
-    public Long scheduleMeeting(Meeting meeting);
+    public Meeting scheduleMeeting(Meeting meeting);
 
     public MeetingStatus changeMeetingStatus(Long id,MeetingStatus newStatus);
 

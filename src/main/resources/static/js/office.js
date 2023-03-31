@@ -67,11 +67,11 @@ function officeCreate() {
             loadTable();
         }
         else {
-            const objects = this.responseText;
+            const objects = JSON.parse(this.responseText);
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: 'Something went wrong!'+ objects['message'] ,
+                text: objects['errors'],
                 footer: '<a href="">Why do I have this issue?</a>'
             })
         }

@@ -9,9 +9,11 @@ import com.example.calender.entity.Meeting;
 import com.example.calender.entity.MeetingRoom;
 import com.example.calender.entity.Office;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
+@Component
 public class MeetingMapper implements Mapper<Meeting, MeetingDto> {
 
     @Autowired
