@@ -17,8 +17,8 @@ public class OfficeDto {
 
     private Long id;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "Provide Office Address")
+    @NotBlank(message = "Invalid Location")
     @JsonProperty("location")
     private String location;
 }
