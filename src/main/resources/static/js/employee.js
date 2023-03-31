@@ -17,7 +17,7 @@ function loadTable() {
                 trHTML += '<td>' + object['ph'] + '</td>';
                 trHTML += '<td>' + object['office']['location'] + '</td>';
                 trHTML += '<td><button type="button" class="btn btn-outline-secondary" onclick="showEmployeeEditBox(' + object['id'] + ')">Edit</button>';
-                trHTML += '<button type="button" class="btn btn-outline-danger" onclick="showDeleteWarning(' + object['id'] + ')">Del</button></td>';
+                trHTML += '<button type="button" class="btn btn-outline-danger" onclick="showDeleteWarning(' + object['id'] + ')">Del&nbsp</button></td>';
                 trHTML += "</tr>";
             }
             document.getElementById("mytable").innerHTML = trHTML;
@@ -114,12 +114,12 @@ function showEmployeeEditBox(id) {
                 title: 'Edit Employee',
                 html:
                     '<input id="id" type="hidden" value=' + employee['id'] + '>' +
-                    '<input id="name" class="swal2-input" value=' + employee['name'] + '>' +
-                    '<input id="email" class="swal2-input" placeholder="Email Address" value =' + employee['email'] + '>' +
-                    '<input type="date" id="dob" class="swal2-input" style="padding: 0 4.0em" placeholder="Date Of Birth" value =' + employee['dob'] + '>' +
-                    '<input id="address" class="swal2-input" placeholder="Home Address" value =' + employee['address'] + '>' +
-                    '<input id="ph" class="swal2-input" placeholder="Phone No" value =' + employee['ph'] + '>' +
-                    '<input id="offId" class="swal2-input" placeholder="Office ID" value =' + employee['office']['id'] + '>',
+                    '<input id="name" class="swal2-input" value="' + employee['name'] + '">' +
+                    '<input id="email" class="swal2-input" placeholder="Email Address" value ="' + employee['email'] + '">' +
+                    '<input type="date" id="dob" class="swal2-input" style="padding: 0 4.0em" placeholder="Date Of Birth" value ="' + employee['dob'] + '">' +
+                    '<input id="address" class="swal2-input" placeholder="Home Address" value ="' + employee['address'] + '">' +
+                    '<input id="ph" class="swal2-input" placeholder="Phone No" value ="' + employee['ph'] + '">' +
+                    '<input id="offId" class="swal2-input" placeholder="Office ID" value ="' + employee['office']['id'] + '">',
                 focusConfirm: false,
                 preConfirm: () => {
                     employeeEdit();

@@ -38,7 +38,7 @@ public class Meeting {
     @JoinColumn(name = "allocated_room_id")
     private MeetingRoom allocatedRoom;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "meeting_attendees",
             joinColumns = @JoinColumn(name = "meeting_id"),

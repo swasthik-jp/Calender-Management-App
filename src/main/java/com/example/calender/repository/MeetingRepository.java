@@ -3,6 +3,18 @@ package com.example.calender.repository;
 import com.example.calender.entity.Employee;
 import com.example.calender.entity.Meeting;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.util.Pair;
+
+import java.util.Date;
+import java.util.Optional;
+import java.util.Set;
 
 public interface MeetingRepository extends JpaRepository<Meeting,Long> {
+
+    @Query(value = "SELECT id,allocated_room_id FROM meeting WHERE start >= ? AND end <= ?",nativeQuery = true)
+    public Optional<Pair<Long,Long>> getAllMeetingScheduleForGivenDateRange(Date start, Date end);
+
+
+    //public Optional<Set<Long>> getAllRoomsForGivenMeetingId();
 }

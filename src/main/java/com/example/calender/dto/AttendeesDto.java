@@ -10,7 +10,6 @@ public class AttendeesDto {
 
     private Long id;
     private Employee employee;
-    private Set<Meeting> meetings;
     AttendingStatus isAttending = AttendingStatus.PENDING;
 
 }

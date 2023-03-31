@@ -12,7 +12,7 @@ function loadTable() {
                 trHTML += '<td>' + object['id'] + '</td>';
                 trHTML += '<td>' + object['location'] + '</td>';
                 trHTML += '<td><button type="button" class="btn btn-outline-secondary" onclick="showOfficeEditBox(' + object['id'] + ')">Edit</button>';
-                trHTML += '<button type="button" class="btn btn-outline-danger" onclick="showDeleteWarning(' + object['id'] + ')">Del</button></td>';
+                trHTML += '<button type="button" class="btn btn-outline-danger" onclick="showDeleteWarning(' + object['id'] + ')">Del&nbsp</button></td>';
                 trHTML += "</tr>";
             }
             document.getElementById("mytable").innerHTML = trHTML;
@@ -29,6 +29,12 @@ function showOfficeCreateBox() {
             '<input id="id" type="hidden">' +
             '<input id="location" class="swal2-input" placeholder="office Address">',
         focusConfirm: false,
+        backdrop: `
+            rgba(0,0,123,0.4)
+            url("/images/nyan-cat.gif")
+            left top
+            no-repeat
+          `,
         preConfirm: () => {
             officeCreate();
         }

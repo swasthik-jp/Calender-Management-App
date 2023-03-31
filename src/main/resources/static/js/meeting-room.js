@@ -16,7 +16,7 @@ function loadTable() {
                 trHTML += '<td>' + object['operational'] + '</td>';
 
                 trHTML += '<td><button type="button" class="btn btn-outline-secondary" onclick="showMeetingRoomEditBox(' + object['id'] + ')">Edit</button>';
-                trHTML += '<button type="button" class="btn btn-outline-danger" onclick="showDeleteWarning(' + object['id'] + ')">Del</button></td>';
+                trHTML += '<button type="button" class="btn btn-outline-danger" onclick="showDeleteWarning(' + object['id'] + ')">Del&nbsp</button></td>';
                 trHTML += "</tr>";
             }
             document.getElementById("mytable").innerHTML = trHTML;

@@ -16,6 +16,7 @@ import java.util.Set;
 public class MeetingServiceImpl implements MeetingService {
     @Override
     public Set<Long> canSchedule(Set<Long> attendees, Date start, Date end) {
+
         return null;
     }
 
