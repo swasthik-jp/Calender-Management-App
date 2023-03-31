@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -28,6 +29,10 @@ public class MeetingServiceImpl implements MeetingService {
     @Override
     public Meeting scheduleMeeting(Meeting meeting) {
 
+
+        //checks
+
+
         return meetingRepository.save(meeting);
     }
 
@@ -39,5 +44,10 @@ public class MeetingServiceImpl implements MeetingService {
     @Override
     public Meeting getMeetingDetails(Long id) {
         return null;
+    }
+
+    @Override
+    public List<Meeting> getAllMeetings() {
+        return meetingRepository.findAll();
     }
 }

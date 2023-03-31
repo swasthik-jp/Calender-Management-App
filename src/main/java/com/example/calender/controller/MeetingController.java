@@ -1,6 +1,8 @@
 package com.example.calender.controller;
 
+import com.example.calender.dto.EmployeeDto;
 import com.example.calender.dto.MeetingDto;
+import com.example.calender.entity.Employee;
 import com.example.calender.entity.Meeting;
 import com.example.calender.exception.ResourceNotFoundException;
 import com.example.calender.mapper.Mapper;
@@ -16,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @CrossOrigin
 @RestController
 @Slf4j
@@ -25,36 +29,24 @@ public class MeetingController {
     @Autowired
     private MeetingService meetingService;
     @Autowired
-    private EmployeeService employeeService;
-    @Autowired
-    private Mapper<Meeting, MeetingDto> meetingMapper;
+    private Mapper<Meeting, MeetingDto> meetingDtoMapper;
 
-    public MeetingController(MeetingServiceImpl meetingService) {
-        this.meetingService = meetingService;
-    }
-
-    @GetMapping("/meeting/{id}")
-    ResponseEntity<MeetingDto> getMeetingDetails(@PathVariable Long id)
-    {
-        return new ResponseEntity<>(meetingMapper.toDto(
-                meetingService.getMeetingDetails(id)
-        ), HttpStatus.OK);
-    }
 
     @PostMapping("/meeting")
-    ResponseEntity<Long> scheduleMeeting(@RequestBody MeetingDto meetingDto) throws ResourceNotFoundException {
-        Meeting meeting = meetingMapper.toEntity(meetingDto);
-        return new ResponseEntity<>(meetingMapper.toDto(meetingService.scheduleMeeting(meeting)).getId(),HttpStatus.OK);
+    @ResponseBody
+    public ResponseEntity<MeetingDto> scheduleMeeting(@RequestBody MeetingDto meetingDto)
+    {
+        Meeting meeting = meetingDtoMapper.toEntity(meetingDto);
+        System.out.println(meeting.toString());
+        return new ResponseEntity<>(meetingDtoMapper.toDto(meetingService.scheduleMeeting(meeting)),HttpStatus.CREATED);
     }
 
-//    @PostMapping("/meeting")
-//    ResponseEntity<MeetingDto> scheduleMeeting(@RequestBody ? )
-//    {
-//
-//    }
-
-
-
+    @GetMapping("/meetings")
+    List<MeetingDto> getAllEmployees() {
+        return meetingService.getAllMeetings().stream()
+                .map(meeting -> meetingDtoMapper.toDto(meeting))
+                .toList();
+    }
 
 
 }

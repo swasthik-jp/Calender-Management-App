@@ -17,7 +17,7 @@ public class MeetingDto {
 
     private Long id;
 
-    private EmployeeDto host;
+    private Long host;
     private String agenda;
     private String description;
 
@@ -30,7 +30,8 @@ public class MeetingDto {
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm")
     private Date endTimeStamp;
 
-    MeetingRoomDto allocatedRoom;
-    Set<AttendeesDto> attendees;
+    private Long allocatedRoom;
+
+    private Set<String> attendees;
     private MeetingStatus status = MeetingStatus.PENDING;
 }
