@@ -21,7 +21,7 @@ public class Meeting {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "host")
     private Employee host;
 
@@ -46,8 +46,6 @@ public class Meeting {
     )
     private Set<Attendee> attendees;
 
+    @Enumerated(EnumType.STRING)
     private MeetingStatus status = MeetingStatus.PENDING;
-
-
-
 }

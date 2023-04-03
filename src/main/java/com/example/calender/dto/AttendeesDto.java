@@ -10,6 +10,6 @@ public class AttendeesDto {
 
     private Long id;
     private Employee employee;
-    AttendingStatus isAttending = AttendingStatus.PENDING;
+    private AttendingStatus isAttending = AttendingStatus.PENDING;
 
 }

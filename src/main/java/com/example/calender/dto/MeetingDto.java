@@ -2,6 +2,7 @@ package com.example.calender.dto;
 
 import com.example.calender.constants.MeetingStatus;
 import com.example.calender.entity.Employee;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
@@ -16,8 +17,8 @@ import java.util.Set;
 public class MeetingDto {
 
     private Long id;
-
-    private Employee host;
+    @JsonProperty(value = "host")
+    private String hostEmail;
     private String agenda;
     private String description;
 
@@ -30,7 +31,7 @@ public class MeetingDto {
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm")
     private Date endTimeStamp;
 
-    MeetingRoomDto allocatedRoom;
-    Set<AttendeesDto> attendees;
+    private Long allocatedRoomId;
+    private Set<String> attendees;
     private MeetingStatus status = MeetingStatus.PENDING;
 }

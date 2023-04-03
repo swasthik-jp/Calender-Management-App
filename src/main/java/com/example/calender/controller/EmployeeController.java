@@ -33,11 +33,6 @@ public class EmployeeController {
 
     @Autowired
     private RestTemplate restTemplate;
-
-    public EmployeeController(EmployeeServiceImpl employeeService) {
-        this.employeeService = employeeService;
-    }
-
     @GetMapping("/employees")
     List<EmployeeDto> getAllEmployees() {
         return employeeService.getAllEmployees().stream()
