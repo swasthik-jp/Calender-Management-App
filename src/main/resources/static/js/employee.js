@@ -68,8 +68,9 @@ function employeeCreate() {
 
     }));
     xhttp.onreadystatechange = function () {
+         const objects = JSON.parse(this.responseText);
         if (this.readyState == 4 && this.status == 201) {
-            const objects = JSON.parse(this.responseText);
+
             Swal.fire({
                 icon: 'success',
                 title: 'Success',
@@ -80,7 +81,7 @@ function employeeCreate() {
             loadTable();
         }
         else if(this.status == 400){
-            const objects = this.responseText;
+
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
@@ -89,7 +90,7 @@ function employeeCreate() {
             })
         }
         else {
-            const objects = this.responseText;
+
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
@@ -217,8 +218,9 @@ function employeeDelete(id) {
     xhttp.open("DELETE", "http://localhost:8080/employee?id=" + id);
     xhttp.send();
     xhttp.onreadystatechange = function () {
+        const objects = JSON.parse(this.responseText);
         if (this.readyState == 4 && this.status == 200 ) {
-            const objects = this.responseText;
+
             Swal.fire(
             'Deleted!',
             'Employee has been deleted.',
@@ -229,7 +231,7 @@ function employeeDelete(id) {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: 'Something went wrong!',
+                text: 'Something went wrong!' + objects,
                 footer: '<a href="">Why do I have this issue?</a>'
             })
         }

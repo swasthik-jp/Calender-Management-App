@@ -8,9 +8,9 @@ import lombok.Data;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Email;
 import java.util.Date;
 
 @Data
@@ -19,6 +19,8 @@ public class EmployeeDto {
 
     private Long id;
 
+    @NotNull(message = "Name can't be null")
+    @NotBlank(message = "Name can't be empty")
     private String name;
 
     @NotNull(message = "Email can't be null")
@@ -36,5 +38,7 @@ public class EmployeeDto {
     @Temporal(TemporalType.DATE)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date dob;
+
+    @NotNull(message = "Office Id missing")
     private OfficeDto office;
 }
