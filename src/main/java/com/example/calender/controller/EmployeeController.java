@@ -7,7 +7,6 @@ import com.example.calender.entity.Employee;
 import com.example.calender.exception.ResourceNotFoundException;
 import com.example.calender.mapper.Mapper;
 import com.example.calender.service.EmployeeService;
-import com.example.calender.service.EmployeeServiceImpl;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +32,6 @@ public class EmployeeController {
 
     @Autowired
     private RestTemplate restTemplate;
-
-    public EmployeeController(EmployeeServiceImpl employeeService) {
-        this.employeeService = employeeService;
-    }
-
     @GetMapping("/employees")
     List<EmployeeDto> getAllEmployees() {
         return employeeService.getAllEmployees().stream()

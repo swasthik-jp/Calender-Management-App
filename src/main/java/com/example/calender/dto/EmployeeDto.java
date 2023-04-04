@@ -8,6 +8,7 @@ import lombok.Data;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -24,7 +25,7 @@ public class EmployeeDto {
     private String name;
 
     @NotNull(message = "Email can't be null")
-    @Pattern(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$",message = "Email id is invalid")
+    @Email(message = "Email is not valid")
     @JsonAlias("email_id")
     private String email;
 

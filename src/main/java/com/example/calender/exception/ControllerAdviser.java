@@ -49,11 +49,33 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
 
         Map<String, Object> body = new LinkedHashMap<>();
         body.put(TIME_STAMP, LocalDateTime.now());
-        body.put("message", "No resource found");
+        body.put("message", ex.getMessage());
 
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler(PolicyViolationException.class)
+    public ResponseEntity<Object> handlePolicyViolationException(PolicyViolationException ex,
+                                                                       WebRequest request) {
 
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put(TIME_STAMP, LocalDateTime.now());
+        body.put("message", "Violates the company policies");
+
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex,
+                                                              WebRequest request) {
+
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        log.error(ex.getMessage());
+        body.put(TIME_STAMP, LocalDateTime.now());
+        body.put("message", ex.getMessage());
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers, HttpStatus status, WebRequest request) {

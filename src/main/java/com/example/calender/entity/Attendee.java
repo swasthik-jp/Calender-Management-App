@@ -17,8 +17,6 @@ import java.util.Set;
 @Table(name = "attendee")
 @Builder
 public class Attendee {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -29,6 +27,7 @@ public class Attendee {
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    private Meeting meeting;
 
-    @Column(name = "status",nullable = false)
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     AttendingStatus isAttending = AttendingStatus.PENDING;
 }
