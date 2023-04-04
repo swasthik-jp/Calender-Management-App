@@ -11,7 +11,6 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 @Data
@@ -37,7 +36,7 @@ public class EmployeeDto {
     @JsonAlias({"phone", "mobile"})
     private String mob;
     @Temporal(TemporalType.DATE)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "IST")
     private Date dob;
 
     @NotNull(message = "Office Id missing")

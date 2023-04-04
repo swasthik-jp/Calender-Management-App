@@ -21,6 +21,7 @@ import java.util.Map;
 @ControllerAdvice
 public class ControllerAdviser extends ResponseEntityExceptionHandler {
     private static final String TIME_STAMP = "timestamp";
+
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     public ResponseEntity<Object> handleResourceAlreadyExistsException(ResourceAlreadyExistsException ex,
                                                                        WebRequest request) {
@@ -32,9 +33,10 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(body, HttpStatus.CONFLICT);
     }
+
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<Object> handleSQLIntegrityException(SQLIntegrityConstraintViolationException ex,
-                                                                       WebRequest request) {
+                                                              WebRequest request) {
 
 
         Map<String, Object> body = new LinkedHashMap<>();
@@ -53,9 +55,10 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
+
     @ExceptionHandler(PolicyViolationException.class)
     public ResponseEntity<Object> handlePolicyViolationException(PolicyViolationException ex,
-                                                                       WebRequest request) {
+                                                                 WebRequest request) {
 
 
         Map<String, Object> body = new LinkedHashMap<>();
@@ -67,7 +70,7 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex,
-                                                              WebRequest request) {
+                                                                 WebRequest request) {
 
 
         Map<String, Object> body = new LinkedHashMap<>();
@@ -76,6 +79,7 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
         body.put("message", ex.getMessage());
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers, HttpStatus status, WebRequest request) {

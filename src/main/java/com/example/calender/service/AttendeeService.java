@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface AttendeeService {
     public List<Attendee> getAllAttendees();
+
     public Attendee save(Attendee attendee);
 }

@@ -3,7 +3,6 @@ package com.example.calender.service;
 import com.example.calender.constants.AttendingStatus;
 import com.example.calender.constants.MeetingStatus;
 import com.example.calender.entity.Attendee;
-import com.example.calender.entity.Employee;
 import com.example.calender.entity.Meeting;
 import com.example.calender.entity.MeetingRoom;
 import com.example.calender.exception.PolicyViolationException;
@@ -11,14 +10,10 @@ import com.example.calender.exception.ResourceNotFoundException;
 import com.example.calender.repository.MeetingRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -45,7 +40,7 @@ public class MeetingServiceImpl implements MeetingService {
         long timeInMinutes = TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS);
         Date now = new Date();
 
-        if (attendees.size() > 6 || timeInMinutes < 30)
+        if (attendees.size() > 5 || timeInMinutes < 30)
             throw new PolicyViolationException("A");
 
         int startHour = Integer.parseInt(start.toString().split(" ")[3].split(":")[0]);
@@ -91,15 +86,15 @@ public class MeetingServiceImpl implements MeetingService {
     public Long scheduleMeeting(Meeting meeting) {
         //call function can schedule and proceed if fine
 
-        Set<String> employeeEmail =  meeting.getAttendees().stream()
+        Set<String> employeeEmail = meeting.getAttendees().stream()
                 .map(employee -> employee.getEmployee().getEmail())
                 .collect(Collectors.toSet());
 
         Date start = meeting.getStartTimeStamp();
         Date end = meeting.getEndTimeStamp();
 
-        if(Boolean.FALSE.equals(
-                canSchedule(employeeEmail,start,end)
+        if (Boolean.FALSE.equals(
+                canSchedule(employeeEmail, start, end)
         ))
             return null;
 
@@ -122,23 +117,20 @@ public class MeetingServiceImpl implements MeetingService {
             allRoomIdSet.removeAll(uniqueRoomsIds);
             // At this point allRoomIdSet should only contain available rooms
 
-            if(meeting.getAllocatedRoom() == null)
-            {
+            if (meeting.getAllocatedRoom() == null) {
 
                 List<Long> meetingRoomsInHostOffice = meetingRoomService.getMeetingRoomsByOfficeId(meeting.getHost().getOffice().getId());
                 Set<Long> availableRooms = new HashSet<>(allRoomIdSet);
                 availableRooms.retainAll(meetingRoomsInHostOffice);
-                if(!availableRooms.isEmpty())
+                if (!availableRooms.isEmpty())
                     meeting.setAllocatedRoom(meetingRoomService.getMeetingRoomById(availableRooms.iterator().next()));
                 else
                     meeting.setAllocatedRoom(meetingRoomService.getMeetingRoomById(allRoomIdSet.iterator().next()));
 
-            }
-            else
-            {
-                Long roomId  = meeting.getAllocatedRoom().getId();
-                if(!allRoomIdSet.contains(roomId))
-                    throw new ResourceNotFoundException("MeetingRoom","id",roomId);
+            } else {
+                Long roomId = meeting.getAllocatedRoom().getId();
+                if (!allRoomIdSet.contains(roomId))
+                    throw new ResourceNotFoundException("MeetingRoom", "id", roomId);
                 meeting.setAllocatedRoom(meetingRoomService.getMeetingRoomById(roomId));
             }
         }
@@ -152,6 +144,11 @@ public class MeetingServiceImpl implements MeetingService {
             participant.setIsAttending(AttendingStatus.PENDING);
             attendeesList.add(attendeeService.save(participant));
         }
+        Attendee mainHost = Attendee.builder()
+                .employee(meeting.getHost())
+                .isAttending(AttendingStatus.YES)
+                .build();
+        attendeesList.add(attendeeService.save(mainHost));
         meeting.setAttendees(attendeesList);
         meeting.setStatus(MeetingStatus.PENDING);
         /*
@@ -169,9 +166,8 @@ public class MeetingServiceImpl implements MeetingService {
 
     @Override
     public Meeting getMeetingDetails(Long id) {
-        return null;
+        return meetingRepository.getReferenceById(id);
     }
-
 
 
 }

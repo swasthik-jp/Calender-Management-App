@@ -10,13 +10,13 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootApplication
 public class CalenderApplication {
 
-	@Bean
-	public RestTemplate restTemplate(){
-		return new RestTemplate();
-	}
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(CalenderApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(CalenderApplication.class, args);
+    }
 
 }

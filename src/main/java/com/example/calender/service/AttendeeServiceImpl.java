@@ -10,10 +10,11 @@ import java.util.List;
 
 @Service
 @Transactional
-public class AttendeeServiceImpl implements AttendeeService{
+public class AttendeeServiceImpl implements AttendeeService {
 
     @Autowired
     private AttendeeRepository attendeeRepository;
+
     @Override
     public List<Attendee> getAllAttendees() {
         return attendeeRepository.findAll();

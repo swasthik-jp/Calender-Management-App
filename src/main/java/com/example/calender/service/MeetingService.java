@@ -1,7 +1,6 @@
 package com.example.calender.service;
 
 import com.example.calender.constants.MeetingStatus;
-import com.example.calender.entity.Employee;
 import com.example.calender.entity.Meeting;
 import com.example.calender.exception.PolicyViolationException;
 
@@ -14,18 +13,9 @@ public interface MeetingService {
 
     public Long scheduleMeeting(Meeting meeting);
 
-    public MeetingStatus changeMeetingStatus(Long id,MeetingStatus newStatus);
+    public MeetingStatus changeMeetingStatus(Long id, MeetingStatus newStatus);
 
     public Meeting getMeetingDetails(Long id);
-
-
-
-
-
-
-
-
-
 
 
 }

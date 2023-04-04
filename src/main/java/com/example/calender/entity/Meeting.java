@@ -28,9 +28,9 @@ public class Meeting {
     private String agenda;
     private String description;
 
-    @Column(name = "start",nullable = false)
+    @Column(name = "start", nullable = false)
     private Date startTimeStamp;
-    @Column(name = "end",nullable = false)
+    @Column(name = "end", nullable = false)
     private Date endTimeStamp;
 
 
