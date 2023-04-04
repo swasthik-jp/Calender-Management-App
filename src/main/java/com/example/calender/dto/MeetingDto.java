@@ -10,6 +10,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Set;
 
@@ -32,8 +33,8 @@ public class MeetingDto {
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm")
     private Date endTimeStamp;
-
     private Long allocatedRoomId;
+    @NotNull
     private Set<String> attendees;
     private MeetingStatus status = MeetingStatus.PENDING;
 }

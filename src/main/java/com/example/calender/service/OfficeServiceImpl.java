@@ -16,6 +16,7 @@ import java.util.Optional;
 @Transactional
 public class OfficeServiceImpl implements OfficeService{
 
+    private static final String OFFICE = "Office";
     @Autowired
     OfficeRepository officeRepository;
     @Autowired
@@ -29,7 +30,7 @@ public class OfficeServiceImpl implements OfficeService{
         Optional<Office> optionalOffice = officeRepository.findById(id);
         if(optionalOffice.isPresent())
             return optionalOffice.get();
-       throw new ResourceNotFoundException("Office","id",id);
+       throw new ResourceNotFoundException(OFFICE,"id",id);
     }
     @Override
     public Office addNewOffice(Office office) {
@@ -39,7 +40,7 @@ public class OfficeServiceImpl implements OfficeService{
     @Override
     public boolean deleteOffice(long id) throws ResourceNotFoundException{
         officeRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("Office","id",id));
+                .orElseThrow(()-> new ResourceNotFoundException(OFFICE,"id",id));
         if(employeeService.checkEmptyOffice(id)) {
             officeRepository.deleteById(id);
             List<Long> roomsInOffice = meetingRoomService.getMeetingRoomsByOfficeId(id);
@@ -53,7 +54,7 @@ public class OfficeServiceImpl implements OfficeService{
     @Override
     public Office updateOffice(Office office, long id) throws ResourceNotFoundException {
         Office existingOffice = officeRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("Office","id",id));
+                .orElseThrow(()-> new ResourceNotFoundException(OFFICE,"id",id));
         existingOffice.setLocation(office.getLocation());
         officeRepository.save(existingOffice);
         return existingOffice;

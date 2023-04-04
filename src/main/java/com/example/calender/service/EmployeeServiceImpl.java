@@ -14,6 +14,9 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class EmployeeServiceImpl implements EmployeeService{
+    public static final String EMP = "Employee";
+    public static final String EMAIL = "email";
+
 
     @Autowired
     EmployeeRepository employeeRepository;
@@ -22,7 +25,7 @@ public class EmployeeServiceImpl implements EmployeeService{
         try {
             return employeeRepository.save(employee);
         } catch (Exception ex) {
-            throw new ResourceAlreadyExistsException("Employee", "email", employee.getEmail());
+            throw new ResourceAlreadyExistsException(EMP, EMAIL, employee.getEmail());
         }
     }
 
@@ -31,16 +34,16 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     public Employee getEmployeeById(long id) throws ResourceNotFoundException {
-        return employeeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Employee", "id", id));
+        return employeeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(EMP, "id", id));
     }
 
     public Employee getEmployeeByEmail(String email) throws ResourceNotFoundException {
-        return employeeRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Employee", "email", email));
+        return employeeRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException(EMP, EMAIL, email));
     }
 
     public Employee updateEmployee(Employee employee, long id) throws ResourceNotFoundException {
 
-        Employee existingEmployee = employeeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("employee", "id", id));
+        Employee existingEmployee = employeeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(EMP, "id", id));
 
         existingEmployee.setName(employee.getName());
         existingEmployee.setOffice(employee.getOffice());
@@ -56,13 +59,13 @@ public class EmployeeServiceImpl implements EmployeeService{
     @Override
     public void deleteEmployeeByEmail(String email) throws ResourceNotFoundException {
         Employee foundEmployee = employeeRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("employee", "email", email));
+                .orElseThrow(() -> new ResourceNotFoundException(EMP, EMAIL, email));
         employeeRepository.deleteById(foundEmployee.getId());
     }
 
     public void deleteEmployeeById(long id) throws ResourceNotFoundException {
         employeeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("employee", "id", id));
+                .orElseThrow(() -> new ResourceNotFoundException(EMP, "id", id));
         employeeRepository.deleteById(id);
     }
 
@@ -73,7 +76,7 @@ public class EmployeeServiceImpl implements EmployeeService{
             log.debug("OfficeID: " + fkOfficeId + " has " + officeWorkforce.get().size() + " employees");
             return officeWorkforce.get().isEmpty();
         }
-        else throw new ResourceNotFoundException("employee","officeId",fkOfficeId);
+        else throw new ResourceNotFoundException(EMP,"officeId",fkOfficeId);
     }
 
 

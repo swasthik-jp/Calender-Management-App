@@ -1,14 +1,10 @@
 package com.example.calender.controller;
 
-import com.example.calender.constants.MeetingStatus;
 import com.example.calender.dto.CanScheduleDto;
 import com.example.calender.dto.MeetingDto;
 import com.example.calender.entity.Meeting;
 import com.example.calender.mapper.Mapper;
-import com.example.calender.mapper.MeetingMapper;
-import com.example.calender.service.EmployeeServiceImpl;
 import com.example.calender.service.MeetingService;
-import com.example.calender.service.MeetingServiceImpl;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +33,7 @@ public class MeetingController {
     }
 
     @PostMapping("/meeting")
-    ResponseEntity<MeetingDto> scheduleMeeting(@RequestBody MeetingDto meetingDto) {
+    ResponseEntity<MeetingDto> scheduleMeeting(@Valid @RequestBody MeetingDto meetingDto) {
         Meeting requestMeeting = meetingMapper.toEntity(meetingDto);
         meetingService.scheduleMeeting(requestMeeting);
         return new ResponseEntity<>(meetingMapper.toDto(requestMeeting), HttpStatus.OK);
@@ -45,12 +41,8 @@ public class MeetingController {
 
     @SneakyThrows
     @PostMapping("/can-schedule")
-    ResponseEntity<Boolean> canSchedule(@RequestBody CanScheduleDto scheduleDto) {
+    ResponseEntity<Boolean> canSchedule(@Valid @RequestBody CanScheduleDto scheduleDto) {
         Boolean canSchedule = meetingService.canSchedule(scheduleDto.getAttendees(), scheduleDto.getStart(), scheduleDto.getEnd());
         return new ResponseEntity<>(canSchedule, HttpStatus.OK);
     }
-
-
-
-
 }

@@ -3,6 +3,7 @@ package com.example.calender.service;
 import com.example.calender.constants.AttendingStatus;
 import com.example.calender.constants.MeetingStatus;
 import com.example.calender.entity.Attendee;
+import com.example.calender.entity.Employee;
 import com.example.calender.entity.Meeting;
 import com.example.calender.entity.MeetingRoom;
 import com.example.calender.exception.PolicyViolationException;
@@ -18,6 +19,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -34,12 +38,12 @@ public class MeetingServiceImpl implements MeetingService {
     @Autowired
     private MeetingRoomService meetingRoomService;
 
-    public MeetingServiceImpl() {
-    }
+    @Autowired
+    private EmployeeService employeeService;
 
     @Override
     public Boolean canSchedule(Set<String> attendees, Date start, Date end)
-            throws PolicyViolationException {
+            throws PolicyViolationException, ResourceNotFoundException {
         long diffInMillies = Math.abs(end.getTime() - start.getTime());
         long timeInMinutes = TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS);
         Date now = new Date();
@@ -52,9 +56,9 @@ public class MeetingServiceImpl implements MeetingService {
 
         if (startHour < 10 || endHour >= 18)
             throw new PolicyViolationException("B");
+
         if (end.before(start))
             throw new IllegalArgumentException("End Date Cannot be before Start Date!");
-
 
         if (start.before(now))
             throw new IllegalArgumentException("Can't schedule meeting in `Past`!");
@@ -70,6 +74,7 @@ public class MeetingServiceImpl implements MeetingService {
             if (uniqueRoomsIds.size() == allMeetingRooms.size()) { // if there is no meeting room available (all are occupied)
                 return false;
             }
+            attendees.forEach(email -> employeeService.getEmployeeByEmail(email));
 
 //            for (Pair<Long, Long> meetId : allMeetings.get()) {
 //                Meeting meeting = meetingRepository.findById(meetId.getFirst()).orElseThrow(() -> new ResourceNotFoundException("Meeting", "id", meetId.getFirst()));
@@ -81,10 +86,7 @@ public class MeetingServiceImpl implements MeetingService {
 //            }
             return true;
         } else {
-            if (meetingRoomService.getAllMeetingRooms().size() > 0) {
-                return true;
-            }
-            return false;
+            return meetingRoomService.getAllMeetingRooms().isEmpty();
         }
     }
 
