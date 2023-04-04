@@ -67,7 +67,6 @@ public class MeetingServiceImpl implements MeetingService {
                 return false;
             }
             attendees.forEach(email -> employeeService.getEmployeeByEmail(email));
-
 //            for (Pair<Long, Long> meetId : allMeetings.get()) {
 //                Meeting meeting = meetingRepository.findById(meetId.getFirst()).orElseThrow(() -> new ResourceNotFoundException("Meeting", "id", meetId.getFirst()));
 //                for (Attendee meetAttendee : meeting.getAttendees()) {
