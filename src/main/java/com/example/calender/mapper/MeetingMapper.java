@@ -43,7 +43,10 @@ public class MeetingMapper implements Mapper<Meeting, MeetingDto> {
 
     @Override
     public Meeting toEntity(MeetingDto dto) throws ResourceNotFoundException {
-        MeetingRoom meetingRoom = meetingRoomService.getMeetingRoomById(dto.getAllocatedRoomId());
+        MeetingRoom meetingRoom = null;
+        if(dto.getAllocatedRoomId() != null) {
+             meetingRoom = meetingRoomService.getMeetingRoomById(dto.getAllocatedRoomId());
+        }
         Set<Attendee> employees = dto.getAttendees().stream()
                 .map(email -> Attendee.builder()
                         .employee(employeeService.getEmployeeByEmail(email))

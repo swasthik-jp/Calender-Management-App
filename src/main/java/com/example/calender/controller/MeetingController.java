@@ -5,6 +5,7 @@ import com.example.calender.dto.MeetingDto;
 import com.example.calender.entity.Meeting;
 import com.example.calender.mapper.Mapper;
 import com.example.calender.service.MeetingService;
+import com.example.calender.service.MeetingServiceImpl;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +34,12 @@ public class MeetingController {
     }
 
     @PostMapping("/meeting")
-    ResponseEntity<MeetingDto> scheduleMeeting(@Valid @RequestBody MeetingDto meetingDto) {
+    ResponseEntity<String > scheduleMeeting(@RequestBody MeetingDto meetingDto) {
         Meeting requestMeeting = meetingMapper.toEntity(meetingDto);
-        meetingService.scheduleMeeting(requestMeeting);
-        return new ResponseEntity<>(meetingMapper.toDto(requestMeeting), HttpStatus.OK);
+        Long id = meetingService.scheduleMeeting(requestMeeting);
+        if(id == null)
+            return new ResponseEntity<>("Can't schedule Meeting",HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
+        return new ResponseEntity<>(id.toString(), HttpStatus.OK);
     }
 
     @SneakyThrows

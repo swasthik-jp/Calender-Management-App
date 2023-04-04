@@ -15,10 +15,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -63,11 +60,11 @@ public class MeetingServiceImpl implements MeetingService {
         if (start.before(now))
             throw new IllegalArgumentException("Can't schedule meeting in `Past`!");
 
-        Optional<List<Pair<Long, Long>>> allMeetings = meetingRepository.getAllMeetingScheduleForGivenDateRange(start, end);
+        Optional<List<List<Long>>> allMeetings = meetingRepository.getAllMeetingScheduleForGivenDateRange(start, end);
 
         if (allMeetings.isPresent()) {
             Set<Long> uniqueRoomsIds = allMeetings.get().stream()
-                    .map(Pair::getSecond)
+                    .map(pairs -> pairs.get(1))
                     .collect(Collectors.toSet());
             List<MeetingRoom> allMeetingRooms = meetingRoomService.getAllMeetingRooms();
 
@@ -92,13 +89,77 @@ public class MeetingServiceImpl implements MeetingService {
 
     @Override
     public Long scheduleMeeting(Meeting meeting) {
-        for (Attendee attendee : meeting.getAttendees()) {
-            attendee.setIsAttending(AttendingStatus.PENDING);
-            attendeeService.save(attendee);
+        //call function can schedule and proceed if fine
+
+        Set<String> employeeEmail =  meeting.getAttendees().stream()
+                .map(employee -> employee.getEmployee().getEmail())
+                .collect(Collectors.toSet());
+
+        Date start = meeting.getStartTimeStamp();
+        Date end = meeting.getEndTimeStamp();
+
+        if(Boolean.FALSE.equals(
+                canSchedule(employeeEmail,start,end)
+        ))
+            return null;
+
+        /*
+        Check valid Room or Not
+        At this point it has already been determined there exist atleast one available room
+         */
+
+        Optional<List<List<Long>>> allMeetings = meetingRepository.getAllMeetingScheduleForGivenDateRange(start, end);
+        if (allMeetings.isPresent()) {
+            Set<Long> uniqueRoomsIds = allMeetings.get().stream()
+                    .map(pairs -> pairs.get(1))
+                    .collect(Collectors.toSet());
+
+            List<MeetingRoom> allMeetingRooms = meetingRoomService.getAllMeetingRooms();
+            Set<Long> allRoomIdSet = allMeetingRooms.stream()
+                    .map(MeetingRoom::getId)
+                    .collect(Collectors.toSet());
+
+            allRoomIdSet.removeAll(uniqueRoomsIds);
+            // At this point allRoomIdSet should only contain available rooms
+
+            if(meeting.getAllocatedRoom() == null)
+            {
+
+                List<Long> meetingRoomsInHostOffice = meetingRoomService.getMeetingRoomsByOfficeId(meeting.getHost().getOffice().getId());
+                Set<Long> availableRooms = new HashSet<>(allRoomIdSet);
+                availableRooms.retainAll(meetingRoomsInHostOffice);
+                if(!availableRooms.isEmpty())
+                    meeting.setAllocatedRoom(meetingRoomService.getMeetingRoomById(availableRooms.iterator().next()));
+                else
+                    meeting.setAllocatedRoom(meetingRoomService.getMeetingRoomById(allRoomIdSet.iterator().next()));
+
+            }
+            else
+            {
+                Long roomId  = meeting.getAllocatedRoom().getId();
+                if(!allRoomIdSet.contains(roomId))
+                    throw new ResourceNotFoundException("MeetingRoom","id",roomId);
+                meeting.setAllocatedRoom(meetingRoomService.getMeetingRoomById(roomId));
+            }
         }
+
+        /*
+        Following block of code first saves attendees in database after they are verified
+        then Set of Attendees is updated so that it now includes id of attendees
+         */
+        Set<Attendee> attendeesList = new HashSet<>();
+        for (Attendee participant : meeting.getAttendees()) {
+            participant.setIsAttending(AttendingStatus.PENDING);
+            attendeesList.add(attendeeService.save(participant));
+        }
+        meeting.setAttendees(attendeesList);
         meeting.setStatus(MeetingStatus.PENDING);
+        /*
+        Finally meeting is saved
+        PROBLEM TO TAKE CARE: Attendees should be saved only if meeting is saved
+         */
         Meeting m = meetingRepository.save(meeting);
-        return null;
+        return m.getId();
     }
 
     @Override
@@ -110,4 +171,7 @@ public class MeetingServiceImpl implements MeetingService {
     public Meeting getMeetingDetails(Long id) {
         return null;
     }
+
+
+
 }

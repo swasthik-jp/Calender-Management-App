@@ -16,6 +16,6 @@ import java.util.Set;
 public interface MeetingRepository extends JpaRepository<Meeting,Long> {
 
     @Query(value = "SELECT id,allocated_room_id FROM meeting WHERE ((?1 BETWEEN start AND end) OR (?2 BETWEEN start AND END))",nativeQuery = true)
-    Optional<List<Pair<Long,Long>>> getAllMeetingScheduleForGivenDateRange(Date start, Date end);
+    Optional<List<List<Long>>> getAllMeetingScheduleForGivenDateRange(Date start, Date end);
     //public Optional<Set<Long>> getAllRoomsForGivenMeetingId();
 }

@@ -28,5 +28,6 @@ public class Attendee {
 //    private Meeting meeting;
 
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     AttendingStatus isAttending = AttendingStatus.PENDING;
 }

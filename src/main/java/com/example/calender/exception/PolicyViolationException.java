@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Slf4j
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-public class PolicyViolationException extends Exception{
+public class PolicyViolationException extends RuntimeException{
     private String policyName;
 
     public PolicyViolationException(String policyName) {
