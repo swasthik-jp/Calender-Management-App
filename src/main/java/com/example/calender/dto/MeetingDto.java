@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.util.Date;
 import java.util.Set;
 
@@ -18,6 +19,7 @@ public class MeetingDto {
 
     private Long id;
     @JsonProperty(value = "host")
+    @Email(message = "Email id is invalid")
     private String hostEmail;
     private String agenda;
     private String description;

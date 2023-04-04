@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @NoArgsConstructor
 @Slf4j
-@Setter
 @ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE)
 public class ResourceAlreadyExistsException extends Exception {
     private String resourceName;
