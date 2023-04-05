@@ -128,7 +128,7 @@ public class MeetingServiceImpl implements MeetingService {
 
             } else {
                 Long roomId = meeting.getAllocatedRoom().getId();
-                if(!meeting.getAllocatedRoom().isOperational())
+                if (!meeting.getAllocatedRoom().isOperational())
                     return null;
                 if (!allRoomIdOnlySet.contains(roomId))
                     throw new ResourceNotFoundException("MeetingRoom", "id", roomId);
@@ -162,12 +162,38 @@ public class MeetingServiceImpl implements MeetingService {
 
     @Override
     public MeetingStatus changeMeetingStatus(Long id, MeetingStatus newStatus) {
-        return null;
+        Optional<Meeting> meeting = meetingRepository.findById(id);
+        if (meeting.isPresent()) {
+            Meeting foundMeeting = meeting.get();
+            foundMeeting.setStatus(newStatus);
+            meetingRepository.save(foundMeeting);
+            return foundMeeting.getStatus();
+        } else {
+            throw new ResourceNotFoundException("Meeting", "id", id);
+        }
     }
 
     @Override
     public Meeting getMeetingDetails(Long id) {
-        return meetingRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("meeting","id",id));
+        return meetingRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("meeting", "id", id));
+    }
+
+    @Override
+    public AttendingStatus setAttendeeStatus(Long meetingId, Long employeeId, AttendingStatus attendingStatus) {
+        Optional<Meeting> foundMeeting = meetingRepository.findById(meetingId);
+        if (foundMeeting.isPresent()) {
+            Meeting meeting = foundMeeting.get();
+            Optional<Attendee> attendeeWithEmpId = meeting.getAttendees().stream()
+                    .filter(attendee -> attendee.getEmployee().getId() == employeeId)
+                    .findFirst();
+            if (!attendeeWithEmpId.isPresent())
+                throw new ResourceNotFoundException("Employee", "id", employeeId);
+            attendeeWithEmpId.get().setIsAttending(attendingStatus);
+            meetingRepository.save(meeting);
+            return attendingStatus;
+        } else {
+            throw new ResourceNotFoundException("Meeting", "id", meetingId);
+        }
     }
 
 

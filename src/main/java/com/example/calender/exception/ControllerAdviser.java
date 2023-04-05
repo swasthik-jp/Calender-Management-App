@@ -63,7 +63,7 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
 
         Map<String, Object> body = new LinkedHashMap<>();
         body.put(TIME_STAMP, LocalDateTime.now());
-        body.put("message", "Violates the company policies");
+        body.put("message", ex.getMessage());
 
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }

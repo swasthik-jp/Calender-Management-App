@@ -1,21 +1,25 @@
 package com.example.calender.service;
 
+import com.example.calender.constants.AttendingStatus;
 import com.example.calender.constants.MeetingStatus;
 import com.example.calender.entity.Meeting;
 import com.example.calender.exception.PolicyViolationException;
+import com.example.calender.exception.ResourceNotFoundException;
 
 import java.util.Date;
 import java.util.Set;
 
 public interface MeetingService {
 
-    public Boolean canSchedule(Set<String> attendees, Date start, Date end) throws PolicyViolationException;
+    Boolean canSchedule(Set<String> attendees, Date start, Date end) throws PolicyViolationException;
 
-    public Long scheduleMeeting(Meeting meeting);
+    Long scheduleMeeting(Meeting meeting);
 
-    public MeetingStatus changeMeetingStatus(Long id, MeetingStatus newStatus);
+    MeetingStatus changeMeetingStatus(Long id, MeetingStatus newStatus);
 
-    public Meeting getMeetingDetails(Long id);
+    Meeting getMeetingDetails(Long id);
+
+    AttendingStatus setAttendeeStatus(Long meetingId, Long employeeId, AttendingStatus attendingStatus);
 
 
 }
