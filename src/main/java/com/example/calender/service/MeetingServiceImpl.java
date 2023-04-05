@@ -55,7 +55,7 @@ public class MeetingServiceImpl implements MeetingService {
         if (start.before(now))
             throw new IllegalArgumentException("Can't schedule meeting in `Past`!");
 
-        Optional<List<List<Long>>> allMeetings = meetingRepository.getAllMeetingScheduleForGivenDateRange(start, end);
+        Optional<List<List<Long>>> allMeetings = meetingRepository.getAllMeetingAndRoomIdForGivenDateRange(start, end);
 
         if (allMeetings.isPresent()) {
             Set<Long> uniqueRoomsIds = allMeetings.get().stream()
@@ -102,7 +102,7 @@ public class MeetingServiceImpl implements MeetingService {
         At this point it has already been determined there exist atleast one available room
          */
 
-        Optional<List<List<Long>>> allMeetingsInGivenRange = meetingRepository.getAllMeetingScheduleForGivenDateRange(start, end);
+        Optional<List<List<Long>>> allMeetingsInGivenRange = meetingRepository.getAllMeetingAndRoomIdForGivenDateRange(start, end);
         if (allMeetingsInGivenRange.isPresent()) {
             Set<Long> allOccupiedRoomIdSet = allMeetingsInGivenRange.get().stream()
                     .map(pairs -> pairs.get(1))
@@ -175,7 +175,37 @@ public class MeetingServiceImpl implements MeetingService {
 
     @Override
     public Meeting getMeetingDetails(Long id) {
-        return meetingRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("meeting", "id", id));
+        return meetingRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Meeting.class.getSimpleName(),"id",id));
+    }
+
+    @Override
+    public List<Meeting> getMeetingsInCustomRange(Date start, Date end) {
+        return meetingRepository.getAllMeetingForCustomDateRange(start,end).orElseThrow(() -> new ResourceNotFoundException(Meeting.class.getSimpleName(),"filter",start.toString()+" to "+end.toString()));
+    }
+
+    @Override
+    public List<Meeting> getMeetingsInParticularWeek(char sign, int byWeek) {
+        if(byWeek == 0)
+            return meetingRepository.getAllMeetingForCurrentWeek().orElseThrow(() -> new ResourceNotFoundException(Meeting.class.getSimpleName(),"filter","CURRENT_WEEK"));
+
+        if(sign == '+')
+            return meetingRepository.getAllMeetingForNextParticularWeek(byWeek).orElseThrow(() -> new ResourceNotFoundException(Meeting.class.getSimpleName(),"filter","Next "+byWeek+" Weeks"));
+        else if(sign == '-')
+            return meetingRepository.getAllMeetingForPastParticularWeek(byWeek).orElseThrow(() -> new ResourceNotFoundException(Meeting.class.getSimpleName(),"filter","Past "+byWeek+" Weeks"));
+        else throw new IllegalArgumentException();
+    }
+
+    @Override
+    public List<Meeting> getParticularEmployeeMeetings(List<Meeting> meetingsList, Long id) {
+        List<Meeting> hisMeetings = new ArrayList<>();
+        for(Meeting meeting: meetingsList)
+            for(Attendee attendee: meeting.getAttendees())
+                if(Objects.equals(attendee.getEmployee().getId(), id))
+                {
+                    hisMeetings.add(meeting);
+                    break;
+                }
+        return hisMeetings;
     }
 
     @Override

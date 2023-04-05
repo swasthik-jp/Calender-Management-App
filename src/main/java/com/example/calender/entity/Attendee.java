@@ -23,8 +23,6 @@ public class Attendee {
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private Meeting meeting;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
