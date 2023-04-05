@@ -162,25 +162,25 @@ public class MeetingServiceImpl implements MeetingService {
 
     @Override
     public MeetingStatus changeMeetingStatus(Long id, MeetingStatus newStatus) {
-        Optional<Meeting> meeting = meetingRepository.findById(id);
-        if (meeting.isPresent()) {
-            Meeting foundMeeting = meeting.get();
-            foundMeeting.setStatus(newStatus);
-            meetingRepository.save(foundMeeting);
-            return foundMeeting.getStatus();
-        } else {
-            throw new ResourceNotFoundException("Meeting", "id", id);
-        }
+        Meeting meeting = meetingRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Meeting", "id", id));
+
+        meeting.setStatus(newStatus);
+        meetingRepository.save(meeting);
+        return meeting.getStatus();
+
     }
 
     @Override
     public Meeting getMeetingDetails(Long id) {
-        return meetingRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Meeting.class.getSimpleName(), "id", id));
+        return meetingRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(Meeting.class.getSimpleName(), "id", id));
     }
 
     @Override
     public List<Meeting> getMeetingsInCustomRange(Date start, Date end) {
-        return meetingRepository.getAllMeetingForCustomDateRange(start, end).orElseThrow(() -> new ResourceNotFoundException(Meeting.class.getSimpleName(), "filter", start.toString() + " to " + end.toString()));
+        return meetingRepository.getAllMeetingForCustomDateRange(start, end)
+                .orElseThrow(() -> new ResourceNotFoundException(Meeting.class.getSimpleName(), "filter", start.toString() + " to " + end.toString()));
     }
 
     @Override
@@ -209,21 +209,15 @@ public class MeetingServiceImpl implements MeetingService {
 
     @Override
     public AttendingStatus setAttendeeStatus(Long meetingId, Long employeeId, AttendingStatus attendingStatus) {
-        Optional<Meeting> foundMeeting = meetingRepository.findById(meetingId);
-        if (foundMeeting.isPresent()) {
-            Meeting meeting = foundMeeting.get();
-            Optional<Attendee> attendeeWithEmpId = meeting.getAttendees().stream()
-                    .filter(attendee -> attendee.getEmployee().getId() == employeeId)
-                    .findFirst();
-            if (!attendeeWithEmpId.isPresent())
-                throw new ResourceNotFoundException("Employee", "id", employeeId);
-            attendeeWithEmpId.get().setIsAttending(attendingStatus);
-            meetingRepository.save(meeting);
-            return attendingStatus;
-        } else {
-            throw new ResourceNotFoundException("Meeting", "id", meetingId);
-        }
+        Meeting meeting = meetingRepository.findById(meetingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Meeting", "id", meetingId));
+        Attendee attendeeWithEmpId = meeting.getAttendees().stream()
+                .filter(attendee -> attendee.getEmployee().getId() == employeeId)
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", employeeId));
+
+        attendeeWithEmpId.setIsAttending(attendingStatus);
+        meetingRepository.save(meeting);
+        return attendingStatus;
     }
-
-
 }
