@@ -102,33 +102,35 @@ public class MeetingServiceImpl implements MeetingService {
         At this point it has already been determined there exist atleast one available room
          */
 
-        Optional<List<List<Long>>> allMeetings = meetingRepository.getAllMeetingScheduleForGivenDateRange(start, end);
-        if (allMeetings.isPresent()) {
-            Set<Long> uniqueRoomsIds = allMeetings.get().stream()
+        Optional<List<List<Long>>> allMeetingsInGivenRange = meetingRepository.getAllMeetingScheduleForGivenDateRange(start, end);
+        if (allMeetingsInGivenRange.isPresent()) {
+            Set<Long> allOccupiedRoomIdSet = allMeetingsInGivenRange.get().stream()
                     .map(pairs -> pairs.get(1))
                     .collect(Collectors.toSet());
 
             List<MeetingRoom> allMeetingRooms = meetingRoomService.getAllMeetingRooms();
-            Set<Long> allRoomIdSet = allMeetingRooms.stream()
+            Set<Long> allRoomIdOnlySet = allMeetingRooms.stream()
+                    .filter(MeetingRoom::isOperational)
                     .map(MeetingRoom::getId)
                     .collect(Collectors.toSet());
-
-            allRoomIdSet.removeAll(uniqueRoomsIds);
+            allRoomIdOnlySet.removeAll(allOccupiedRoomIdSet);
             // At this point allRoomIdSet should only contain available rooms
 
             if (meeting.getAllocatedRoom() == null) {
 
                 List<Long> meetingRoomsInHostOffice = meetingRoomService.getMeetingRoomsByOfficeId(meeting.getHost().getOffice().getId());
-                Set<Long> availableRooms = new HashSet<>(allRoomIdSet);
+                Set<Long> availableRooms = new HashSet<>(allRoomIdOnlySet);
                 availableRooms.retainAll(meetingRoomsInHostOffice);
                 if (!availableRooms.isEmpty())
                     meeting.setAllocatedRoom(meetingRoomService.getMeetingRoomById(availableRooms.iterator().next()));
                 else
-                    meeting.setAllocatedRoom(meetingRoomService.getMeetingRoomById(allRoomIdSet.iterator().next()));
+                    meeting.setAllocatedRoom(meetingRoomService.getMeetingRoomById(allRoomIdOnlySet.iterator().next()));
 
             } else {
                 Long roomId = meeting.getAllocatedRoom().getId();
-                if (!allRoomIdSet.contains(roomId))
+                if(!meeting.getAllocatedRoom().isOperational())
+                    return null;
+                if (!allRoomIdOnlySet.contains(roomId))
                     throw new ResourceNotFoundException("MeetingRoom", "id", roomId);
                 meeting.setAllocatedRoom(meetingRoomService.getMeetingRoomById(roomId));
             }
@@ -165,7 +167,7 @@ public class MeetingServiceImpl implements MeetingService {
 
     @Override
     public Meeting getMeetingDetails(Long id) {
-        return meetingRepository.getReferenceById(id);
+        return meetingRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("meeting","id",id));
     }
 
 
