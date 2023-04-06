@@ -25,8 +25,6 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     public ResponseEntity<Object> handleResourceAlreadyExistsException(ResourceAlreadyExistsException ex,
                                                                        WebRequest request) {
-
-
         Map<String, Object> body = new LinkedHashMap<>();
         body.put(TIME_STAMP, LocalDateTime.now());
         body.put("message", "Resource already exists");
@@ -37,8 +35,6 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<Object> handleSQLIntegrityException(SQLIntegrityConstraintViolationException ex,
                                                               WebRequest request) {
-
-
         Map<String, Object> body = new LinkedHashMap<>();
         log.error(ex.getMessage());
         body.put(TIME_STAMP, LocalDateTime.now());
@@ -59,8 +55,6 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
     @ExceptionHandler(PolicyViolationException.class)
     public ResponseEntity<Object> handlePolicyViolationException(PolicyViolationException ex,
                                                                  WebRequest request) {
-
-
         Map<String, Object> body = new LinkedHashMap<>();
         body.put(TIME_STAMP, LocalDateTime.now());
         body.put("message", ex.getMessage());
@@ -71,8 +65,6 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex,
                                                                  WebRequest request) {
-
-
         Map<String, Object> body = new LinkedHashMap<>();
         log.error(ex.getMessage());
         body.put(TIME_STAMP, LocalDateTime.now());
@@ -94,7 +86,6 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
                 .toList();
 
         body.put("errors", errors);
-
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 }

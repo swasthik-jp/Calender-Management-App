@@ -187,7 +187,6 @@ public class MeetingServiceImpl implements MeetingService {
     public List<Meeting> getMeetingsInParticularWeek(char sign, int byWeek) {
         if (byWeek == 0)
             return meetingRepository.getAllMeetingForCurrentWeek().orElseThrow(() -> new ResourceNotFoundException(Meeting.class.getSimpleName(), "filter", "CURRENT_WEEK"));
-
         if (sign == '+')
             return meetingRepository.getAllMeetingForNextParticularWeek(byWeek).orElseThrow(() -> new ResourceNotFoundException(Meeting.class.getSimpleName(), "filter", "Next " + byWeek + " Weeks"));
         else if (sign == '-')
@@ -198,12 +197,13 @@ public class MeetingServiceImpl implements MeetingService {
     @Override
     public List<Meeting> getParticularEmployeeMeetings(List<Meeting> meetingsList, Long id) {
         List<Meeting> hisMeetings = new ArrayList<>();
-        for (Meeting meeting : meetingsList)
-            for (Attendee attendee : meeting.getAttendees())
-                if (Objects.equals(attendee.getEmployee().getId(), id)) {
-                    hisMeetings.add(meeting);
-                    break;
-                }
+
+        meetingsList.stream()
+                .forEach(meeting -> meeting.getAttendees().stream()
+                        .filter(attendee -> attendee.getEmployee().getId() == id)
+                        .findFirst()
+                        .ifPresent(attendee -> hisMeetings.add(meeting))
+                );
         return hisMeetings;
     }
 
