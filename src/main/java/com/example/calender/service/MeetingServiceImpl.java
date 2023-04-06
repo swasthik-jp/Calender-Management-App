@@ -97,7 +97,7 @@ public class MeetingServiceImpl implements MeetingService {
                 canSchedule(employeeEmail, start, end)
         ))
             return null;
-
+        log.debug("meeting can be scheduled");
         /*
         Check valid Room or Not
         At this point it has already been determined there exist atleast one available room
@@ -153,6 +153,8 @@ public class MeetingServiceImpl implements MeetingService {
         attendeesList.add(attendeeService.save(mainHost));
         meeting.setAttendees(attendeesList);
         meeting.setStatus(MeetingStatus.PENDING);
+
+        log.debug("all attendees saved");
         /*
         Finally meeting is saved
         PROBLEM TO TAKE CARE: Attendees should be saved only if meeting is saved
