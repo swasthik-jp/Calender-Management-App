@@ -191,7 +191,9 @@ function meetingCreate() {
                 timer: 1500,
                 text: objects + ' has joined '
             });
-            loadTable();
+            const xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "http://localhost:8080/meeting?id="+ login_id);
+            loadTable(xhttp);
         }
         else if(this.status == 400){
             const objects = this.responseText;
