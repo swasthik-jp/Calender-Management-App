@@ -42,6 +42,22 @@ public class MeetingController {
                 meetingService.getMeetingDetails(id)
         ), HttpStatus.OK);
     }
+    @GetMapping("/attendee-status")
+    ResponseEntity<String> getAttendeeStatus(@RequestParam(name = "employeeId", required = false) Long empId,
+                                                      @RequestParam(name = "email", required = false) String email,
+                                                      @RequestParam(name = "meetingId") Long meetId) {
+        if(email != null) {
+            AttendingStatus status = meetingService.getAttendeeStatusByEmpEmail(email, meetId);
+            return new ResponseEntity<>(status.toString(), HttpStatus.OK);
+        }
+        else if(empId != null) {
+            AttendingStatus status = meetingService.getAttendeeStatusByEmpId(empId, meetId);
+            return new ResponseEntity<>(status.toString(), HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>("Employee Id or Email should be provided", HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @PostMapping("/meeting")
     ResponseEntity<String> scheduleMeeting(@RequestBody MeetingDto meetingDto) {

@@ -26,4 +26,7 @@ public interface MeetingService {
     List<Meeting> getMeetingsInParticularWeek(char sign, int byWeek);
 
     List<Meeting> getParticularEmployeeMeetings(List<Meeting> meetingsList, Long id);
+
+    AttendingStatus getAttendeeStatusByEmpId(Long empId, Long meetId);
+    AttendingStatus getAttendeeStatusByEmpEmail(String email, Long meetId);
 }

@@ -9,6 +9,7 @@ import com.example.calender.exception.PolicyViolationException;
 import com.example.calender.exception.ResourceNotFoundException;
 import com.example.calender.repository.MeetingRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +40,8 @@ public class MeetingServiceImpl implements MeetingService {
         long diffInMillies = Math.abs(end.getTime() - start.getTime());
         long timeInMinutes = TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS);
         Date now = new Date();
-
+        if (!DateUtils.isSameDay(start, end))
+            throw new IllegalArgumentException("Start and End date of meeting should be on the same day");
         if (attendees.size() > 5 || timeInMinutes < 30)
             throw new PolicyViolationException("A");
 
@@ -91,7 +93,6 @@ public class MeetingServiceImpl implements MeetingService {
 
         Date start = meeting.getStartTimeStamp();
         Date end = meeting.getEndTimeStamp();
-
         if (Boolean.FALSE.equals(
                 canSchedule(employeeEmail, start, end)
         ))
@@ -205,6 +206,28 @@ public class MeetingServiceImpl implements MeetingService {
                         .ifPresent(attendee -> hisMeetings.add(meeting))
                 );
         return hisMeetings;
+    }
+
+    @Override
+    public AttendingStatus getAttendeeStatusByEmpId(Long empId, Long meetId) {
+        Attendee attendeeWithEmpId = meetingRepository.findById(meetId).get()
+                .getAttendees()
+                .stream()
+                .filter(attendee -> attendee.getEmployee().getId() == empId)
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", empId));
+        return attendeeWithEmpId.getIsAttending();
+    }
+
+    @Override
+    public AttendingStatus getAttendeeStatusByEmpEmail(String email, Long meetId) {
+        Attendee attendeeWithEmpId = meetingRepository.findById(meetId).get()
+                .getAttendees()
+                .stream()
+                .filter(attendee -> attendee.getEmployee().getEmail().equals(email))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Employee", "email", email));
+        return attendeeWithEmpId.getIsAttending();
     }
 
     @Override
