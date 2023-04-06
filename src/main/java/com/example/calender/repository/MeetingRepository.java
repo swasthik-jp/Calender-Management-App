@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface MeetingRepository extends JpaRepository<Meeting, Long> {
 
-    @Query(value = "SELECT id,allocated_room_id FROM meeting WHERE ((?1 BETWEEN start AND end) OR (?2 BETWEEN start AND END))", nativeQuery = true)
+    @Query(value = "SELECT id,allocated_room_id FROM meeting WHERE status <> 'CANCELLED' AND ((?1 BETWEEN start AND end) OR (?2 BETWEEN start AND END));", nativeQuery = true)
     Optional<List<List<Long>>> getAllMeetingAndRoomIdForGivenDateRange(Date start, Date end);
     //public Optional<Set<Long>> getAllRoomsForGivenMeetingId();
 
