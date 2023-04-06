@@ -20,6 +20,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.persistence.EntityManager;
 import javax.swing.text.html.parser.Entity;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class EmployeeRepositoryTest {
 
     @Autowired
@@ -36,43 +39,71 @@ public class EmployeeRepositoryTest {
     private TestEntityManager entityManager;
 
 
-    public Employee initEmployee(){
-        Office office=Office.builder()
-                .id(1L)
-                .build();
+    public Employee initEmployee(Office office){
+
         Employee testEmp = Employee.builder()
-                .id(10L)
+                .id(1L)
                 .email("mail@email.com")
                 .office(office)
                 .build();
         return testEmp;
     }
 
-    public EmployeeDto initEmployeeDto(){
-
-        OfficeDto officeDto=OfficeDto.builder()
-                .id(1L)
+    public Office initOffice(){
+        Office office=Office.builder()
+                .location("banglore")
                 .build();
+        return office;
+    }
 
-        EmployeeDto employeeDto=EmployeeDto.builder()
-                .email("mail@email.com")
-                .office(officeDto)
-                .build();
-        return employeeDto;
+
+
+
+    @Test
+    public void findByEmail_WhenValidEmail_ThenReturnEmployee() {
+
+        Office office=initOffice();
+
+       Office  savedOffice= entityManager.merge(office);
+        Employee employee=initEmployee(savedOffice);
+        Employee savedEmployee=entityManager.merge(employee);
+
+       Optional<Employee> result=employeeRepository.findByEmail(savedEmployee.getEmail());
+
+        assertFalse(result.isEmpty());
+        assertEquals(savedEmployee.getEmail(),result.get().getEmail());
     }
 
 
     @Test
-    public void findByEmail() {
-        entityManager.persist(initEmployee());
-//        entityManager.flush();
+    public void findByEmail_WhenInValidEmail_ThenReturnNull() {
 
-       Optional<Employee> employee=employeeRepository.findByEmail(initEmployee().getEmail());
+        Office office=initOffice();
 
-        assertFalse(employee.isEmpty());
+        Office  savedOffice= entityManager.merge(office);
+
+        Employee employee=initEmployee(savedOffice);
+        entityManager.merge(employee);
+
+        String email="nonpresent@email.com";
+
+        Optional<Employee> result=employeeRepository.findByEmail(email);
+        assertTrue(result.isEmpty());
     }
 
     @Test
-    void findAllByOfficeId() {
+    void findAllByOfficeId_WhenValidOfficeId_ThenReturnListOfEmployees() {
+
+        Office office=initOffice();
+
+        Office  savedOffice= entityManager.merge(office);
+        Employee employee=initEmployee(savedOffice);
+      Employee savedEmployee=entityManager.merge(employee);
+
+        Optional<List<Employee>> result=employeeRepository.findAllByOfficeId(savedOffice.getId());
+
+        assertFalse(result.isEmpty());
+        assertEquals(Arrays.asList(savedEmployee),result.get());
+
     }
 }
