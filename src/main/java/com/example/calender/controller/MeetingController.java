@@ -64,7 +64,7 @@ public class MeetingController {
         Meeting requestMeeting = meetingMapper.toEntity(meetingDto);
         Long id = meetingService.scheduleMeeting(requestMeeting);
         if (id == null)
-            return new ResponseEntity<>("Can't schedule Meeting", HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
+            return new ResponseEntity<>("Can't schedule Meeting", HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(id.toString(), HttpStatus.CREATED);
     }
 
@@ -83,7 +83,7 @@ public class MeetingController {
     }
 
     @PutMapping("/attendee-status")
-    ResponseEntity<String> setAttendeeStatus(@RequestBody AttendeeDto attendee) {
+    ResponseEntity<String> setAttendeeStatus(@Valid @RequestBody AttendeeDto attendee) {
         AttendingStatus status = meetingService.setAttendeeStatus(attendee.getMeetingId(), attendee.getEmployeeId(), attendee.getIsAttending());
         return new ResponseEntity<>("Status successfully changed to " + status, HttpStatus.OK);
     }
