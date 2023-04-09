@@ -79,6 +79,7 @@ public class EmployeeControllerTest {
                 .build();
         Employee testEmp = Employee.builder()
                 .id(10L)
+                .name("employee1")
                 .email("mail@email.com")
                 .office(office)
                 .build();
@@ -92,6 +93,7 @@ public class EmployeeControllerTest {
                 .build();
 
         EmployeeDto employeeDto=EmployeeDto.builder()
+                .name("employee1")
                 .email("mail@email.com")
                 .office(officeDto)
                 .build();

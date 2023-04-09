@@ -26,7 +26,6 @@ public class EmployeeServiceImplTest {
     @InjectMocks
     EmployeeService employeeService = new EmployeeServiceImpl();
 
-
     @Test
     public void when_saveEmployeeIsCalled_thenExpectSavedEmployeeObject() throws ResourceAlreadyExistsException {
         Employee testEmp = Employee.builder()
