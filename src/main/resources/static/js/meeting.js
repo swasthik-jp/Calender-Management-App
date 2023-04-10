@@ -134,7 +134,10 @@ function loadTable(filter) {
 
                 trHTML += '</td>';
                 trHTML += '<td><button type="button" class="btn btn-outline-secondary" onclick="changeStatus(' + object['id'] + ',' + '\'' + cstatus + '\'' + ')"' + hidden + '>' + status + '</button>';
+
+                if(login_email.localeCompare(object['host'])==0){
                 trHTML += '<button type="button" class="btn btn-outline-danger" onclick="showCancelMeetingBtn(' + object['id'] + ',' + '\'' + object['host'] + '\'' + ')"' + hidden + '>Cancel&nbsp</button></td>';
+                }
 
                 trHTML += "</tr>";
 
