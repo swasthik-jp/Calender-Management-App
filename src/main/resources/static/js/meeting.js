@@ -71,7 +71,7 @@ else {
     login_email = localStorage.getItem("session-email");
     console.log(login_name);
     document.getElementById('nav-user-id').innerHTML = '<b style="color:#ffffff;padding-top:10px;letter-spacing: 1px;" >Welcome ' + login_name + '</b>';
-    loadTable("&filter=current_week");
+    loadTable('');
 }
 
 
@@ -134,10 +134,7 @@ function loadTable(filter) {
 
                 trHTML += '</td>';
                 trHTML += '<td><button type="button" class="btn btn-outline-secondary" onclick="changeStatus(' + object['id'] + ',' + '\'' + cstatus + '\'' + ')"' + hidden + '>' + status + '</button>';
-
-                if(login_email.localeCompare(object['host'])==0){
                 trHTML += '<button type="button" class="btn btn-outline-danger" onclick="showCancelMeetingBtn(' + object['id'] + ',' + '\'' + object['host'] + '\'' + ')"' + hidden + '>Cancel&nbsp</button></td>';
-                }
 
                 trHTML += "</tr>";
 
