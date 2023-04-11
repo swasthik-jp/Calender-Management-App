@@ -136,14 +136,14 @@ class MeetingRepositoryTest {
         Optional<List<List<Long>>> result=meetingRepository.getAllMeetingAndRoomIdForGivenDateRange(startDate,endDate);
 
         for(List<Long> ls:result.get()){
-            assertEquals(ls.get(0),meeting.getId());
-            assertEquals(ls.get(1),meetingRoom.getId());
+            assertEquals(ls.get(0),savedMeeting.getId());
+            assertEquals(ls.get(1),savedMeetingRoom.getId());
         }
 
     }
 
     @Test
-    void getAllMeetingForCustomDateRange() {
+    void getAllMeetingForCustomDateRange_WhenValidRange_ThenReturnMeetings() {
         Office office=initOffice();
         Office  savedOffice= entityManager.merge(office);
 
@@ -178,7 +178,7 @@ class MeetingRepositoryTest {
     }
 
     @Test
-    void getAllMeetingForCurrentWeek() {
+    void getAllMeetingForCurrentWeek_ReturnMeetings() {
 
         Office office=initOffice();
         Office  savedOffice= entityManager.merge(office);
@@ -206,7 +206,7 @@ class MeetingRepositoryTest {
     }
 
     @Test
-    void getAllMeetingForNextParticularWeek() {
+    void getAllMeetingForNextParticularWeek_ReturnMeetings() {
 
         Office office=initOffice();
         Office  savedOffice= entityManager.merge(office);
@@ -238,7 +238,7 @@ class MeetingRepositoryTest {
         meeting.setEndTimeStamp(endDate);
         Meeting savedMeeting=entityManager.merge(meeting);
 
-        Optional<List<Meeting>> result=meetingRepository.getAllMeetingForNextParticularWeek(0);
+        Optional<List<Meeting>> result=meetingRepository.getAllMeetingForNextParticularWeek(1);
 
         for(Meeting curMeeting:result.get()){
             assertEquals(curMeeting.getId(),savedMeeting.getId());
@@ -246,6 +246,42 @@ class MeetingRepositoryTest {
     }
 
     @Test
-    void getAllMeetingForPastParticularWeek() {
+    void getAllMeetingForPastParticularWeek_ReturnMeetings() {
+
+        Office office=initOffice();
+        Office  savedOffice= entityManager.merge(office);
+
+        Employee employee=initEmployee(savedOffice);
+        Employee savedEmployee=entityManager.merge(employee);
+
+        MeetingRoom meetingRoom=initMeetingRoom(savedOffice);
+        MeetingRoom savedMeetingRoom=entityManager.merge(meetingRoom);
+
+        Attendee attendee= Attendee.builder()
+                .employee(savedEmployee).build();
+        Attendee savedAttendee=entityManager.merge(attendee);
+
+        Meeting meeting=initMeeting(savedOffice);
+        meeting.setAllocatedRoom(savedMeetingRoom);
+        meeting.setAttendees(new HashSet<>(Arrays.asList(savedAttendee)));
+
+
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.set(Calendar.WEEK_OF_YEAR,calendar.get(Calendar.WEEK_OF_YEAR)-1);
+        Date startDate=calendar.getTime();
+        calendar.add(Calendar.HOUR_OF_DAY,2);
+        Date endDate=calendar.getTime();
+
+
+        meeting.setStartTimeStamp(startDate);
+        meeting.setEndTimeStamp(endDate);
+        Meeting savedMeeting=entityManager.merge(meeting);
+
+        Optional<List<Meeting>> result=meetingRepository.getAllMeetingForPastParticularWeek(1);
+
+        for(Meeting curMeeting:result.get()){
+            assertEquals(curMeeting.getId(),savedMeeting.getId());
+        }
     }
 }

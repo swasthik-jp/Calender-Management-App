@@ -19,6 +19,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,11 +40,17 @@ public class MeetingServiceImplTest {
     @Mock
     EmployeeService employeeService;
 
+    @Mock
+    AttendeeService attendeeService;
+
     @InjectMocks
     MeetingService meetingService = new MeetingServiceImpl();
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
+
+    private int startTime=10;
+    private int endTime=16;
 
     public Office initOffice(){
         Office office=Office.builder()
@@ -76,7 +84,6 @@ public class MeetingServiceImplTest {
     public Meeting initMeeting(Office office){
 
         Date startdate=new Date();
-
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(startdate);
         calendar.add(Calendar.MINUTE,10);
@@ -95,30 +102,8 @@ public class MeetingServiceImplTest {
         return meeting;
     }
 
-    public MeetingDto initMeetingDto(Meeting meeting){
-        MeetingDto meetingDto=MeetingDto.builder()
-                .id(meeting.getId())
-                .startTimeStamp(meeting.getStartTimeStamp())
-                .endTimeStamp(meeting.getEndTimeStamp())
-                .allocatedRoomId(meeting.getAllocatedRoom().getId())
-                .attendees(meeting.getAttendees().stream().map(a->a.getEmployee().getEmail()).collect(Collectors.toSet()))
-                .build();
-        return meetingDto;
-    }
 
-    public EmployeeDto initEmployeeDto(){
 
-        OfficeDto officeDto=OfficeDto.builder()
-                .id(1L)
-                .build();
-
-        EmployeeDto employeeDto=EmployeeDto.builder()
-                .name("employee1")
-                .email("mail@email.com")
-                .office(officeDto)
-                .build();
-        return employeeDto;
-    }
 
     @Test
    public void canSchedule_WhenAttendeesGreaterThan6_ThenThrowPolicyViolationException() {
@@ -152,7 +137,7 @@ public class MeetingServiceImplTest {
 
 
         calendar.setTime(new Date());
-        if(calendar.get(Calendar.HOUR_OF_DAY)<10 || calendar.get(Calendar.HOUR_OF_DAY)>18){
+        if(calendar.get(Calendar.HOUR_OF_DAY)<startTime || calendar.get(Calendar.HOUR_OF_DAY)>endTime){
             calendar.set(Calendar.HOUR_OF_DAY,11);
             calendar.set(Calendar.MINUTE,0);
             calendar.add(Calendar.DAY_OF_MONTH,1);
@@ -209,7 +194,7 @@ public class MeetingServiceImplTest {
         Calendar calendar = Calendar.getInstance();
 
         calendar.setTime(new Date());
-        if(calendar.get(Calendar.HOUR_OF_DAY)<10 || calendar.get(Calendar.HOUR_OF_DAY)>18){
+        if(calendar.get(Calendar.HOUR_OF_DAY)<startTime || calendar.get(Calendar.HOUR_OF_DAY)>18){
             calendar.set(Calendar.HOUR_OF_DAY,11);
             calendar.set(Calendar.MINUTE,0);
             calendar.add(Calendar.DAY_OF_MONTH,1); // next day 11:00 am
@@ -241,7 +226,7 @@ public class MeetingServiceImplTest {
         Calendar calendar = Calendar.getInstance();
 
         calendar.setTime(new Date());
-        if(calendar.get(Calendar.HOUR_OF_DAY)<10 || calendar.get(Calendar.HOUR_OF_DAY)>18){
+        if(calendar.get(Calendar.HOUR_OF_DAY)<startTime || calendar.get(Calendar.HOUR_OF_DAY)>endTime){
             calendar.set(Calendar.HOUR_OF_DAY,11);
             calendar.set(Calendar.MINUTE,0);
             calendar.add(Calendar.DAY_OF_MONTH,1);
@@ -275,7 +260,7 @@ public class MeetingServiceImplTest {
         Calendar calendar = Calendar.getInstance();
 
         calendar.setTime(new Date());
-        if(calendar.get(Calendar.HOUR_OF_DAY)<10 || calendar.get(Calendar.HOUR_OF_DAY)>18){
+        if(calendar.get(Calendar.HOUR_OF_DAY)<startTime || calendar.get(Calendar.HOUR_OF_DAY)>endTime){
             calendar.set(Calendar.HOUR_OF_DAY,11);
             calendar.set(Calendar.MINUTE,0);
             calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH)-1);
@@ -308,7 +293,7 @@ public class MeetingServiceImplTest {
         Calendar calendar = Calendar.getInstance();
 
         calendar.setTime(new Date());
-        if(calendar.get(Calendar.HOUR_OF_DAY)<10 || calendar.get(Calendar.HOUR_OF_DAY)>18){
+        if(calendar.get(Calendar.HOUR_OF_DAY)<startTime || calendar.get(Calendar.HOUR_OF_DAY)>endTime){
             calendar.set(Calendar.HOUR_OF_DAY,11);
             calendar.set(Calendar.MINUTE,0);
             calendar.add(Calendar.DAY_OF_MONTH,1); // next day 11:00 am
@@ -333,7 +318,7 @@ public class MeetingServiceImplTest {
 
 
     @Test
-    public void canSchedule_WhenMeetingIsScheduledInGivenTime_ThenReturnFreeMeetingRooms() {
+    public void canSchedule_WhenAlreadyMeetingIsScheduledInGivenTime_ThenReturnFreeMeetingRooms() {
 
         Set<String> attendees=new HashSet<>();
         attendees.add("email1@mail.com");
@@ -345,7 +330,7 @@ public class MeetingServiceImplTest {
         Calendar calendar = Calendar.getInstance();
 
         calendar.setTime(new Date());
-        if(calendar.get(Calendar.HOUR_OF_DAY)<10 || calendar.get(Calendar.HOUR_OF_DAY)>18){
+        if(calendar.get(Calendar.HOUR_OF_DAY)<startTime || calendar.get(Calendar.HOUR_OF_DAY)>endTime){
             calendar.set(Calendar.HOUR_OF_DAY,11);
             calendar.set(Calendar.MINUTE,0);
             calendar.add(Calendar.DAY_OF_MONTH,1); // next day 11:00 am
@@ -375,8 +360,508 @@ public class MeetingServiceImplTest {
 
     }
 
+
     @Test
-   public void scheduleMeeting() {
+    public void canSchedule_WhenAlreadyMeetingIsScheduledInGivenTimeAndNoFreeMeetingRooms_ThenReturnFalse() {
+
+        Set<String> attendees=new HashSet<>();
+        attendees.add("email1@mail.com");
+        attendees.add("email2@mail.com");
+        attendees.add("email3@mail.com");
+        attendees.add("email4@mail.com");
+        attendees.add("email5@mail.com");
+
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.setTime(new Date());
+        if(calendar.get(Calendar.HOUR_OF_DAY)<startTime || calendar.get(Calendar.HOUR_OF_DAY)>endTime){
+            calendar.set(Calendar.HOUR_OF_DAY,11);
+            calendar.set(Calendar.MINUTE,0);
+            calendar.add(Calendar.DAY_OF_MONTH,1); // next day 11:00 am
+        }else {
+            calendar.add(Calendar.MINUTE, 10);// current time+10mins
+        }
+        Date startDate=calendar.getTime();
+
+        calendar.setTime(startDate);
+        calendar.add(Calendar.HOUR_OF_DAY, 1);//add 1 hour to  end time
+        Date endDate=calendar.getTime();
+
+        List<List<Long>> meetingIds=Arrays.asList(Arrays.asList(0L,1L));
+        Optional<List<List<Long>>> optional=Optional.of(meetingIds);
+
+        when(meetingRepository.getAllMeetingAndRoomIdForGivenDateRange(startDate,endDate)).thenReturn(optional);
+
+        MeetingRoom meetingRoom1=initMeetingRoom(initOffice());
+        meetingRoom1.setId(1L);
+        MeetingRoom meetingRoom2=initMeetingRoom(initOffice());
+        meetingRoom2.setId(2L);
+
+        when(meetingRoomService.getAllMeetingRooms()).thenReturn(Arrays.asList(meetingRoom1));
+//        when(employeeService.getEmployeeByEmail(Mockito.any())).thenReturn(initEmployee(initOffice()));
+
+        assertFalse(meetingService.canSchedule(attendees,startDate,endDate));
+
+    }
+
+    private Employee getEmployee(Long id,String email,Office office){
+        Employee employee=initEmployee(office);
+        employee.setId(id);
+        employee.setEmail(email);
+        return  employee;
+    }
+
+    @Test
+   public void scheduleMeeting_WhenCanScheduleReturnsFalse_ThenReturnNULL() {
+
+      Office office=initOffice();
+
+        Set<Attendee> attendees=new HashSet<>();
+        attendees.add(Attendee.builder().employee(getEmployee(1L,"email1@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(2L,"email2@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(3L,"email3@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(4L,"email4@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(5L,"email5@mail.com",office)).build());
+
+        Set<String> attendeesEmail=attendees.stream().map(a->a.getEmployee().getEmail()).collect(Collectors.toSet());
+
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.setTime(new Date());
+        if(calendar.get(Calendar.HOUR_OF_DAY)<startTime || calendar.get(Calendar.HOUR_OF_DAY)>endTime){
+            calendar.set(Calendar.HOUR_OF_DAY,11);
+            calendar.set(Calendar.MINUTE,0);
+            calendar.add(Calendar.DAY_OF_MONTH,1); // next day 11:00 am
+        }else {
+            calendar.add(Calendar.MINUTE, 10);// current time+10mins
+        }
+        Date startDate=calendar.getTime();
+
+        calendar.setTime(startDate);
+        calendar.add(Calendar.HOUR_OF_DAY, 1);//add 1 hour to  end time
+        Date endDate=calendar.getTime();
+
+        List<List<Long>> meetingIds=Arrays.asList(Arrays.asList(0L,1L));
+        Optional<List<List<Long>>> optional=Optional.of(meetingIds);
+
+        when(meetingRepository.getAllMeetingAndRoomIdForGivenDateRange(startDate,endDate)).thenReturn(optional);
+
+        MeetingRoom meetingRoom1=initMeetingRoom(initOffice());
+        meetingRoom1.setId(1L);
+        MeetingRoom meetingRoom2=initMeetingRoom(initOffice());
+        meetingRoom2.setId(2L);
+
+        when(meetingRoomService.getAllMeetingRooms()).thenReturn(Arrays.asList(meetingRoom1));
+//        when(employeeService.getEmployeeByEmail(Mockito.any())).thenReturn(initEmployee(initOffice()));
+
+
+        Meeting meeting=initMeeting(office);
+        meeting.setAttendees(attendees);
+        meeting.setStartTimeStamp(startDate);
+        meeting.setEndTimeStamp(endDate);
+
+
+        assertNull(meetingService.scheduleMeeting(meeting));
+
+    }
+
+    @Test
+    public  void scheduleMeeting_WhenNoMeetingIsScheduledInTimeRange_ThenScheduleMeeting(){
+
+        Office office=initOffice();
+
+        Set<Attendee> attendees=new HashSet<>();
+        attendees.add(Attendee.builder().employee(getEmployee(1L,"email1@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(2L,"email2@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(3L,"email3@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(4L,"email4@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(5L,"email5@mail.com",office)).build());
+
+        Set<String> attendeesEmail=attendees.stream().map(a->a.getEmployee().getEmail()).collect(Collectors.toSet());
+
+
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.setTime(new Date());
+        if(calendar.get(Calendar.HOUR_OF_DAY)<startTime || calendar.get(Calendar.HOUR_OF_DAY)>endTime){
+            calendar.set(Calendar.HOUR_OF_DAY,11);
+            calendar.set(Calendar.MINUTE,0);
+            calendar.add(Calendar.DAY_OF_MONTH,1); // next day 11:00 am
+        }else {
+            calendar.add(Calendar.MINUTE, 10);// current time+10mins
+        }
+        Date startDate=calendar.getTime();
+
+        calendar.setTime(startDate);
+        calendar.add(Calendar.HOUR_OF_DAY, 1);//add 1 hour to  end time
+        Date endDate=calendar.getTime();
+
+        Optional<List<List<Long>>> optional=Optional.empty();
+
+        when(meetingRepository.getAllMeetingAndRoomIdForGivenDateRange(startDate,endDate)).thenReturn(optional);
+
+
+        when(meetingRoomService.getAllMeetingRooms()).thenReturn(Arrays.asList(initMeetingRoom(initOffice())));
+
+        for (Attendee participant : attendees) {
+            when(attendeeService.save(participant)).thenReturn(participant);
+        }
+
+
+        Meeting meeting=initMeeting(office);
+        meeting.setAttendees(attendees);
+        meeting.setStartTimeStamp(startDate);
+        meeting.setEndTimeStamp(endDate);
+
+        when(meetingRepository.save(meeting)).thenReturn(meeting);
+
+        assertEquals(meeting.getId(),meetingService.scheduleMeeting(meeting));
+    }
+
+    @Test
+    public  void scheduleMeeting_WhenMeetingIsScheduledInTimeRangeAndMeetingRoomIsNotProvided_ThenScheduleMeeting(){
+
+        Office office=initOffice();
+
+        Set<Attendee> attendees=new HashSet<>();
+        attendees.add(Attendee.builder().employee(getEmployee(1L,"email1@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(2L,"email2@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(3L,"email3@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(4L,"email4@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(5L,"email5@mail.com",office)).build());
+
+        Set<String> attendeesEmail=attendees.stream().map(a->a.getEmployee().getEmail()).collect(Collectors.toSet());
+
+
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.setTime(new Date());
+        if(calendar.get(Calendar.HOUR_OF_DAY)<startTime || calendar.get(Calendar.HOUR_OF_DAY)>endTime){
+            calendar.set(Calendar.HOUR_OF_DAY,11);
+            calendar.set(Calendar.MINUTE,0);
+            calendar.add(Calendar.DAY_OF_MONTH,1); // next day 11:00 am
+        }else {
+            calendar.add(Calendar.MINUTE, 10);// current time+10mins
+        }
+        Date startDate=calendar.getTime();
+
+        calendar.setTime(startDate);
+        calendar.add(Calendar.HOUR_OF_DAY, 1);//add 1 hour to  end time
+        Date endDate=calendar.getTime();
+
+        Employee host=initEmployee(office);
+        host.setId(100L);
+
+        Meeting meeting=initMeeting(office);
+        meeting.setAttendees(attendees);
+        meeting.setStartTimeStamp(startDate);
+        meeting.setEndTimeStamp(endDate);
+        meeting.setHost(host);
+        meeting.setAllocatedRoom(null); // room is null
+
+        MeetingRoom meetingRoom1=initMeetingRoom(office);
+        meetingRoom1.setId(12L);
+        meetingRoom1.setOperational(true);
+
+        MeetingRoom meetingRoom2=initMeetingRoom(office);
+        meetingRoom2.setId(13L);
+        meetingRoom2.setOperational(true);
+
+        Optional<List<List<Long>>> optional=Optional.of(Arrays.asList(Arrays.asList(0L,meetingRoom1.getId())));
+
+        when(meetingRepository.getAllMeetingAndRoomIdForGivenDateRange(startDate,endDate)).thenReturn(optional);
+
+        when(meetingRoomService.getMeetingRoomsByOfficeId(office.getId())).thenReturn(Arrays.asList(meetingRoom1.getId(),meetingRoom2.getId()));
+
+        when(meetingRoomService.getMeetingRoomById(meetingRoom2.getId())).thenReturn(meetingRoom2);
+
+        when(meetingRoomService.getAllMeetingRooms()).thenReturn(Arrays.asList(meetingRoom1,meetingRoom2));
+
+        for (Attendee participant : attendees) {
+            when(attendeeService.save(participant)).thenReturn(participant);
+        }
+
+
+
+        when(meetingRepository.save(meeting)).thenReturn(meeting);
+
+        assertEquals(meeting.getId(),meetingService.scheduleMeeting(meeting));
+    }
+
+    @Test
+    public  void scheduleMeeting_WhenMeetingIsScheduledInTimeRangeAndMeetingRoomIsNotProvidedAndRoomIsOutSideHostOffice_ThenScheduleMeeting(){
+
+        Office office=initOffice();
+
+        Set<Attendee> attendees=new HashSet<>();
+        attendees.add(Attendee.builder().employee(getEmployee(1L,"email1@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(2L,"email2@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(3L,"email3@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(4L,"email4@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(5L,"email5@mail.com",office)).build());
+
+        Set<String> attendeesEmail=attendees.stream().map(a->a.getEmployee().getEmail()).collect(Collectors.toSet());
+
+
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.setTime(new Date());
+        if(calendar.get(Calendar.HOUR_OF_DAY)<startTime || calendar.get(Calendar.HOUR_OF_DAY)>endTime){
+            calendar.set(Calendar.HOUR_OF_DAY,11);
+            calendar.set(Calendar.MINUTE,0);
+            calendar.add(Calendar.DAY_OF_MONTH,1); // next day 11:00 am
+        }else {
+            calendar.add(Calendar.MINUTE, 10);// current time+10mins
+        }
+        Date startDate=calendar.getTime();
+
+        calendar.setTime(startDate);
+        calendar.add(Calendar.HOUR_OF_DAY, 1);//add 1 hour to  end time
+        Date endDate=calendar.getTime();
+
+        Employee host=initEmployee(office);
+        host.setId(100L);
+
+        Meeting meeting=initMeeting(office);
+        meeting.setAttendees(attendees);
+        meeting.setStartTimeStamp(startDate);
+        meeting.setEndTimeStamp(endDate);
+        meeting.setHost(host);
+        meeting.setAllocatedRoom(null); // room is null
+
+        MeetingRoom meetingRoom1=initMeetingRoom(office);
+        meetingRoom1.setId(12L);
+        meetingRoom1.setOperational(true);
+
+        MeetingRoom meetingRoom2=initMeetingRoom(office);
+        meetingRoom2.setId(13L);
+        meetingRoom2.setOperational(true);
+
+        Optional<List<List<Long>>> optional=Optional.of(Arrays.asList(Arrays.asList(0L,meetingRoom1.getId())));
+
+        when(meetingRepository.getAllMeetingAndRoomIdForGivenDateRange(startDate,endDate)).thenReturn(optional);
+
+        when(meetingRoomService.getMeetingRoomsByOfficeId(office.getId())).thenReturn(Arrays.asList());
+
+        when(meetingRoomService.getMeetingRoomById(meetingRoom2.getId())).thenReturn(meetingRoom2);
+
+        when(meetingRoomService.getAllMeetingRooms()).thenReturn(Arrays.asList(meetingRoom1,meetingRoom2));
+
+        for (Attendee participant : attendees) {
+            when(attendeeService.save(participant)).thenReturn(participant);
+        }
+
+        when(meetingRepository.save(meeting)).thenReturn(meeting);
+
+        assertEquals(meeting.getId(),meetingService.scheduleMeeting(meeting));
+    }
+
+
+    @Test
+    public  void scheduleMeeting_WhenMeetingIsScheduledInTimeRangeAndMeetingRoomIsProvided_ThenScheduleMeeting(){
+
+        Office office=initOffice();
+
+        Set<Attendee> attendees=new HashSet<>();
+        attendees.add(Attendee.builder().employee(getEmployee(1L,"email1@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(2L,"email2@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(3L,"email3@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(4L,"email4@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(5L,"email5@mail.com",office)).build());
+
+        Set<String> attendeesEmail=attendees.stream().map(a->a.getEmployee().getEmail()).collect(Collectors.toSet());
+
+
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.setTime(new Date());
+        if(calendar.get(Calendar.HOUR_OF_DAY)<startTime || calendar.get(Calendar.HOUR_OF_DAY)>endTime){
+            calendar.set(Calendar.HOUR_OF_DAY,11);
+            calendar.set(Calendar.MINUTE,0);
+            calendar.add(Calendar.DAY_OF_MONTH,1); // next day 11:00 am
+        }else {
+            calendar.add(Calendar.MINUTE, 10);// current time+10mins
+        }
+        Date startDate=calendar.getTime();
+
+        calendar.setTime(startDate);
+        calendar.add(Calendar.HOUR_OF_DAY, 1);//add 1 hour to  end time
+        Date endDate=calendar.getTime();
+
+        Employee host=initEmployee(office);
+        host.setId(100L);
+
+        Meeting meeting=initMeeting(office);
+        meeting.setAttendees(attendees);
+        meeting.setStartTimeStamp(startDate);
+        meeting.setEndTimeStamp(endDate);
+        meeting.setHost(host);
+
+
+        MeetingRoom meetingRoom1=initMeetingRoom(office);
+        meetingRoom1.setId(12L);
+        meetingRoom1.setOperational(true);
+
+        MeetingRoom meetingRoom2=initMeetingRoom(office);
+        meetingRoom2.setId(13L);
+        meetingRoom2.setOperational(true);
+
+        meeting.setAllocatedRoom(meetingRoom2); // room is provided
+
+        Optional<List<List<Long>>> optional=Optional.of(Arrays.asList(Arrays.asList(0L,meetingRoom1.getId())));
+
+        when(meetingRepository.getAllMeetingAndRoomIdForGivenDateRange(startDate,endDate)).thenReturn(optional);
+
+//        when(meetingRoomService.getMeetingRoomsByOfficeId(office.getId())).thenReturn(Arrays.asList());
+
+        when(meetingRoomService.getMeetingRoomById(meetingRoom2.getId())).thenReturn(meetingRoom2);
+
+        when(meetingRoomService.getAllMeetingRooms()).thenReturn(Arrays.asList(meetingRoom1,meetingRoom2));
+
+        for (Attendee participant : attendees) {
+            when(attendeeService.save(participant)).thenReturn(participant);
+        }
+
+        when(meetingRepository.save(meeting)).thenReturn(meeting);
+
+        assertEquals(meeting.getId(),meetingService.scheduleMeeting(meeting));
+    }
+
+
+    @Test
+    public  void scheduleMeeting_WhenMeetingRoomIsNotOperational_ThenReturnNULL(){
+
+        Office office=initOffice();
+
+        Set<Attendee> attendees=new HashSet<>();
+        attendees.add(Attendee.builder().employee(getEmployee(1L,"email1@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(2L,"email2@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(3L,"email3@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(4L,"email4@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(5L,"email5@mail.com",office)).build());
+
+        Set<String> attendeesEmail=attendees.stream().map(a->a.getEmployee().getEmail()).collect(Collectors.toSet());
+
+
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.setTime(new Date());
+        if(calendar.get(Calendar.HOUR_OF_DAY)<startTime || calendar.get(Calendar.HOUR_OF_DAY)>endTime){
+            calendar.set(Calendar.HOUR_OF_DAY,11);
+            calendar.set(Calendar.MINUTE,0);
+            calendar.add(Calendar.DAY_OF_MONTH,1); // next day 11:00 am
+        }else {
+            calendar.add(Calendar.MINUTE, 10);// current time+10mins
+        }
+        Date startDate=calendar.getTime();
+
+        calendar.setTime(startDate);
+        calendar.add(Calendar.HOUR_OF_DAY, 1);//add 1 hour to  end time
+        Date endDate=calendar.getTime();
+
+        Employee host=initEmployee(office);
+        host.setId(100L);
+
+        Meeting meeting=initMeeting(office);
+        meeting.setAttendees(attendees);
+        meeting.setStartTimeStamp(startDate);
+        meeting.setEndTimeStamp(endDate);
+        meeting.setHost(host);
+
+
+        MeetingRoom meetingRoom1=initMeetingRoom(office);
+        meetingRoom1.setId(12L);
+        meetingRoom1.setOperational(true);
+
+        MeetingRoom meetingRoom2=initMeetingRoom(office);
+        meetingRoom2.setId(13L);
+        meetingRoom2.setOperational(false);
+
+        meeting.setAllocatedRoom(meetingRoom2); // room is provided
+
+        Optional<List<List<Long>>> optional=Optional.of(Arrays.asList(Arrays.asList(0L,meetingRoom1.getId())));
+
+        when(meetingRepository.getAllMeetingAndRoomIdForGivenDateRange(startDate,endDate)).thenReturn(optional);
+
+
+        when(meetingRoomService.getAllMeetingRooms()).thenReturn(Arrays.asList(meetingRoom1,meetingRoom2));
+
+
+        assertNull(meetingService.scheduleMeeting(meeting));
+    }
+
+
+    @Test
+    public  void scheduleMeeting_WhenSpecifiedMeetingRoomIsOccupied_ThenThrowResourceNotFoundException(){
+
+        Office office=initOffice();
+
+        Set<Attendee> attendees=new HashSet<>();
+        attendees.add(Attendee.builder().employee(getEmployee(1L,"email1@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(2L,"email2@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(3L,"email3@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(4L,"email4@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(5L,"email5@mail.com",office)).build());
+
+        Set<String> attendeesEmail=attendees.stream().map(a->a.getEmployee().getEmail()).collect(Collectors.toSet());
+
+
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.setTime(new Date());
+        if(calendar.get(Calendar.HOUR_OF_DAY)<startTime || calendar.get(Calendar.HOUR_OF_DAY)>endTime){
+            calendar.set(Calendar.HOUR_OF_DAY,11);
+            calendar.set(Calendar.MINUTE,0);
+            calendar.add(Calendar.DAY_OF_MONTH,1); // next day 11:00 am
+        }else {
+            calendar.add(Calendar.MINUTE, 10);// current time+10mins
+        }
+        Date startDate=calendar.getTime();
+
+        calendar.setTime(startDate);
+        calendar.add(Calendar.HOUR_OF_DAY, 1);//add 1 hour to  end time
+        Date endDate=calendar.getTime();
+
+        Employee host=initEmployee(office);
+        host.setId(100L);
+
+        Meeting meeting=initMeeting(office);
+        meeting.setAttendees(attendees);
+        meeting.setStartTimeStamp(startDate);
+        meeting.setEndTimeStamp(endDate);
+        meeting.setHost(host);
+
+
+        MeetingRoom meetingRoom1=initMeetingRoom(office);
+        meetingRoom1.setId(12L);
+        meetingRoom1.setOperational(true);
+
+        MeetingRoom meetingRoom2=initMeetingRoom(office);
+        meetingRoom2.setId(13L);
+        meetingRoom2.setOperational(true);
+
+        meeting.setAllocatedRoom(meetingRoom2); // room is provided
+
+        Optional<List<List<Long>>> optional=Optional.of(Arrays.asList(Arrays.asList(0L,meetingRoom2.getId())));
+
+        when(meetingRepository.getAllMeetingAndRoomIdForGivenDateRange(startDate,endDate)).thenReturn(optional);
+
+//        when(meetingRoomService.getMeetingRoomsByOfficeId(office.getId())).thenReturn(Arrays.asList());
+
+//        when(meetingRoomService.getMeetingRoomById(meetingRoom2.getId())).thenReturn(meetingRoom2);
+
+        when(meetingRoomService.getAllMeetingRooms()).thenReturn(Arrays.asList(meetingRoom1,meetingRoom2));
+
+//        for (Attendee participant : attendees) {
+//            when(attendeeService.save(participant)).thenReturn(participant);
+//        }
+
+//        when(meetingRepository.save(meeting)).thenReturn(meeting);
+
+        thrown.expect(ResourceNotFoundException.class);
+        assertNull(meetingService.scheduleMeeting(meeting));
+
+
     }
 
     @Test
@@ -401,7 +886,7 @@ public class MeetingServiceImplTest {
         MeetingStatus updatedMeetingStatus=MeetingStatus.COMPLETED;
 
         when(meetingRepository.findById(meeting.getId())).thenReturn(Optional.empty());
-        when(meetingRepository.save(meeting)).thenReturn(meeting);
+//        when(meetingRepository.save(meeting)).thenReturn(meeting);
 
         thrown.expect(ResourceNotFoundException.class);
        meetingService.changeMeetingStatus(meeting.getId(),updatedMeetingStatus);
@@ -439,7 +924,7 @@ public class MeetingServiceImplTest {
 
         when(meetingRepository.getAllMeetingForCurrentWeek()).thenReturn(Optional.of(Arrays.asList(meeting)));
         when(meetingRepository.getAllMeetingForNextParticularWeek(Mockito.anyInt())).thenReturn(Optional.of(Arrays.asList(meeting)));
-        when(meetingRepository.getAllMeetingForPastParticularWeek(Mockito.anyInt())).thenReturn(Optional.of(Arrays.asList(meeting)));
+//        when(meetingRepository.getAllMeetingForPastParticularWeek(Mockito.anyInt())).thenReturn(Optional.of(Arrays.asList(meeting)));
 
         assertEquals(meeting.getId(),meetingService.getMeetingsInParticularWeek('+',0).get(0).getId());
         assertEquals(meeting.getId(),meetingService.getMeetingsInParticularWeek('+',1).get(0).getId());
@@ -485,7 +970,7 @@ public class MeetingServiceImplTest {
         AttendingStatus updatedAttendeeStatus=AttendingStatus.YES;
 
         when(meetingRepository.findById(meeting.getId())).thenReturn(Optional.empty());
-        when(meetingRepository.save(meeting)).thenReturn(meeting);
+//        when(meetingRepository.save(meeting)).thenReturn(meeting);
 
         thrown.expect(ResourceNotFoundException.class);
         assertEquals(updatedAttendeeStatus,meetingService.setAttendeeStatus(meeting.getId(),initEmployee(office).getId(),updatedAttendeeStatus));
