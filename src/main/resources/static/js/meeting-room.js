@@ -25,6 +25,30 @@ function loadTable() {
 }
 loadTable();
 
+function validateFormFields(){
+
+    var elements = document.getElementsByClassName("swal2-input");
+
+         let valid=true;
+         for (var i = 0, len = elements.length; i < len; i++) {
+             if((elements[i].value=="" || elements[i].value==null) && elements[i].style.display!="none" ){
+             valid=false;
+            Swal.showValidationMessage(elements[i].placeholder+ ' should not be empty!');
+           break;
+              }
+              if(elements[i].id=="office-id" || elements[i].id=="capacity"){
+               if (isNaN(elements[i].value))
+                {
+                valid=false;
+                 Swal.showValidationMessage(elements[i].placeholder+ ' should be number!');
+                       break;
+           }
+             }
+          }
+
+           return valid;
+}
+
 //CREATE NEW MEETING ROOM
 function showMeetingRoomCreateBox() {
     Swal.fire({
@@ -36,14 +60,17 @@ function showMeetingRoomCreateBox() {
             '<input id="office-id" class="swal2-input" placeholder="Office ID">' +
             '<input id="capacity" class="swal2-input" placeholder="Room Capacity">'+
             `<select style="padding:0 5em;" name="op" id="is-op" class="swal2-input" placeholder="Operational">
-                <option value="" disabled selected>Operational</option>
+                <option id="operational" value="" disabled selected>Operational</option>
                 <option value="true">True</option>
                 <option value="false">False</option>
               </select>`,
 
         focusConfirm: false,
         preConfirm: () => {
-            meetingRoomCreate();
+
+       if(validateFormFields()){
+        meetingRoomCreate();
+         }
         }
     })
 }
@@ -79,11 +106,10 @@ function meetingRoomCreate() {
             loadTable();
         }
         else {
+        const objects = JSON.parse(this.responseText);
             Swal.fire({
                 icon: 'error',
-                title: 'Oops...',
-                text: 'Something went wrong!'+ objects['message'] ,
-                footer: '<a href="">Why do I have this issue?</a>'
+                title: objects['message']
             })
         }
     };
@@ -125,10 +151,22 @@ function showMeetingRoomEditBox(id) {
 
                 focusConfirm: false,
                 preConfirm: () => {
-                    meetingRoomEdit();
+
+
+
+              if(validateFormFields()){
+                      meetingRoomEdit();
+                  }
+
                 }
             })
-        }
+        }else {
+                 const objects = JSON.parse(this.responseText);
+                     Swal.fire({
+                         icon: 'error',
+                         title: objects['message']
+                     })
+                 }
     };
 }
 
@@ -163,12 +201,10 @@ function meetingRoomEdit() {
             loadTable();
         }
         else {
-            const objects = this.responseText;
+            const objects = JSON.parse(this.responseText);
             Swal.fire({
                 icon: 'error',
-                title: 'Oops...',
-                text: 'Something went wrong!'+ objects['message'] ,
-                footer: '<a href="">Why do I have this issue?</a>'
+                title: objects['message']
             })
         }
     };
@@ -214,8 +250,9 @@ function meetingRoomDelete(id) {
     xhttp.open("DELETE", "http://localhost:8080/meetingroom/" + id);
     xhttp.send();
     xhttp.onreadystatechange = function () {
-        const objects = this.responseText;
+
         if (this.readyState == 4 && this.status == 200 ) {
+          const objects = this.responseText;
             Swal.fire(
             'Deleted!',
             objects,
@@ -223,10 +260,11 @@ function meetingRoomDelete(id) {
             )
         }
         else {
+          const objects = JSON.parse(this.responseText);
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: objects,
+                text: objects['message'],
                 footer: '<a href="">Why do I have this issue?</a>'
             })
         }

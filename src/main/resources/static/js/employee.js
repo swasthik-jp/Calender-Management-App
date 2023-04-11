@@ -40,7 +40,11 @@ function showEmployeeCreateBox() {
             '<input id="offId" class="swal2-input" placeholder="Office ID">',
         focusConfirm: false,
         preConfirm: () => {
-            employeeCreate();
+
+              if(validateFormFields()){
+                     employeeCreate();
+                  }
+
         }
     })
 }
@@ -68,6 +72,7 @@ function employeeCreate() {
 
     }));
     xhttp.onreadystatechange = function () {
+      console.log(this)
         if (this.readyState == 4 && this.status == 201) {
             const objects = JSON.parse(this.responseText);
             Swal.fire({
@@ -80,25 +85,51 @@ function employeeCreate() {
             loadTable();
         }
         else if(this.status == 400){
-            const objects = this.responseText;
+            const objects = JSON.parse(this.responseText);
             Swal.fire({
                 icon: 'error',
-                title: 'Oops...',
-                text: objects['errors'] ,
-                footer: '<a href="">Why do I have this issue?</a>'
+                title: objects['message']
             })
         }
         else {
-            const objects = this.responseText;
+            const objects =JSON.parse(this.responseText);
+
             Swal.fire({
                 icon: 'error',
-                title: 'Oops...',
-                text: 'Something went wrong!'+ objects['message'] ,
-                footer: '<a href="">Why do I have this issue?</a>'
+                title: objects['message']
             })
         }
     };
 }
+
+
+
+function validateFormFields(){
+  var elements = document.getElementsByClassName("swal2-input");
+
+   let valid=true;
+   for (var i = 0, len = elements.length; i < len; i++){
+       if((elements[i].value=="" || elements[i].value==null) && elements[i].style.display!="none" ){
+       valid=false;
+      Swal.showValidationMessage(elements[i].placeholder+ ' should not be empty!');
+     break;
+       }
+       if(elements[i].id=="offId" ){
+        if (isNaN(elements[i].value))
+         {
+         valid=false;
+       Swal.showValidationMessage(elements[i].placeholder+ ' should be number!');
+       break;
+      }
+    }
+    if(elements[i].id=="dob" && (new Date(elements[i].value) > new Date(new Date().toDateString()))){
+     valid=false;
+    Swal.showValidationMessage(elements[i].placeholder+ ' should be before today!');
+     break;
+
+    }}
+    return valid;
+    }
 
 
 //UPDATE EMPLOYEE
@@ -114,7 +145,7 @@ function showEmployeeEditBox(id) {
                 title: 'Edit Employee',
                 html:
                     '<input id="id" type="hidden" value=' + employee['id'] + '>' +
-                    '<input id="name" class="swal2-input" value="' + employee['name'] + '">' +
+                    '<input id="name" class="swal2-input" placeholder="name" value="' + employee['name'] + '">' +
                     '<input id="email" class="swal2-input" placeholder="Email Address" value ="' + employee['email'] + '">' +
                     '<input type="date" id="dob" class="swal2-input" style="padding: 0 4.0em" placeholder="Date Of Birth" value ="' + employee['dob'] + '">' +
                     '<input id="address" class="swal2-input" placeholder="Home Address" value ="' + employee['address'] + '">' +
@@ -122,7 +153,11 @@ function showEmployeeEditBox(id) {
                     '<input id="offId" class="swal2-input" placeholder="Office ID" value ="' + employee['office']['id'] + '">',
                 focusConfirm: false,
                 preConfirm: () => {
-                    employeeEdit();
+
+                              if(validateFormFields()){
+                                    employeeEdit();
+                                  }
+
                 }
             })
         }
@@ -218,7 +253,7 @@ function employeeDelete(id) {
     xhttp.send();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200 ) {
-            const objects = this.responseText;
+            const objects =this.responseText;
             Swal.fire(
             'Deleted!',
             'Employee has been deleted.',
@@ -226,11 +261,10 @@ function employeeDelete(id) {
             )
         }
         else {
+         const objects =JSON.parse(this.responseText);
             Swal.fire({
                 icon: 'error',
-                title: 'Oops...',
-                text: 'Something went wrong!',
-                footer: '<a href="">Why do I have this issue?</a>'
+                title: objects['message']
             })
         }
         loadTable();

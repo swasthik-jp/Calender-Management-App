@@ -8,7 +8,7 @@ function loadTable() {
             var trHTML = '';
             const objects = JSON.parse(this.responseText);
             for (let object of objects) {
-                trHTML += '<tr>';
+
                 trHTML += '<td>' + object['id'] + '</td>';
                 trHTML += '<td>' + object['location'] + '</td>';
                 trHTML += '<td><button type="button" class="btn btn-outline-secondary" onclick="showOfficeEditBox(' + object['id'] + ')">Edit</button>';
@@ -21,13 +21,29 @@ function loadTable() {
 }
 loadTable();
 
+
+function validateFormFields(){
+  var elements = document.getElementsByClassName("swal2-input");
+
+   let valid=true;
+   for (var i = 0, len = elements.length; i < len; i++){
+       if((elements[i].value=="" || elements[i].value==null) && elements[i].style.display!="none" ){
+       valid=false;
+      Swal.showValidationMessage(elements[i].placeholder+ ' should not be empty!');
+     break;
+       }
+
+    }
+    return valid;
+    }
+
 //CREATE NEW OFFICE
 function showOfficeCreateBox() {
     Swal.fire({
         title: 'Add New Office',
         html:
             '<input id="id" type="hidden">' +
-            '<input id="location" class="swal2-input" placeholder="office Address">',
+            '<input id="location" class="swal2-input" placeholder="Office Address">',
         focusConfirm: false,
         backdrop: `
             rgba(0,0,123,0.4)
@@ -36,7 +52,9 @@ function showOfficeCreateBox() {
             no-repeat
           `,
         preConfirm: () => {
-            officeCreate();
+           if(validateFormFields()){
+           officeCreate();
+           }
         }
     })
 }
@@ -67,12 +85,10 @@ function officeCreate() {
             loadTable();
         }
         else {
-            const objects = this.responseText;
+            const objects =JSON.parse(this.responseText);
             Swal.fire({
                 icon: 'error',
-                title: 'Oops...',
-                text: 'Something went wrong!'+ objects['message'] ,
-                footer: '<a href="">Why do I have this issue?</a>'
+                title: objects['message']
             })
         }
     };
@@ -98,7 +114,9 @@ function showOfficeEditBox(id) {
                     '<input id="location" class="swal2-input" placeholder="office Location" value="' + office['location'] + '">',
                 focusConfirm: false,
                 preConfirm: () => {
+                    if(validateFormFields()){
                     officeEdit();
+                    }
                 }
             })
         }
@@ -128,12 +146,10 @@ function officeEdit() {
             loadTable();
         }
         else {
-            const objects = this.responseText;
+            const objects =JSON.parse(this.responseText);
             Swal.fire({
                 icon: 'error',
-                title: 'Oops...',
-                text: 'Something went wrong!'+ objects['message'] ,
-                footer: '<a href="">Why do I have this issue?</a>'
+                title: objects['message']
             })
         }
     };
@@ -180,8 +196,9 @@ function officeDelete(id) {
     xhttp.open("DELETE", "http://localhost:8080/office/" + id);
     xhttp.send();
     xhttp.onreadystatechange = function () {
-        const objects = this.responseText;
+
         if (this.readyState == 4 && this.status == 200 ) {
+         const objects =this.responseText;
             Swal.fire(
             'Deleted!',
             objects,
@@ -189,10 +206,11 @@ function officeDelete(id) {
             )
         }
         else {
+         const objects =JSON.parse(this.responseText);
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: objects,
+                text: objects['message'],
                 footer: '<a href="">Why do I have this issue?</a>'
             })
         }

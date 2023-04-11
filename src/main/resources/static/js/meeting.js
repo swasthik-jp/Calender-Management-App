@@ -95,6 +95,7 @@ function loadTable(filter) {
                 if (object['status'] === 'CANCELLED') {
                     color = 'red';
                     hidden = 'hidden';
+                    break;  // hide cancelled  meeting
                 }
                 trHTML += '<tr style="color:' + color + '">';
                 trHTML += '<td>' + object['id'] + '</td>';
@@ -147,6 +148,29 @@ function loadTable(filter) {
     };
 }
 
+function validateFormFields(){
+
+   var elements = document.getElementsByClassName("swal2-input");
+
+     let valid=true;
+     for (var i = 0, len = elements.length; i < len; i++) {
+         if((elements[i].value=="" || elements[i].value==null) && elements[i].style.display!="none" ){
+         valid=false;
+        Swal.showValidationMessage(elements[i].placeholder+ ' should not be empty!');
+       break;
+         }
+         if(elements[i].id=="allocatedRoomId"){
+          if (isNaN(elements[i].value))
+           {
+           valid=false;
+            Swal.showValidationMessage(elements[i].placeholder+ ' should be number!');
+           }
+         }
+     }
+return valid;
+
+}
+
 let count;
 //CREATE NEW MEETING
 function showMeetingCreateBox() {
@@ -161,13 +185,17 @@ function showMeetingCreateBox() {
             '<input type="datetime-local" id="end" class="swal2-input" style="padding: 0 4.0em" placeholder="End Time">' +
             '<input id="allocatedRoomId" class="swal2-input" placeholder="Allocated Room Id">' +
             '<div id="attendee-div"></div>' +
-            '<input id="attendee1" class="swal2-input" placeholder="Attendee Email">' +
+            '<input id="attendee1" required type="email" class="swal2-input" placeholder="Attendee Email">' +
             '<button type="button" class="btn btn-outline-secondary" onclick="addTextBox()" >+</button>' +
             '',
         focusConfirm: false,
         preConfirm: () => {
+
+        if(validateFormFields()){
             meetingCreate();
-        }
+            }
+
+   }
     })
 }
 
@@ -201,13 +229,15 @@ function showMeetingFilterBox() {
 function addTextBox() {
     var divObj = document.getElementById("attendee-div");
     var node = document.createElement("INPUT");
-    node.setAttribute("type", "text");
+    node.setAttribute("type", "email");
     node.setAttribute("class", "swal2-input");
     node.setAttribute("placeholder", "Attendee Email");
     node.setAttribute("id", "attendee" + count);
     if (count < 6) {
         divObj.append(node);
         count++;
+    }else{
+   Swal.showValidationMessage('Attendees should be less than 6')
     }
 
 }
@@ -233,9 +263,10 @@ function meetingCreate() {
     }
 
     const xhttp = new XMLHttpRequest();
-    xhttp.open("POST", "http://localhost:8080/meeting");
+    xhttp.open("POST", "http://localhost:8080/meeting",true);
     xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhttp.send(JSON.stringify({
+    xhttp.send(
+    JSON.stringify({
         "agenda": agenda,
         "description": description,
         "host": login_email,
@@ -244,7 +275,9 @@ function meetingCreate() {
         "allocatedRoomId": allocatedRoomId,
         "attendees": attendeeList
 
-    }));
+    })
+    );
+
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 201) {
             const objects = this.responseText;
@@ -258,23 +291,24 @@ function meetingCreate() {
 
             loadTable('');
         }
-        else if (this.status == 400) {
-            const objects = this.responseText;
+        else if (this.readyState == 4  && this.status == 400) {
+            let objects =JSON.parse(this.responseText);
+            console.log(this)
             Swal.fire({
                 icon: 'error',
-                title: 'Oops...',
-                text: objects['errors'],
-                footer: '<a href="">Why do I have this issue?</a>'
+                title: objects['message'],
             })
         }
         else {
-            const objects = this.responseText;
-            console.log(this.status);
+            const objects = JSON.parse(this.responseText);
+            console.log(this);
+            console.log(objects['timestamp']);
+            console.log(objects['message']);
+
             Swal.fire({
                 icon: 'error',
-                title: 'Oops...',
-                text: 'Something went wrong!' + objects['message'],
-                footer: '<a href="">Why do I have this issue?</a>'
+                title: objects['message'],
+
             })
         }
     };
