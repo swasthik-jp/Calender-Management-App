@@ -26,32 +26,31 @@ public class EmployeeServiceImplTest {
     @InjectMocks
     EmployeeService employeeService = new EmployeeServiceImpl();
 
-    @Test
-    public void when_saveEmployeeIsCalled_thenExpectSavedEmployeeObject() throws ResourceAlreadyExistsException {
+    public Employee initEmployee(){
         Employee testEmp = Employee.builder()
                 .id(10L)
                 .email("email@email.com")
                 .build();
+        return testEmp;
+    }
+
+    @Test
+    public void when_saveEmployeeIsCalled_thenExpectSavedEmployeeObject() throws ResourceAlreadyExistsException {
+        Employee testEmp =initEmployee();
         when(employeeRepository.save(testEmp)).thenReturn(testEmp);
         Assert.assertEquals(testEmp.getEmail(), employeeService.saveEmployee(testEmp).getEmail());
     }
 
     @Test(expected = ResourceAlreadyExistsException.class)
     public void when_saveEmployeeIsCalled_thenExpectResourceAlreadyExistsException() throws ResourceAlreadyExistsException {
-        Employee testEmp = Employee.builder()
-                .id(10L)
-                .email("email@email.com")
-                .build();
+        Employee testEmp =initEmployee();
         when(employeeRepository.save(testEmp)).thenThrow(new RuntimeException());
         employeeService.saveEmployee(testEmp).getEmail();
     }
 
     @Test
     public void when_getEmployeeByIdIsCalled_thenExpectEmployeeObject() throws ResourceNotFoundException {
-        Employee testEmp = Employee.builder()
-                .id(10L)
-                .email("email@email.com")
-                .build();
+        Employee testEmp = initEmployee();
         when(employeeRepository.findById(anyLong())).thenReturn(Optional.of(testEmp));
         Assert.assertEquals(testEmp.getEmail(), employeeService.getEmployeeById(10L).getEmail());
     }
@@ -64,10 +63,7 @@ public class EmployeeServiceImplTest {
 
     @Test
     public void when_getEmployeeByEmailIsCalled_thenExpectEmployeeObject() throws ResourceNotFoundException {
-        Employee testEmp = Employee.builder()
-                .id(10L)
-                .email("email@email.com")
-                .build();
+        Employee testEmp = initEmployee();
         when(employeeRepository.findByEmail(anyString())).thenReturn(Optional.of(testEmp));
         Assert.assertEquals(testEmp.getId(), employeeService.getEmployeeByEmail("email@email.com").getId());
     }
@@ -81,10 +77,7 @@ public class EmployeeServiceImplTest {
 
     @Test
     public void when_updateEmployeeIsCalled_thenExpectUpdatedEmployeeObject() throws ResourceNotFoundException {
-        Employee testEmp = Employee.builder()
-                .id(10L)
-                .email("email@email.com")
-                .build();
+        Employee testEmp = initEmployee();
         when(employeeRepository.findById(anyLong())).thenReturn(Optional.of(new Employee()));
         when(employeeRepository.save(any())).thenReturn(testEmp);
 
@@ -94,10 +87,7 @@ public class EmployeeServiceImplTest {
 
     @Test(expected = ResourceNotFoundException.class)
     public void when_updateEmployeeIsCalled_thenExpectResourceNotFoundException() throws ResourceNotFoundException {
-        Employee testEmp = Employee.builder()
-                .id(10L)
-                .email("email@email.com")
-                .build();
+        Employee testEmp =initEmployee();
         when(employeeRepository.findById(10L)).thenReturn(Optional.empty());
         employeeService.updateEmployee(testEmp, 10L);
     }

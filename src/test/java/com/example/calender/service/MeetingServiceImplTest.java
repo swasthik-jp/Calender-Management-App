@@ -103,10 +103,34 @@ public class MeetingServiceImplTest {
     }
 
 
+    public Set<String> initAttendeeMailSet(){
+        Set<String> attendees=new HashSet<>();
+        attendees.add("email1@mail.com");
+        attendees.add("email2@mail.com");
+        attendees.add("email3@mail.com");
+        attendees.add("email4@mail.com");
+        attendees.add("email5@mail.com");
+        return attendees;
+    }
+
+    public Set<Attendee> initAttendeeSet(Office office){
+        Set<Attendee> attendees=new HashSet<>();
+        attendees.add(Attendee.builder().employee(getEmployee(1L,"email1@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(2L,"email2@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(3L,"email3@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(4L,"email4@mail.com",office)).build());
+        attendees.add(Attendee.builder().employee(getEmployee(5L,"email5@mail.com",office)).build());
+         return attendees;
+    }
+
+
+
+
+
 
 
     @Test
-   public void canSchedule_WhenAttendeesGreaterThan6_ThenThrowPolicyViolationException() {
+   public void canSchedule_WhenAttendeesGreaterThan5_ThenThrowPolicyViolationException() {
 
         Set<String> attendees=new HashSet<>();
         attendees.add("email1@mail.com");
@@ -115,7 +139,6 @@ public class MeetingServiceImplTest {
         attendees.add("email4@mail.com");
         attendees.add("email5@mail.com");
         attendees.add("email6@mail.com");
-        attendees.add("email7@mail.com");
 
 
         thrown.expect(PolicyViolationException.class);
@@ -126,12 +149,7 @@ public class MeetingServiceImplTest {
     @Test
     public void canSchedule_WhenTimeLessThan30Mins_ThenThrowPolicyViolationException() {
 
-        Set<String> attendees=new HashSet<>();
-        attendees.add("email1@mail.com");
-        attendees.add("email2@mail.com");
-        attendees.add("email3@mail.com");
-        attendees.add("email4@mail.com");
-        attendees.add("email5@mail.com");
+        Set<String> attendees=initAttendeeMailSet();
 
         Calendar calendar = Calendar.getInstance();
 
@@ -157,12 +175,7 @@ public class MeetingServiceImplTest {
     @Test
     public void canSchedule_WhenStartHourBefore10am_ThenThrowPolicyViolationException() {
 
-        Set<String> attendees=new HashSet<>();
-        attendees.add("email1@mail.com");
-        attendees.add("email2@mail.com");
-        attendees.add("email3@mail.com");
-        attendees.add("email4@mail.com");
-        attendees.add("email5@mail.com");
+        Set<String> attendees=initAttendeeMailSet();
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
@@ -184,12 +197,7 @@ public class MeetingServiceImplTest {
     @Test
     public void canSchedule_WhenEndTimeAfter18pm_ThenThrowPolicyViolationException() {
 
-        Set<String> attendees=new HashSet<>();
-        attendees.add("email1@mail.com");
-        attendees.add("email2@mail.com");
-        attendees.add("email3@mail.com");
-        attendees.add("email4@mail.com");
-        attendees.add("email5@mail.com");
+        Set<String> attendees=initAttendeeMailSet();
 
         Calendar calendar = Calendar.getInstance();
 
@@ -216,12 +224,7 @@ public class MeetingServiceImplTest {
     @Test
     public void canSchedule_WhenEndTimeBeforeStartTime_ThenThrowPolicyViolationException() {
 
-        Set<String> attendees=new HashSet<>();
-        attendees.add("email1@mail.com");
-        attendees.add("email2@mail.com");
-        attendees.add("email3@mail.com");
-        attendees.add("email4@mail.com");
-        attendees.add("email5@mail.com");
+        Set<String> attendees=initAttendeeMailSet();
 
         Calendar calendar = Calendar.getInstance();
 
@@ -250,12 +253,7 @@ public class MeetingServiceImplTest {
     @Test
     public void canSchedule_WhenStartTimeBeforeCurrentTime_ThenThrowPolicyViolationException() {
 
-        Set<String> attendees=new HashSet<>();
-        attendees.add("email1@mail.com");
-        attendees.add("email2@mail.com");
-        attendees.add("email3@mail.com");
-        attendees.add("email4@mail.com");
-        attendees.add("email5@mail.com");
+        Set<String> attendees=initAttendeeMailSet();
 
         Calendar calendar = Calendar.getInstance();
 
@@ -283,12 +281,7 @@ public class MeetingServiceImplTest {
     @Test
     public void canSchedule_WhenNoMeetingIsScheduledInGivenTime_ThenReturnTrue() {
 
-        Set<String> attendees=new HashSet<>();
-        attendees.add("email1@mail.com");
-        attendees.add("email2@mail.com");
-        attendees.add("email3@mail.com");
-        attendees.add("email4@mail.com");
-        attendees.add("email5@mail.com");
+        Set<String> attendees=initAttendeeMailSet();
 
         Calendar calendar = Calendar.getInstance();
 
@@ -320,12 +313,7 @@ public class MeetingServiceImplTest {
     @Test
     public void canSchedule_WhenAlreadyMeetingIsScheduledInGivenTime_ThenReturnFreeMeetingRooms() {
 
-        Set<String> attendees=new HashSet<>();
-        attendees.add("email1@mail.com");
-        attendees.add("email2@mail.com");
-        attendees.add("email3@mail.com");
-        attendees.add("email4@mail.com");
-        attendees.add("email5@mail.com");
+        Set<String> attendees=initAttendeeMailSet();
 
         Calendar calendar = Calendar.getInstance();
 
@@ -364,12 +352,7 @@ public class MeetingServiceImplTest {
     @Test
     public void canSchedule_WhenAlreadyMeetingIsScheduledInGivenTimeAndNoFreeMeetingRooms_ThenReturnFalse() {
 
-        Set<String> attendees=new HashSet<>();
-        attendees.add("email1@mail.com");
-        attendees.add("email2@mail.com");
-        attendees.add("email3@mail.com");
-        attendees.add("email4@mail.com");
-        attendees.add("email5@mail.com");
+        Set<String> attendees= initAttendeeMailSet();
 
         Calendar calendar = Calendar.getInstance();
 
@@ -416,14 +399,7 @@ public class MeetingServiceImplTest {
 
       Office office=initOffice();
 
-        Set<Attendee> attendees=new HashSet<>();
-        attendees.add(Attendee.builder().employee(getEmployee(1L,"email1@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(2L,"email2@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(3L,"email3@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(4L,"email4@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(5L,"email5@mail.com",office)).build());
-
-        Set<String> attendeesEmail=attendees.stream().map(a->a.getEmployee().getEmail()).collect(Collectors.toSet());
+        Set<Attendee> attendees=initAttendeeSet(office);
 
         Calendar calendar = Calendar.getInstance();
 
@@ -452,7 +428,6 @@ public class MeetingServiceImplTest {
         meetingRoom2.setId(2L);
 
         when(meetingRoomService.getAllMeetingRooms()).thenReturn(Arrays.asList(meetingRoom1));
-//        when(employeeService.getEmployeeByEmail(Mockito.any())).thenReturn(initEmployee(initOffice()));
 
 
         Meeting meeting=initMeeting(office);
@@ -470,15 +445,7 @@ public class MeetingServiceImplTest {
 
         Office office=initOffice();
 
-        Set<Attendee> attendees=new HashSet<>();
-        attendees.add(Attendee.builder().employee(getEmployee(1L,"email1@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(2L,"email2@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(3L,"email3@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(4L,"email4@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(5L,"email5@mail.com",office)).build());
-
-        Set<String> attendeesEmail=attendees.stream().map(a->a.getEmployee().getEmail()).collect(Collectors.toSet());
-
+        Set<Attendee> attendees=initAttendeeSet(office);
 
         Calendar calendar = Calendar.getInstance();
 
@@ -523,14 +490,7 @@ public class MeetingServiceImplTest {
 
         Office office=initOffice();
 
-        Set<Attendee> attendees=new HashSet<>();
-        attendees.add(Attendee.builder().employee(getEmployee(1L,"email1@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(2L,"email2@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(3L,"email3@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(4L,"email4@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(5L,"email5@mail.com",office)).build());
-
-        Set<String> attendeesEmail=attendees.stream().map(a->a.getEmployee().getEmail()).collect(Collectors.toSet());
+        Set<Attendee> attendees=initAttendeeSet(office);
 
 
         Calendar calendar = Calendar.getInstance();
@@ -593,15 +553,7 @@ public class MeetingServiceImplTest {
 
         Office office=initOffice();
 
-        Set<Attendee> attendees=new HashSet<>();
-        attendees.add(Attendee.builder().employee(getEmployee(1L,"email1@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(2L,"email2@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(3L,"email3@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(4L,"email4@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(5L,"email5@mail.com",office)).build());
-
-        Set<String> attendeesEmail=attendees.stream().map(a->a.getEmployee().getEmail()).collect(Collectors.toSet());
-
+        Set<Attendee> attendees=initAttendeeSet(office);
 
         Calendar calendar = Calendar.getInstance();
 
@@ -662,15 +614,7 @@ public class MeetingServiceImplTest {
 
         Office office=initOffice();
 
-        Set<Attendee> attendees=new HashSet<>();
-        attendees.add(Attendee.builder().employee(getEmployee(1L,"email1@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(2L,"email2@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(3L,"email3@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(4L,"email4@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(5L,"email5@mail.com",office)).build());
-
-        Set<String> attendeesEmail=attendees.stream().map(a->a.getEmployee().getEmail()).collect(Collectors.toSet());
-
+        Set<Attendee> attendees=initAttendeeSet(office);
 
         Calendar calendar = Calendar.getInstance();
 
@@ -712,8 +656,6 @@ public class MeetingServiceImplTest {
 
         when(meetingRepository.getAllMeetingAndRoomIdForGivenDateRange(startDate,endDate)).thenReturn(optional);
 
-//        when(meetingRoomService.getMeetingRoomsByOfficeId(office.getId())).thenReturn(Arrays.asList());
-
         when(meetingRoomService.getMeetingRoomById(meetingRoom2.getId())).thenReturn(meetingRoom2);
 
         when(meetingRoomService.getAllMeetingRooms()).thenReturn(Arrays.asList(meetingRoom1,meetingRoom2));
@@ -733,15 +675,7 @@ public class MeetingServiceImplTest {
 
         Office office=initOffice();
 
-        Set<Attendee> attendees=new HashSet<>();
-        attendees.add(Attendee.builder().employee(getEmployee(1L,"email1@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(2L,"email2@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(3L,"email3@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(4L,"email4@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(5L,"email5@mail.com",office)).build());
-
-        Set<String> attendeesEmail=attendees.stream().map(a->a.getEmployee().getEmail()).collect(Collectors.toSet());
-
+        Set<Attendee> attendees=initAttendeeSet(office);
 
         Calendar calendar = Calendar.getInstance();
 
@@ -786,7 +720,6 @@ public class MeetingServiceImplTest {
 
         when(meetingRoomService.getAllMeetingRooms()).thenReturn(Arrays.asList(meetingRoom1,meetingRoom2));
 
-
         assertNull(meetingService.scheduleMeeting(meeting));
     }
 
@@ -796,15 +729,7 @@ public class MeetingServiceImplTest {
 
         Office office=initOffice();
 
-        Set<Attendee> attendees=new HashSet<>();
-        attendees.add(Attendee.builder().employee(getEmployee(1L,"email1@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(2L,"email2@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(3L,"email3@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(4L,"email4@mail.com",office)).build());
-        attendees.add(Attendee.builder().employee(getEmployee(5L,"email5@mail.com",office)).build());
-
-        Set<String> attendeesEmail=attendees.stream().map(a->a.getEmployee().getEmail()).collect(Collectors.toSet());
-
+        Set<Attendee> attendees=initAttendeeSet(office);
 
         Calendar calendar = Calendar.getInstance();
 
@@ -846,17 +771,7 @@ public class MeetingServiceImplTest {
 
         when(meetingRepository.getAllMeetingAndRoomIdForGivenDateRange(startDate,endDate)).thenReturn(optional);
 
-//        when(meetingRoomService.getMeetingRoomsByOfficeId(office.getId())).thenReturn(Arrays.asList());
-
-//        when(meetingRoomService.getMeetingRoomById(meetingRoom2.getId())).thenReturn(meetingRoom2);
-
         when(meetingRoomService.getAllMeetingRooms()).thenReturn(Arrays.asList(meetingRoom1,meetingRoom2));
-
-//        for (Attendee participant : attendees) {
-//            when(attendeeService.save(participant)).thenReturn(participant);
-//        }
-
-//        when(meetingRepository.save(meeting)).thenReturn(meeting);
 
         thrown.expect(ResourceNotFoundException.class);
         assertNull(meetingService.scheduleMeeting(meeting));
@@ -886,7 +801,6 @@ public class MeetingServiceImplTest {
         MeetingStatus updatedMeetingStatus=MeetingStatus.COMPLETED;
 
         when(meetingRepository.findById(meeting.getId())).thenReturn(Optional.empty());
-//        when(meetingRepository.save(meeting)).thenReturn(meeting);
 
         thrown.expect(ResourceNotFoundException.class);
        meetingService.changeMeetingStatus(meeting.getId(),updatedMeetingStatus);
@@ -924,7 +838,6 @@ public class MeetingServiceImplTest {
 
         when(meetingRepository.getAllMeetingForCurrentWeek()).thenReturn(Optional.of(Arrays.asList(meeting)));
         when(meetingRepository.getAllMeetingForNextParticularWeek(Mockito.anyInt())).thenReturn(Optional.of(Arrays.asList(meeting)));
-//        when(meetingRepository.getAllMeetingForPastParticularWeek(Mockito.anyInt())).thenReturn(Optional.of(Arrays.asList(meeting)));
 
         assertEquals(meeting.getId(),meetingService.getMeetingsInParticularWeek('+',0).get(0).getId());
         assertEquals(meeting.getId(),meetingService.getMeetingsInParticularWeek('+',1).get(0).getId());
@@ -970,7 +883,6 @@ public class MeetingServiceImplTest {
         AttendingStatus updatedAttendeeStatus=AttendingStatus.YES;
 
         when(meetingRepository.findById(meeting.getId())).thenReturn(Optional.empty());
-//        when(meetingRepository.save(meeting)).thenReturn(meeting);
 
         thrown.expect(ResourceNotFoundException.class);
         assertEquals(updatedAttendeeStatus,meetingService.setAttendeeStatus(meeting.getId(),initEmployee(office).getId(),updatedAttendeeStatus));

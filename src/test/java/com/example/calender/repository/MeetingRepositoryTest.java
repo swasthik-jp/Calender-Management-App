@@ -80,30 +80,7 @@ class MeetingRepositoryTest {
         return meeting;
     }
 
-    public MeetingDto initMeetingDto(Meeting meeting){
-        MeetingDto meetingDto=MeetingDto.builder()
-                .id(meeting.getId())
-                .startTimeStamp(meeting.getStartTimeStamp())
-                .endTimeStamp(meeting.getEndTimeStamp())
-                .allocatedRoomId(meeting.getAllocatedRoom().getId())
-                .attendees(meeting.getAttendees().stream().map(a->a.getEmployee().getEmail()).collect(Collectors.toSet()))
-                .build();
-        return meetingDto;
-    }
 
-    public EmployeeDto initEmployeeDto(){
-
-        OfficeDto officeDto=OfficeDto.builder()
-                .id(1L)
-                .build();
-
-        EmployeeDto employeeDto=EmployeeDto.builder()
-                .name("employee1")
-                .email("mail@email.com")
-                .office(officeDto)
-                .build();
-        return employeeDto;
-    }
 
 
     @Test

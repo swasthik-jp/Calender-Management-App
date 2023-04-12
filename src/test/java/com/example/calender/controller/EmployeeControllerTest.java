@@ -105,7 +105,6 @@ public class EmployeeControllerTest {
         Mockito.when(employeeService.getAllEmployees()).thenReturn(Arrays.asList(initEmployee()));
         Mockito.when(employeeDtoMapper.toDto(initEmployee())).thenReturn(initEmployeeDto());
 
-       System.out.println(CoreMatchers.is(initEmployeeDto().getEmail()));
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/employees")
                         .accept(MediaType.APPLICATION_JSON))
@@ -148,7 +147,6 @@ public class EmployeeControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isNotFound());
-
     }
 
     @Test
@@ -235,7 +233,6 @@ public class EmployeeControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isNotFound());
-
     }
 
     @Test
@@ -278,7 +275,6 @@ public class EmployeeControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isBadRequest());
-
     }
 
 
