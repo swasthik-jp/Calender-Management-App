@@ -166,6 +166,12 @@ function validateFormFields(){
             Swal.showValidationMessage(elements[i].placeholder+ ' should be number!');
            }
          }
+         if(elements[i].id=="start" || elements[i].id=="end"){
+          if(new Date() > new Date(elements[i].value) ){
+          valid=false;
+          Swal.showValidationMessage(elements[i].placeholder+ ' should not be past');
+          }
+         }
      }
 return valid;
 

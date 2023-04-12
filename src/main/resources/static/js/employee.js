@@ -114,7 +114,7 @@ function validateFormFields(){
       Swal.showValidationMessage(elements[i].placeholder+ ' should not be empty!');
      break;
        }
-       if(elements[i].id=="offId" ){
+       if(elements[i].id=="offId" || elements[i].id=="ph"){
         if (isNaN(elements[i].value))
          {
          valid=false;
@@ -127,7 +127,10 @@ function validateFormFields(){
     Swal.showValidationMessage(elements[i].placeholder+ ' should be before today!');
      break;
 
-    }}
+    }
+
+
+    }
     return valid;
     }
 
