@@ -233,6 +233,24 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Override
+    public Meeting updateMeetingById(Long id, Meeting meeting) {
+        Meeting foundMeeting = meetingRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Meeting", "id", id));
+        meetingRepository.deleteById(id);
+        foundMeeting.setAgenda(meeting.getAgenda());
+        foundMeeting.setAttendees(meeting.getAttendees());
+        foundMeeting.setStatus(meeting.getStatus());
+        foundMeeting.setAllocatedRoom(meeting.getAllocatedRoom());
+        foundMeeting.setHost(meeting.getHost());
+        foundMeeting.setDescription(meeting.getDescription());
+        foundMeeting.setStartTimeStamp(meeting.getStartTimeStamp());
+        foundMeeting.setEndTimeStamp(meeting.getEndTimeStamp());
+        Long createdMeetingRoomId = scheduleMeeting(foundMeeting);
+        return meetingRepository.findById(createdMeetingRoomId)
+                .orElseThrow(() -> new ResourceNotFoundException("Meeting", "id", createdMeetingRoomId));
+    }
+
+    @Override
     public AttendingStatus setAttendeeStatus(Long meetingId, Long employeeId, AttendingStatus attendingStatus) {
         Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Meeting", "id", meetingId));

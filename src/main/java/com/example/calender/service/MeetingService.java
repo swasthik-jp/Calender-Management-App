@@ -29,4 +29,6 @@ public interface MeetingService {
 
     AttendingStatus getAttendeeStatusByEmpId(Long empId, Long meetId);
     AttendingStatus getAttendeeStatusByEmpEmail(String email, Long meetId);
+
+    Meeting updateMeetingById(Long id, Meeting meeting);
 }

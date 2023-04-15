@@ -88,6 +88,14 @@ public class MeetingController {
         return new ResponseEntity<>("Status successfully changed to " + status, HttpStatus.OK);
     }
 
+    @PutMapping("/meeting/{id}")
+    ResponseEntity<MeetingDto> updateMeetingById(@PathVariable Long id,
+                                                 @Valid @RequestBody MeetingDto meeting) {
+        Meeting meet = meetingMapper.toEntity(meeting);
+        Meeting updatedMeeting = meetingService.updateMeetingById(id, meet);
+        return new ResponseEntity<>(meetingMapper.toDto(updatedMeeting), HttpStatus.OK);
+    }
+
     @GetMapping("/meeting")
     ResponseEntity meetingForEmployee(@RequestParam(name = "id") Long id,
                                       @JsonFormat(pattern = "yyyy-MM-dd", timezone = "IST") @RequestParam(name = "start", required = false) Date start,
