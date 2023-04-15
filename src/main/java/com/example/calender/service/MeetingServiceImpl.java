@@ -167,7 +167,9 @@ public class MeetingServiceImpl implements MeetingService {
     public MeetingStatus changeMeetingStatus(Long id, MeetingStatus newStatus) {
         Meeting meeting = meetingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Meeting", "id", id));
-
+        if(meeting.getEndTimeStamp().before(new Date())){
+            throw new IllegalArgumentException("Cannot Change Status of Meetings in the past");
+        }
         meeting.setStatus(newStatus);
         meetingRepository.save(meeting);
         return meeting.getStatus();
@@ -236,6 +238,9 @@ public class MeetingServiceImpl implements MeetingService {
     public Meeting updateMeetingById(Long id, Meeting meeting) {
         Meeting foundMeeting = meetingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Meeting", "id", id));
+        if(foundMeeting.getEndTimeStamp().before(new Date()))
+            throw new IllegalArgumentException("Cannot Update past Meetings");
+
         meetingRepository.deleteById(id);
         foundMeeting.setAgenda(meeting.getAgenda());
         foundMeeting.setAttendees(meeting.getAttendees());

@@ -91,8 +91,7 @@ function loadTable(filter) {
             for (let object of objects) {
                 color = 'black';
                 hidden = '';
-
-                if (object['status'] === 'CANCELLED') {
+                if (object['status'] === 'CANCELLED' || (new Date(object['end']) < new Date())) {
                     color = 'red';
                     hidden = 'hidden';
                     break;  // hide cancelled  meeting
