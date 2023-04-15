@@ -135,9 +135,11 @@ function loadTable(filter) {
 
                 trHTML += '</td>';
                 trHTML += '<td><button type="button" class="btn btn-outline-secondary" onclick="changeStatus(' + object['id'] + ',' + '\'' + cstatus + '\'' + ')"' + hidden + '>' + status + '</button>';
-
-                if(login_email.localeCompare(object['host'])==0){
-                trHTML += '<button type="button" class="btn btn-outline-danger" onclick="showCancelMeetingBtn(' + object['id'] + ',' + '\'' + object['host'] + '\'' + ')"' + hidden + '>Cancel&nbsp</button></td>';
+                if (login_email.localeCompare(object['host']) === 0) {
+                    trHTML += '<button type="button" class="btn btn-outline-danger" onclick="showUpdateMeetingButton(' + object['id'] + ',' + '\'' + object['host'] + '\'' + ')"' + hidden + '>Edit</button>';
+                }
+                if (login_email.localeCompare(object['host']) === 0) {
+                    trHTML += '<button type="button" class="btn btn-outline-danger" onclick="showCancelMeetingBtn(' + object['id'] + ',' + '\'' + object['host'] + '\'' + ')"' + hidden + '>Cancel&nbsp</button></td>';
                 }
 
                 trHTML += "</tr>";
@@ -148,32 +150,31 @@ function loadTable(filter) {
     };
 }
 
-function validateFormFields(){
+function validateFormFields() {
 
-   var elements = document.getElementsByClassName("swal2-input");
+    var elements = document.getElementsByClassName("swal2-input");
 
-     let valid=true;
-     for (var i = 0, len = elements.length; i < len; i++) {
-         if((elements[i].value=="" || elements[i].value==null) && elements[i].style.display!="none" ){
-         valid=false;
-        Swal.showValidationMessage(elements[i].placeholder+ ' should not be empty!');
-       break;
-         }
-         if(elements[i].id=="allocatedRoomId"){
-          if (isNaN(elements[i].value))
-           {
-           valid=false;
-            Swal.showValidationMessage(elements[i].placeholder+ ' should be number!');
-           }
-         }
-         if(elements[i].id=="start" || elements[i].id=="end"){
-          if(new Date() > new Date(elements[i].value) ){
-          valid=false;
-          Swal.showValidationMessage(elements[i].placeholder+ ' should not be past');
-          }
-         }
-     }
-return valid;
+    let valid = true;
+    for (var i = 0, len = elements.length; i < len; i++) {
+        if ((elements[i].value == "" || elements[i].value == null) && elements[i].style.display != "none") {
+            valid = false;
+            Swal.showValidationMessage(elements[i].placeholder + ' should not be empty!');
+            break;
+        }
+        if (elements[i].id == "allocatedRoomId") {
+            if (isNaN(elements[i].value)) {
+                valid = false;
+                Swal.showValidationMessage(elements[i].placeholder + ' should be number!');
+            }
+        }
+        if (elements[i].id == "start" || elements[i].id == "end") {
+            if (new Date() > new Date(elements[i].value)) {
+                valid = false;
+                Swal.showValidationMessage(elements[i].placeholder + ' should not be past');
+            }
+        }
+    }
+    return valid;
 
 }
 
@@ -197,11 +198,11 @@ function showMeetingCreateBox() {
         focusConfirm: false,
         preConfirm: () => {
 
-        if(validateFormFields()){
-            meetingCreate();
+            if (validateFormFields()) {
+                meetingCreate();
             }
 
-   }
+        }
     })
 }
 
@@ -242,8 +243,8 @@ function addTextBox() {
     if (count < 6) {
         divObj.append(node);
         count++;
-    }else{
-   Swal.showValidationMessage('Attendees should be less than 6')
+    } else {
+        Swal.showValidationMessage('Attendees should be less than 6')
     }
 
 }
@@ -269,19 +270,19 @@ function meetingCreate() {
     }
 
     const xhttp = new XMLHttpRequest();
-    xhttp.open("POST", "http://localhost:8080/meeting",true);
+    xhttp.open("POST", "http://localhost:8080/meeting", true);
     xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xhttp.send(
-    JSON.stringify({
-        "agenda": agenda,
-        "description": description,
-        "host": login_email,
-        "start": start,
-        "end": end,
-        "allocatedRoomId": allocatedRoomId,
-        "attendees": attendeeList
+        JSON.stringify({
+            "agenda": agenda,
+            "description": description,
+            "host": login_email,
+            "start": start,
+            "end": end,
+            "allocatedRoomId": allocatedRoomId,
+            "attendees": attendeeList
 
-    })
+        })
     );
 
     xhttp.onreadystatechange = function () {
@@ -297,8 +298,8 @@ function meetingCreate() {
 
             loadTable('');
         }
-        else if (this.readyState == 4  && this.status == 400) {
-            let objects =JSON.parse(this.responseText);
+        else if (this.readyState == 4 && this.status == 400) {
+            let objects = JSON.parse(this.responseText);
             console.log(this)
             Swal.fire({
                 icon: 'error',
@@ -319,6 +320,102 @@ function meetingCreate() {
         }
     };
 }
+
+function showUpdateMeetingButton(id, hostEmail) {
+    const xhttp = new XMLHttpRequest();
+    xhttp.open("GET", "http://localhost:8080/meeting/" + id);
+    xhttp.send();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            const meeting = JSON.parse(this.responseText);
+            let attendeeElem = '';
+            let cnt = 1;
+            for(let attendee of meeting['attendees']){
+                if(attendee !== meeting['host'])
+                    attendeeElem += '<input id="u-attendee' + cnt++ + '" required type="email" class="swal2-input" placeholder="Attendee Email" value ="' + attendee + '">';
+            }
+            Swal.fire({
+                title: 'Edit Meeting',
+                html:
+                    '<input id="u-id" type="hidden" value=' + meeting['id'] + '>' +
+                    '<input id="u-agenda" class="swal2-input" placeholder="Meeting Agenda" value="' + meeting['agenda'] + '">' +
+                    '<input id="u-description" class="swal2-input" placeholder="Description" value ="' + meeting['description'] + '">' +
+                    '<input type="datetime-local" id="u-start" class="swal2-input" style="padding: 0 4.0em" placeholder="Start Time" value ="' + meeting['start'] + '">' +
+                    '<input type="datetime-local" id="u-end" class="swal2-input" style="padding: 0 4.0em" placeholder="End Time" value ="' + meeting['end'] + '">' +
+                    '<input id="u-allocatedRoomId" class="swal2-input" placeholder="Allocated Room Id" value ="' + meeting['allocatedRoomId'] + '">' +
+                    '<div id="u-attendee-div"></div>' +
+                    attendeeElem +
+                    '<button type="button" class="btn btn-outline-secondary" onclick="addTextBox()" >+</button>' +
+                    '',
+                focusConfirm: false,
+                preConfirm: () => {
+
+                    if (validateFormFields()) {
+                        meetingEdit();
+                    }
+
+                }
+            })
+        }
+    };
+
+}
+function meetingEdit() {
+    const id = document.getElementById("u-id").value;
+    const agenda = document.getElementById("u-agenda").value;
+    const description = document.getElementById("u-description").value;
+    const start = document.getElementById("u-start").value.replace('T', ' ');
+    const end = document.getElementById("u-end").value.replace('T', ' ');
+    let allocatedRoomId = document.getElementById("u-allocatedRoomId").value;
+    if (typeof (allocatedRoomId) != 'undefined' && allocatedRoomId != null)
+        allocatedRoomId = allocatedRoomId.value;
+    else allocatedRoomId = null;
+    const attendeeList = [];
+    let temp = 1;
+    let cnt = document.getElementById('u-attendee-div').getElementsByTagName('input').length;
+    while (temp++ < cnt) {
+        var a = "u-attendee" + temp;
+        attendeeList.push(document.getElementById(a).value);
+    }
+    console.log(attendeeList);
+
+    const xhttp = new XMLHttpRequest();
+    xhttp.open("PUT", "http://localhost:8080/meeting/" + id);
+    xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhttp.send(JSON.stringify({
+        "agenda": agenda,
+        "description": description,
+        "host" : login_email,
+        "start": start,
+        "end" : end,
+        "allocatedRoomId" : allocatedRoomId,
+        "attendees": attendeeList
+    }));
+    xhttp.onreadystatechange = function () {
+        console.log(this.responseStatus)
+        if (this.readyState == 4 && this.status == 200) {
+            //const objects = this.responseText;
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                showConfirmButton: false,
+                timer: 1500
+            })
+            loadTable();
+        }
+        if (this.status == 400 || this.status == 404 ) {
+            const objects =JSON.parse(this.responseText);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: objects['message'],
+                footer: '<a href="">Why do I have this issue?</a>'
+            })
+        }
+        loadTable('')
+    };
+}
+
 function showCancelMeetingBtn(id, hostEmail) {
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
@@ -375,10 +472,11 @@ function cancelMeeting(id, hostEmail) {
             )
         }
         else {
+            const objects =JSON.parse(this.responseText);
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: 'Something went wrong!',
+                text: objects['message'],
                 footer: '<a href="">Why do I have this issue?</a>'
             });
         }
