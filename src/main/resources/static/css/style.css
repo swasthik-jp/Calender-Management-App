@@ -10,3 +10,8 @@ body {
 td {
     line-height: 2rem;
 }
+
+#MeetingStatus,#EditMeeting{
+margin-bottom: 0.5rem;
+  margin-right: 0.5rem;
+}

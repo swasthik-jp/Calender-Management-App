@@ -77,6 +77,7 @@ else {
 
 //GET ALL MEETING WITH FILTERS
 function loadTable(filter) {
+console.log(filter)
     const xhttp = new XMLHttpRequest();
     xhttp.open("GET", "http://localhost:8080/meeting?id=" + login_id + filter);
     xhttp.send();
@@ -89,13 +90,17 @@ function loadTable(filter) {
             let status = 'Accept';
             let cstatus = 'PENDING';
             for (let object of objects) {
+            console.log(object)
                 color = 'black';
                 hidden = '';
-                if (object['status'] === 'CANCELLED' || (new Date(object['end']) < new Date())) {
-                    color = 'red';
-                    hidden = 'hidden';
-                    break;  // hide cancelled  meeting
+                if (object['status'] === 'CANCELLED' ) {
+                    continue;  // hide cancelled  meeting
                 }
+                if(new Date(object['end']) < new Date()){
+
+                  hidden = 'hidden'; // hide options for past meeting
+                }
+
                 trHTML += '<tr style="color:' + color + '">';
                 trHTML += '<td>' + object['id'] + '</td>';
                 trHTML += '<td>' + object['agenda'] + '</td>';
@@ -190,10 +195,10 @@ function showMeetingCreateBox() {
             '<input type="datetime-local" id="start" class="swal2-input" style="padding: 0 4.0em" placeholder="Start Time">' +
             '<input type="datetime-local" id="end" class="swal2-input" style="padding: 0 4.0em" placeholder="End Time">' +
             '<input id="allocatedRoomId" class="swal2-input" placeholder="Allocated Room Id">' +
-            '<div id="attendee-div"></div>' +
+            '<div id="attendee-div">' +
             '<input id="attendee1" required type="email" class="swal2-input" placeholder="Attendee Email">' +
             '<button type="button" class="btn btn-outline-secondary" onclick="addTextBox()" >+</button>' +
-            '',
+            '</div>',
         focusConfirm: false,
         preConfirm: () => {
 
@@ -213,7 +218,8 @@ function showMeetingFilterBox() {
                 <option value="" disabled selected>Filters</option>
                 <option value="current_week">Current Week</option>
                 <option value="next_week">Next Week</option>
-                <option value="last_week">Last Week</option>
+           const element = document.getElementById("demo");
+element.remove();     <option value="last_week">Last Week</option>
             </select>` +
             '<input type="date" id="start" class="swal2-input" style="padding: 0 4.0em" placeholder="Start Time">' +
             '<input type="date" id="end" class="swal2-input" style="padding: 0 4.0em" placeholder="End Time">',
@@ -239,13 +245,29 @@ function addTextBox() {
     node.setAttribute("class", "swal2-input");
     node.setAttribute("placeholder", "Attendee Email");
     node.setAttribute("id", "attendee" + count);
+    let parameterValue="attendee"+count;
     if (count < 6) {
         divObj.append(node);
+        divObj.insertAdjacentHTML('beforeend',
+                    '<button type="button" id="button'+count+'" class="btn btn-outline-secondary" onclick="removeTextBox('+count+')" >-</button>'
+        );
         count++;
     } else {
         Swal.showValidationMessage('Attendees should be less than 6')
     }
 
+}
+
+function removeTextBox(idValue){
+console.log(idValue)
+//idValue.remove();
+const element = document.getElementById('button'+idValue);
+console.log(element)
+element.remove();
+const element2 = document.getElementById('attendee'+idValue);
+console.log(element2)
+element2.remove();
+count--;
 }
 
 
@@ -260,13 +282,22 @@ function meetingCreate() {
         allocatedRoomId = allocatedRoomId.value;
     else allocatedRoomId = null;
     const attendeeList = [];
-    let temp = 0;
-    count--;
-    while (temp++ < count) {
-        var a = "attendee" + temp;
-        console.log(a);
-        attendeeList.push(document.getElementById(a).value);
-    }
+//    let temp = 0;
+//    count--;
+//    while (temp++ < count) {
+//        var a = "attendee" + temp;
+//        console.log(a);
+//        if(document.getElementById(a)!=null)
+//        attendeeList.push(document.getElementById(a).value);
+//    }
+
+let children=document.getElementById('attendee-div').children;
+for(const child of children){
+console.log(child.value)
+if(child.className=="swal2-input")
+  attendeeList.push(child.value);
+}
+    console.log(attendeeList);
 
     const xhttp = new XMLHttpRequest();
     xhttp.open("POST", "http://localhost:8080/meeting", true);
@@ -328,24 +359,27 @@ function showUpdateMeetingButton(id, hostEmail) {
         if (this.readyState == 4 && this.status == 200) {
             const meeting = JSON.parse(this.responseText);
             let attendeeElem = '';
-            let cnt = 1;
+            count=1;
             for(let attendee of meeting['attendees']){
-                if(attendee !== meeting['host'])
-                    attendeeElem += '<input id="u-attendee' + cnt++ + '" required type="email" class="swal2-input" placeholder="Attendee Email" value ="' + attendee + '">';
+                if(attendee !== meeting['host']){
+                    attendeeElem += '<input id="attendee' + count + '" required type="email" class="swal2-input" placeholder="Attendee Email" value ="' + attendee + '">'+
+                    '<button type="button" id="button'+count+'" class="btn btn-outline-secondary" onclick="removeTextBox('+count++ +')" >-</button>';
+
+                    }
             }
             Swal.fire({
                 title: 'Edit Meeting',
                 html:
-                    '<input id="u-id" type="hidden" value=' + meeting['id'] + '>' +
-                    '<input id="u-agenda" class="swal2-input" placeholder="Meeting Agenda" value="' + meeting['agenda'] + '">' +
-                    '<input id="u-description" class="swal2-input" placeholder="Description" value ="' + meeting['description'] + '">' +
-                    '<input type="datetime-local" id="u-start" class="swal2-input" style="padding: 0 4.0em" placeholder="Start Time" value ="' + meeting['start'] + '">' +
-                    '<input type="datetime-local" id="u-end" class="swal2-input" style="padding: 0 4.0em" placeholder="End Time" value ="' + meeting['end'] + '">' +
-                    '<input id="u-allocatedRoomId" class="swal2-input" placeholder="Allocated Room Id" value ="' + meeting['allocatedRoomId'] + '">' +
-                    '<div id="u-attendee-div"></div>' +
+                    '<input id="id" type="hidden" value=' + meeting['id'] + '>' +
+                    '<input id="agenda" class="swal2-input" placeholder="Meeting Agenda" value="' + meeting['agenda'] + '">' +
+                    '<input id="description" class="swal2-input" placeholder="Description" value ="' + meeting['description'] + '">' +
+                    '<input type="datetime-local" id="start" class="swal2-input" style="padding: 0 4.0em" placeholder="Start Time" value ="' + meeting['start'] + '">' +
+                    '<input type="datetime-local" id="end" class="swal2-input" style="padding: 0 4.0em" placeholder="End Time" value ="' + meeting['end'] + '">' +
+                    '<input id="allocatedRoomId" class="swal2-input" placeholder="Allocated Room Id" value ="' + meeting['allocatedRoomId'] + '">' +
+                    '<div id="attendee-div">' +
                     attendeeElem +
                     '<button type="button" class="btn btn-outline-secondary" onclick="addTextBox()" >+</button>' +
-                    '',
+                    '</div>',
                 focusConfirm: false,
                 preConfirm: () => {
 
@@ -360,22 +394,29 @@ function showUpdateMeetingButton(id, hostEmail) {
 
 }
 function meetingEdit() {
-    const id = document.getElementById("u-id").value;
-    const agenda = document.getElementById("u-agenda").value;
-    const description = document.getElementById("u-description").value;
-    const start = document.getElementById("u-start").value.replace('T', ' ');
-    const end = document.getElementById("u-end").value.replace('T', ' ');
-    let allocatedRoomId = document.getElementById("u-allocatedRoomId").value;
+    const id = document.getElementById("id").value;
+    const agenda = document.getElementById("agenda").value;
+    const description = document.getElementById("description").value;
+    const start = document.getElementById("start").value.replace('T', ' ');
+    const end = document.getElementById("end").value.replace('T', ' ');
+    let allocatedRoomId = document.getElementById("allocatedRoomId").value;
     if (typeof (allocatedRoomId) != 'undefined' && allocatedRoomId != null)
         allocatedRoomId = allocatedRoomId.value;
     else allocatedRoomId = null;
     const attendeeList = [];
-    let temp = 1;
-    let cnt = document.getElementById('u-attendee-div').getElementsByTagName('input').length;
-    while (temp++ < cnt) {
-        var a = "u-attendee" + temp;
-        attendeeList.push(document.getElementById(a).value);
-    }
+//    let temp = 1;
+//    let cnt = document.getElementById('attendee-div').getElementsByTagName('input').length;
+//    while (temp++ < cnt) {
+//        var a = "attendee" + temp;
+//        attendeeList.push(document.getElementById(a).value);
+//    }
+
+let children=document.getElementById('attendee-div').children;
+for(const child of children){
+console.log(child.value)
+if(child.className=="swal2-input")
+  attendeeList.push(child.value);
+}
     console.log(attendeeList);
 
     const xhttp = new XMLHttpRequest();
@@ -400,7 +441,7 @@ function meetingEdit() {
                 showConfirmButton: false,
                 timer: 1500
             })
-            loadTable();
+            loadTable('');
         }
         if (this.status == 400 || this.status == 404 ) {
             const objects =JSON.parse(this.responseText);
