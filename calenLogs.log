@@ -1,0 +1,59 @@
+2023-04-18 14:40:48.186  INFO 108197 --- [restartedMain] c.example.calender.CalenderApplication   : Starting CalenderApplication using Java 17.0.6 on fc4mg22 with PID 108197 (/home/nivanveenithdsa/InternWork/calender/target/classes started by nivanveenithdsa in /home/nivanveenithdsa/InternWork/calender)
+2023-04-18 14:40:48.190  INFO 108197 --- [restartedMain] c.example.calender.CalenderApplication   : No active profile set, falling back to 1 default profile: "default"
+2023-04-18 14:40:48.401  INFO 108197 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-04-18 14:40:48.403  INFO 108197 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-04-18 14:40:50.590  INFO 108197 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-04-18 14:40:50.749  INFO 108197 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 141 ms. Found 5 JPA repository interfaces.
+2023-04-18 14:40:52.240  INFO 108197 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2023-04-18 14:40:52.259  INFO 108197 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-04-18 14:40:52.260  INFO 108197 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.71]
+2023-04-18 14:40:52.381  INFO 108197 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2023-04-18 14:40:52.382  INFO 108197 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3977 ms
+2023-04-18 14:40:52.514 DEBUG 108197 --- [restartedMain] o.s.w.f.CommonsRequestLoggingFilter      : Filter 'requestLoggingFilter' configured for use
+2023-04-18 14:40:52.757  INFO 108197 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-04-18 14:40:52.868  INFO 108197 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.6.15.Final
+2023-04-18 14:40:53.194  INFO 108197 --- [restartedMain] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2023-04-18 14:40:53.373  INFO 108197 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2023-04-18 14:40:53.721  INFO 108197 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2023-04-18 14:40:53.789  INFO 108197 --- [restartedMain] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+2023-04-18 14:40:55.348  INFO 108197 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-04-18 14:40:55.368  INFO 108197 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-04-18 14:40:56.689  WARN 108197 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2023-04-18 14:40:57.306  INFO 108197 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-04-18 14:40:57.389  INFO 108197 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2023-04-18 14:40:57.421  INFO 108197 --- [restartedMain] c.example.calender.CalenderApplication   : Started CalenderApplication in 10.467 seconds (JVM running for 11.823)
+2023-04-18 14:41:12.392  INFO 108197 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-04-18 14:41:12.392  INFO 108197 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-04-18 14:41:12.395  INFO 108197 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2023-04-18 14:41:12.416 DEBUG 108197 --- [http-nio-8080-exec-1] o.s.w.f.CommonsRequestLoggingFilter      : START     GET /meeting?id=1]
+2023-04-18 14:41:12.720 DEBUG 108197 --- [http-nio-8080-exec-1] o.s.w.f.CommonsRequestLoggingFilter      : END       GET /meeting?id=1]
+2023-04-18 14:41:16.539 DEBUG 108197 --- [http-nio-8080-exec-3] o.s.w.f.CommonsRequestLoggingFilter      : START     GET /offices]
+2023-04-18 14:41:16.863 DEBUG 108197 --- [http-nio-8080-exec-3] o.s.w.f.CommonsRequestLoggingFilter      : END       GET /offices]
+2023-04-18 14:41:17.726 DEBUG 108197 --- [http-nio-8080-exec-2] o.s.w.f.CommonsRequestLoggingFilter      : START     GET /meetingrooms]
+2023-04-18 14:41:17.792 DEBUG 108197 --- [http-nio-8080-exec-2] o.s.w.f.CommonsRequestLoggingFilter      : END       GET /meetingrooms]
+2023-04-18 14:41:25.871 DEBUG 108197 --- [http-nio-8080-exec-10] o.s.w.f.CommonsRequestLoggingFilter      : START     GET /employees]
+2023-04-18 14:41:25.937 DEBUG 108197 --- [http-nio-8080-exec-10] o.s.w.f.CommonsRequestLoggingFilter      : END       GET /employees]
+2023-04-18 14:41:41.320 DEBUG 108197 --- [http-nio-8080-exec-5] o.s.w.f.CommonsRequestLoggingFilter      : START     OPTIONS /employee]
+2023-04-18 14:41:41.334 DEBUG 108197 --- [http-nio-8080-exec-5] o.s.w.f.CommonsRequestLoggingFilter      : END       OPTIONS /employee]
+2023-04-18 14:41:41.344 DEBUG 108197 --- [http-nio-8080-exec-6] o.s.w.f.CommonsRequestLoggingFilter      : START     POST /employee]
+2023-04-18 14:41:41.616 DEBUG 108197 --- [http-nio-8080-exec-7] o.s.w.f.CommonsRequestLoggingFilter      : START     GET /office/11]
+2023-04-18 14:41:41.630 ERROR 108197 --- [http-nio-8080-exec-7] c.e.c.e.ResourceNotFoundException        : thrown resource not found exception	Office is not found with id: '11' 
+2023-04-18 14:41:41.650  WARN 108197 --- [http-nio-8080-exec-7] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [com.example.calender.exception.ResourceNotFoundException: Office is not found with id: '11' ]
+2023-04-18 14:41:41.651 DEBUG 108197 --- [http-nio-8080-exec-7] o.s.w.f.CommonsRequestLoggingFilter      : END       GET /office/11]
+2023-04-18 14:41:41.661 ERROR 108197 --- [http-nio-8080-exec-6] c.e.c.e.ResourceNotFoundException        : thrown resource not found exception	Office is not found with id: '11' 
+2023-04-18 14:41:41.665  WARN 108197 --- [http-nio-8080-exec-6] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [com.example.calender.exception.ResourceNotFoundException: Office is not found with id: '11' ]
+2023-04-18 14:41:41.666 DEBUG 108197 --- [http-nio-8080-exec-6] o.s.w.f.CommonsRequestLoggingFilter      : END       POST /employee, payload={"name":"Martin L Samuel","email":"sam.martin33@gmail.com","dob":"2023-04-13","office":{"id":"11"},"address":"WhiteField","ph":"3646426151"}]
+2023-04-18 14:42:20.931 DEBUG 108197 --- [http-nio-8080-exec-8] o.s.w.f.CommonsRequestLoggingFilter      : START     GET /meetingrooms]
+2023-04-18 14:42:20.951 DEBUG 108197 --- [http-nio-8080-exec-8] o.s.w.f.CommonsRequestLoggingFilter      : END       GET /meetingrooms]
+2023-04-18 14:42:22.665 DEBUG 108197 --- [http-nio-8080-exec-9] o.s.w.f.CommonsRequestLoggingFilter      : START     GET /employees]
+2023-04-18 14:42:22.688 DEBUG 108197 --- [http-nio-8080-exec-9] o.s.w.f.CommonsRequestLoggingFilter      : END       GET /employees]
+2023-04-18 14:42:35.130 DEBUG 108197 --- [http-nio-8080-exec-4] o.s.w.f.CommonsRequestLoggingFilter      : START     POST /employee]
+2023-04-18 14:42:35.137 DEBUG 108197 --- [http-nio-8080-exec-1] o.s.w.f.CommonsRequestLoggingFilter      : START     GET /office/1]
+2023-04-18 14:42:35.151 DEBUG 108197 --- [http-nio-8080-exec-1] o.s.w.f.CommonsRequestLoggingFilter      : END       GET /office/1]
+2023-04-18 14:42:35.274 DEBUG 108197 --- [http-nio-8080-exec-4] c.e.c.service.EmployeeServiceImpl        : Martin L Samuel is a new employee with id 6
+2023-04-18 14:42:35.282 DEBUG 108197 --- [http-nio-8080-exec-4] o.s.w.f.CommonsRequestLoggingFilter      : END       POST /employee, payload={"name":"Martin L Samuel","email":"sam.martin7@gmail.com","dob":"2023-04-03","office":{"id":"1"},"address":"WhiteField","ph":"9766639841"}]
+2023-04-18 14:42:35.308 DEBUG 108197 --- [http-nio-8080-exec-3] o.s.w.f.CommonsRequestLoggingFilter      : START     GET /employees]
+2023-04-18 14:42:35.337 DEBUG 108197 --- [http-nio-8080-exec-3] o.s.w.f.CommonsRequestLoggingFilter      : END       GET /employees]
+2023-04-18 14:43:29.216  INFO 108197 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-04-18 14:43:29.222  INFO 108197 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2023-04-18 14:43:29.243  INFO 108197 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

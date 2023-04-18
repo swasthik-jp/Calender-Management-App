@@ -28,7 +28,6 @@ public class OfficeServiceImpl implements OfficeService {
     public List<Office> getAllBranches() {
         return officeRepository.findAll();
     }
-
     @Override
     public Office getOfficeById(long id) throws ResourceNotFoundException {
         Optional<Office> optionalOffice = officeRepository.findById(id);

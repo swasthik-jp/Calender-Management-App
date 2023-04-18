@@ -66,6 +66,7 @@ public class MeetingServiceImpl implements MeetingService {
             List<MeetingRoom> allMeetingRooms = meetingRoomService.getAllMeetingRooms();
 
             if (uniqueRoomsIds.size() == allMeetingRooms.size()) { // if there is no meeting room available (all are occupied)
+                log.debug("no meeting rooms available");
                 return false;
             }
             attendees.forEach(email -> employeeService.getEmployeeByEmail(email));

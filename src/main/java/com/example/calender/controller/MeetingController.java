@@ -47,14 +47,17 @@ public class MeetingController {
                                                       @RequestParam(name = "email", required = false) String email,
                                                       @RequestParam(name = "meetingId") Long meetId) {
         if(email != null) {
+            log.trace("GET /attendee-status, searching attendee with email");
             AttendingStatus status = meetingService.getAttendeeStatusByEmpEmail(email, meetId);
             return new ResponseEntity<>(status.toString(), HttpStatus.OK);
         }
         else if(empId != null) {
+            log.trace("GET /attendee-status, searching attendee with employee id");
             AttendingStatus status = meetingService.getAttendeeStatusByEmpId(empId, meetId);
             return new ResponseEntity<>(status.toString(), HttpStatus.OK);
         }
         else {
+            log.trace("GET /attendee-status, request params id and email absent");
             return new ResponseEntity<>("Employee Id or Email should be provided", HttpStatus.BAD_REQUEST);
         }
     }
@@ -63,8 +66,10 @@ public class MeetingController {
     ResponseEntity<String> scheduleMeeting(@RequestBody MeetingDto meetingDto) {
         Meeting requestMeeting = meetingMapper.toEntity(meetingDto);
         Long id = meetingService.scheduleMeeting(requestMeeting);
-        if (id == null)
+        if (id == null) {
+            log.trace("POST /meeting, can't schedule meeting");
             return new ResponseEntity<>("Can't schedule Meeting", HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(id.toString(), HttpStatus.CREATED);
     }
 
@@ -72,6 +77,7 @@ public class MeetingController {
     @PostMapping("/can-schedule")
     ResponseEntity<Boolean> canSchedule(@Valid @RequestBody CanScheduleDto scheduleDto) {
         Boolean canSchedule = meetingService.canSchedule(scheduleDto.getAttendees(), scheduleDto.getStart(), scheduleDto.getEnd());
+        log.trace("POST /can-schedule, can schedule " + canSchedule);
         return new ResponseEntity<>(canSchedule, HttpStatus.OK);
     }
 
@@ -79,12 +85,14 @@ public class MeetingController {
     @PutMapping("/cancel-meeting/{id}")
     ResponseEntity<String> cancelMeeting(@NotNull @PathVariable Long id) {
         meetingService.changeMeetingStatus(id, MeetingStatus.CANCELLED);
+        log.trace("PUT /cancel-meeting/"+id+", changed meeting status to cancelled");
         return new ResponseEntity<>("Meeting Cancelled Successfully", HttpStatus.OK);
     }
 
     @PutMapping("/attendee-status")
     ResponseEntity<String> setAttendeeStatus(@Valid @RequestBody AttendeeDto attendee) {
         AttendingStatus status = meetingService.setAttendeeStatus(attendee.getMeetingId(), attendee.getEmployeeId(), attendee.getIsAttending());
+        log.trace("PUT /attendee-status,  changed attendee status of "+attendee.getEmployeeId()+" to "+attendee.getIsAttending());
         return new ResponseEntity<>("Status successfully changed to " + status, HttpStatus.OK);
     }
 
