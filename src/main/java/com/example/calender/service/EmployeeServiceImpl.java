@@ -23,7 +23,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     public Employee saveEmployee(Employee employee) throws ResourceAlreadyExistsException {
         try {
-            return employeeRepository.save(employee);
+            Employee newEmployee = employeeRepository.save(employee);
+            log.debug(employee.getName() +" is a new employee with id "+newEmployee.getId());
+            return newEmployee;
         } catch (Exception ex) {
             throw new ResourceAlreadyExistsException(EMP, EMAIL, employee.getEmail());
         }
@@ -73,7 +75,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public boolean checkEmptyOffice(Long fkOfficeId) throws ResourceNotFoundException {
         Optional<List<Employee>> officeWorkforce = employeeRepository.findAllByOfficeId(fkOfficeId);
         if (officeWorkforce.isPresent()) {
-            log.debug("OfficeID: " + fkOfficeId + " has " + officeWorkforce.get().size() + " employees");
+            log.debug("OfficeID " + fkOfficeId + " has " + officeWorkforce.get().size() + " employees");
             return officeWorkforce.get().isEmpty();
         } else throw new ResourceNotFoundException(EMP, "officeId", fkOfficeId);
     }

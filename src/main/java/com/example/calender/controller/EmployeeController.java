@@ -50,12 +50,16 @@ public class EmployeeController {
     @SneakyThrows
     @GetMapping("/employee")
     ResponseEntity<EmployeeDto> getEmployeeByIdOrEmail(@RequestParam(name = "email", required = false) String email, @RequestParam(name = "id", required = false) Long id) {
-        if (email != null)
+        if (email != null) {
+            log.trace("GET /employee, param request to get employee by email");
             return new ResponseEntity<>(employeeDtoMapper.toDto(employeeService.getEmployeeByEmail(email)), HttpStatus.OK);
-        else if (id != null) {
+        }else if (id != null) {
+            log.trace("GET /employee, param request to get by id");
             return new ResponseEntity<>(employeeDtoMapper.toDto(employeeService.getEmployeeById(id)), HttpStatus.OK);
-        } else
+        } else {
+            log.trace("GET /employee, param for get employee by id or email not present");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @SneakyThrows
@@ -76,12 +80,15 @@ public class EmployeeController {
                                           @RequestParam(name = "email", required = false) String email) {
         if (id != null) {
             employeeService.deleteEmployeeById(id);
+            log.trace("DELETE /employee, employee deleted with id "+id);
             return new ResponseEntity<>("SUCCESS: Employee deleted successfully", HttpStatus.OK);
         }
         if (email != null) {
             employeeService.deleteEmployeeByEmail(email);
+            log.trace("DELETE /employee, employee deleted with email "+email);
             return new ResponseEntity<>("SUCCESS: Employee deleted successfully", HttpStatus.OK);
         }
+        log.trace("DELETE /employee, query parameters for id and email absent");
         return new ResponseEntity<>("Could Not Delete", HttpStatus.BAD_REQUEST);
     }
 
@@ -94,6 +101,7 @@ public class EmployeeController {
             throw new ResourceNotFoundException("Office", "id", dtoEmployee.getOffice().getId());
         }
         Employee employee = employeeDtoMapper.toEntity(dtoEmployee);
+        log.trace("PUT /employee, updating employee with id"+employee.getId());
         return new ResponseEntity<>(employeeDtoMapper.toDto(employeeService.updateEmployee(employee, id)), HttpStatus.OK);
 
     }
