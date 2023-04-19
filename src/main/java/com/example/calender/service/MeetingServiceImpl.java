@@ -80,7 +80,7 @@ public class MeetingServiceImpl implements MeetingService {
 //            }
             return true;
         } else {
-            return meetingRoomService.getAllMeetingRooms().isEmpty();
+            return !(meetingRoomService.getAllMeetingRooms().isEmpty());
         }
     }
 

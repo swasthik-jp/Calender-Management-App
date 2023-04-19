@@ -20,7 +20,7 @@ public class EmployeeDto {
     private Long id;
 
     @NotNull(message = "Name can't be null")
-    @NotBlank(message = "Name can be empty")
+    @NotBlank(message = "Name cannot be empty")
     private String name;
 
     @NotNull(message = "Email can't be null")
