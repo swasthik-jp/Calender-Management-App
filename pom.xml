@@ -83,6 +83,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.thrift</groupId>
+			<artifactId>libthrift</artifactId>
+			<version>0.18.1</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

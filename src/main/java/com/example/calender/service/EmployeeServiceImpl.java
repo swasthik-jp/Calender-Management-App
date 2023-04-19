@@ -21,28 +21,33 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     EmployeeRepository employeeRepository;
 
+    @Override
     public Employee saveEmployee(Employee employee) throws ResourceAlreadyExistsException {
         try {
             Employee newEmployee = employeeRepository.save(employee);
-            log.debug(employee.getName() +" is a new employee with id "+newEmployee.getId());
+            log.debug(employee.getName() + " is a new employee with id " + newEmployee.getId());
             return newEmployee;
         } catch (Exception ex) {
             throw new ResourceAlreadyExistsException(EMP, EMAIL, employee.getEmail());
         }
     }
 
+    @Override
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
     }
 
+    @Override
     public Employee getEmployeeById(long id) throws ResourceNotFoundException {
         return employeeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(EMP, "id", id));
     }
 
+    @Override
     public Employee getEmployeeByEmail(String email) throws ResourceNotFoundException {
         return employeeRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException(EMP, EMAIL, email));
     }
 
+    @Override
     public Employee updateEmployee(Employee employee, long id) throws ResourceNotFoundException {
 
         Employee existingEmployee = employeeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(EMP, "id", id));
@@ -65,6 +70,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepository.deleteById(foundEmployee.getId());
     }
 
+    @Override
     public void deleteEmployeeById(long id) throws ResourceNotFoundException {
         employeeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(EMP, "id", id));
@@ -72,6 +78,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
 
+    @Override
     public boolean checkEmptyOffice(Long fkOfficeId) throws ResourceNotFoundException {
         Optional<List<Employee>> officeWorkforce = employeeRepository.findAllByOfficeId(fkOfficeId);
         if (officeWorkforce.isPresent()) {
@@ -79,6 +86,5 @@ public class EmployeeServiceImpl implements EmployeeService {
             return officeWorkforce.get().isEmpty();
         } else throw new ResourceNotFoundException(EMP, "officeId", fkOfficeId);
     }
-
 
 }

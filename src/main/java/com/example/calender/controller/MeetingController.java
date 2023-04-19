@@ -42,21 +42,20 @@ public class MeetingController {
                 meetingService.getMeetingDetails(id)
         ), HttpStatus.OK);
     }
+
     @GetMapping("/attendee-status")
     ResponseEntity<String> getAttendeeStatus(@RequestParam(name = "employeeId", required = false) Long empId,
-                                                      @RequestParam(name = "email", required = false) String email,
-                                                      @RequestParam(name = "meetingId") Long meetId) {
-        if(email != null) {
+                                             @RequestParam(name = "email", required = false) String email,
+                                             @RequestParam(name = "meetingId") Long meetId) {
+        if (email != null) {
             log.trace("GET /attendee-status, searching attendee with email");
             AttendingStatus status = meetingService.getAttendeeStatusByEmpEmail(email, meetId);
             return new ResponseEntity<>(status.toString(), HttpStatus.OK);
-        }
-        else if(empId != null) {
+        } else if (empId != null) {
             log.trace("GET /attendee-status, searching attendee with employee id");
             AttendingStatus status = meetingService.getAttendeeStatusByEmpId(empId, meetId);
             return new ResponseEntity<>(status.toString(), HttpStatus.OK);
-        }
-        else {
+        } else {
             log.trace("GET /attendee-status, request params id and email absent");
             return new ResponseEntity<>("Employee Id or Email should be provided", HttpStatus.BAD_REQUEST);
         }
@@ -85,14 +84,14 @@ public class MeetingController {
     @PutMapping("/cancel-meeting/{id}")
     ResponseEntity<String> cancelMeeting(@NotNull @PathVariable Long id) {
         meetingService.changeMeetingStatus(id, MeetingStatus.CANCELLED);
-        log.trace("PUT /cancel-meeting/"+id+", changed meeting status to cancelled");
+        log.trace("PUT /cancel-meeting/" + id + ", changed meeting status to cancelled");
         return new ResponseEntity<>("Meeting Cancelled Successfully", HttpStatus.OK);
     }
 
     @PutMapping("/attendee-status")
     ResponseEntity<String> setAttendeeStatus(@Valid @RequestBody AttendeeDto attendee) {
         AttendingStatus status = meetingService.setAttendeeStatus(attendee.getMeetingId(), attendee.getEmployeeId(), attendee.getIsAttending());
-        log.trace("PUT /attendee-status,  changed attendee status of "+attendee.getEmployeeId()+" to "+attendee.getIsAttending());
+        log.trace("PUT /attendee-status,  changed attendee status of " + attendee.getEmployeeId() + " to " + attendee.getIsAttending());
         return new ResponseEntity<>("Status successfully changed to " + status, HttpStatus.OK);
     }
 
