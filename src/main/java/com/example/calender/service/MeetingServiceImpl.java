@@ -159,7 +159,9 @@ public class MeetingServiceImpl implements MeetingService {
         Finally meeting is saved
         PROBLEM TO TAKE CARE: Attendees should be saved only if meeting is saved
          */
+        log.info("meeting with id:" + meeting.getId() + " is saved");
         Meeting m = meetingRepository.save(meeting);
+        log.info("meeting with id:" + m.getId() + " is saved");
         return m.getId();
     }
 
@@ -268,4 +270,6 @@ public class MeetingServiceImpl implements MeetingService {
         meetingRepository.save(meeting);
         return attendingStatus;
     }
+
+
 }
